@@ -5,5 +5,9 @@
   "dependencies": { 
     "lodash" : "~2.3.0",
     "sugar" : "*"
-  } 
+  },
+  "devDependencies": {
+    "coffee-script": "*",
+    "mocha": "*"
+  }
 }
