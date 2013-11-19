@@ -1,0 +1,9 @@
+{ 
+  "name":     "my-project", 
+  "version":  "1.0.0", 
+  "main":     "permit.js",
+  "dependencies": { 
+    "lodash" : "~2.3.0",
+    "sugar" : "*"
+  } 
+}
