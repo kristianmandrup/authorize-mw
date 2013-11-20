@@ -69,21 +69,21 @@ then proceed normally with remaining arguments.
 
 `permitFactories` shows how to use `permitFor` to build `Permits` and then how to use them using filters and allows.
 
-
-## TODO
-
-Create tests using *mocha* in /test folder
-
-Setup Mocha!
+Ability wraps the permit execution for a given user.
+Authorizer is even higher level wrapper... to be used with middleware runner (soon)
 
 ## Testing
 
 Should run mocha on all files in test folder?
 
-Use different report type with `-R` option
+Use different report type with `-R` or `--reporter` option. Can be configured in `mocha.opts`
 
-`$ mocha test -R spec`
+This works already! 3 tests passes :)
 
-`$ mocha test -R list`
+`$ mocha test/authorize-mw/permit_test.js`
+
+Or just run all test like so! (5 passing)
+
+`$ mocha`
 
 
