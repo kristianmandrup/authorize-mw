@@ -6,8 +6,12 @@
     "lodash" : "~2.3.0",
     "sugar" : "*"
   },
+  "scripts": {
+    "test": "make test"
+  },
   "devDependencies": {
     "coffee-script": "*",
-    "mocha": "*"
+    "mocha": "*",
+    "should": "*"
   }
 }

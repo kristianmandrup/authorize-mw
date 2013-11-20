@@ -76,4 +76,14 @@ Create tests using *mocha* in /test folder
 
 Setup Mocha!
 
+## Testing
+
+Should run mocha on all files in test folder?
+
+Use different report type with `-R` option
+
+`$ mocha test -R spec`
+
+`$ mocha test -R list`
+
 
