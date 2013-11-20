@@ -37,7 +37,7 @@ module.exports = class Permit extends Mixin
   testRule: (rule) ->
     subj = canActRule[rule.subject]
     ctxRule = canActRule[rule.ctx]
-    clazz = rule.subject.type
+    clazz = rule.subject.type # if no type, can we detect type on structure alone?
     if ctxRule
       return ctxRule(rule) if type(ctxRule) is 'function'
     else 
