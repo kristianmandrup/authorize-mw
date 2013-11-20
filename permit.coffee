@@ -6,12 +6,19 @@ Intersect = require './intersect'
 Util = require './util'
 
 module.exports = class Permit extends Mixin
+  # class methods/variables
   @permits = []
+
+  @get: (name) ->
+    permit = @permits[name] || throw new Error("No permit '#{name}' is registered")
 
   constructor: (@name) ->
     @intersect = Intersect()
     @canRules = []
     @cannotRules = []
+
+  canRules: []
+  cannotRules: []
 
   matches: (access) ->
     # use object intersection test if permit has includes or excludes
@@ -56,6 +63,48 @@ module.exports = class Permit extends Mixin
   disallows: (rule) -> 
     cannotActRule = @cannotRules[rule.action]
     @testRule(cannotActRule)
+
+  # execute all rules to add can and cannot rules for given access context
+  applyRulesFor: (name, access) ->
+    rules = @rules[name]
+    rules(access) if type(rules) is 'function'
+
+  applyActionRulesFor: (access) ->
+    @applyRulesFor(access.action, access)
+
+  applyDefaultRules: (access) ->
+    @applyRulesFor('default', access)
+
+  normalize: (items) ->
+    switch type(items)
+      when 'function'
+        items()
+      when 'string'
+        [items]
+      when 'array'
+        items.map(
+          (item) -> @normalize item
+        )
+      else
+        throw new Error("#{action} can't be normalized, must be a Function, String or Array")
+
+  registerRule: (ruleList, actions, subjects, ctx) ->
+    actions = @normalize actions
+    subject = @normalize subjects
+    for action in actions
+      for subject in subjects
+        @addRule ruleList, action, subject, ctx
+
+  can: (actions, subjects, ctx) ->
+    @registerRule @canRules, actions, subjects, ctx
+
+  cannot: (actions, subjects, ctx) ->
+    @registerRule @cannotRules, actions, subjects, ctx
+
+  addRule: (list, action, subject, ctx) ->
+      actRule = list[action] || []
+      actRule.push {subject: subject, ctx: ctx}
+      list[action] = actRule
 
 
 class AdminPermit extends Permit
