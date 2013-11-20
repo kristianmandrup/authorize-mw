@@ -34,12 +34,29 @@ module.exports = class Permit extends Mixin
       return @intersect.on access, item() if item typeof Function
       @intersect.on access, item
 
-  allows: (rule) ->
+  testRule: (rule) ->
+    subj = canActRule[rule.subject]
+    ctxRule = canActRule[rule.ctx]
+    clazz = rule.subject.type
+    if ctxRule
+      return ctxRule(rule) if type(ctxRule) is 'function'
+    else 
+      return true if subj is clazz and not ctxRule
+    # if no rule match
+    false
+
+  # TODO
+  # 
+  allows: (rule, ctx) ->
     return false if @disallows(rule)
-    @canRules.include rule
-  
+    canActRule = @canRules[rule.action]
+    @testRule(canActRule)
+
+  # TODO: use same approach as allows
   disallows: (rule) -> 
-    @cannotRules.include rule
+    cannotActRule = @cannotRules[rule.action]
+    @testRule(cannotActRule)
+
 
 class AdminPermit extends Permit
   includes: ->
