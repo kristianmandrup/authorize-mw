@@ -1,8 +1,7 @@
-require 'mocha'
-require 'should'
+require '../test_setup'
 
-# should search in each parent directory, recursively (see node require)
-require 'permit'
+Intersect = require '../../intersect'
+Permit = require '../../permit'
 
 describe 'Permit init - no args', ->
   permit = null
@@ -12,10 +11,10 @@ describe 'Permit init - no args', ->
   )
 
   it 'creates a permit with the name unknown', ->
-    permit.name.should be('unknown')
+    permit.name.should.be('unknown')
 
   it 'creates a permit with an Intersect', ->
-    permit.intersect.should.not be(null)
+    permit.intersect.should.be.instanceOf(Object).and.have.property('on')
 
 describe 'Permit init', ->
   permit = null

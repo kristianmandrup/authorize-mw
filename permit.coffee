@@ -12,7 +12,7 @@ module.exports = class Permit extends Mixin
   @get: (name) ->
     permit = @permits[name] || throw new Error("No permit '#{name}' is registered")
 
-  constructor: (@name) ->
+  constructor: (@name = 'unknown') ->
     @intersect = Intersect()
     @canRules = []
     @cannotRules = []
