@@ -1,5 +1,5 @@
 module.exports = class Authorizer
-  constructor: (user) ->
+  (user) ->
     @user = user
 
   # can user do action on object in context

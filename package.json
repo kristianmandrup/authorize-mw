@@ -1,17 +1,18 @@
 { 
-  "name":     "my-project", 
-  "version":  "1.0.0", 
-  "main":     "permit.js",
+  "name":           "authorize-mw",
+  "version":        "0.0.1",
+  "main":           "index.js",
   "dependencies": { 
-    "lodash" : "~2.3.0",
-    "sugar" : "*"
+    "lodash" :      "*",
+    "prelude-ls":   "*",
+    "sugar":        "*"
   },
   "scripts": {
-    "test": "make test"
+    "test":         "make test"
   },
   "devDependencies": {
-    "coffee-script": "*",
-    "mocha": "*",
-    "should": "*"
+    "LiveScript":   "*",
+    "mocha":        "*",
+    "should":       "*"
   }
 }

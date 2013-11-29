@@ -5,5 +5,5 @@ module.exports =  ->
     newmap = {}
     _.each(keys, (k) ->
         newmap[k] = map[k]
-    );
-    newmap;
+    )
+    newmap

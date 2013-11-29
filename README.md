@@ -3,35 +3,32 @@ authorize-mw
 
 Authorization middleware for Node.js and Javascript platform in general (with a little twist)
 
-## Contribute
+## Requirements
 
-Requires Node.s installed on your computer (http://www.node.org)
-Also currently requires Coffee-script! (TODO: convert to LiveScript ASAP!)
+Node.s installed on your computer (http://www.node.org)
+*LiveScript*
+
+## Install
 
 ```
-$ npm install coffee-script -g
+$ npm install LiveScript -g
 $ npm install
 ```
 
-Compile coffee-script files!
+Compile LiveScript files!
 
-This can be done either manually or from within an editor using a coffee-script plugin
-
-target file could fx be `permit.js` or `permitFactories.js` for now.
-
-Soon will be via tests only!
-
-`$ node <target file>`
+This can be done either manually or from within an Editor (such as WebStorm or Sublime Text) using a LiveScript editor plugin.
 
 ## Architecture
 
 A `Permit` is the main conceptual class. It contains the logic to test if it makes sense to apply in a given
 access context (given the access object). By calling `permit.matches(access)` you can see if the permit matches for
 the particular access object.
-This is used by the PermitFilter class, to filter out all the registered permits (in Permit.permits) for a given access object.
+
+This is used by the `PermitFilter` class, to filter out all the registered permits (in `Permit.permits`) for a given access object.
 Each permit that passes this filter can then be applied for a given access permission: (user, action, object or class)
 
-This is where the canRules come into play!
+This is where the `canRules` come into play!
 
 ```coffeescript
 class Permit
@@ -44,13 +41,15 @@ class Permit
     @cannotRules.include rule
 ```
 
+Creating the permit using `permitFor factory
+
 ```
 myPermit = permitFor 'a man walking into the bar', ->
   # return true if this permit applies for this access obj
   match: (access) ->
     access is 'x'
 
-  # we will execute all methods under rules :)
+  # execute all methods in Object rules (or according to current context)
   rules:
     manage: ->
       can 'manage', ['post', 'comment']
@@ -70,20 +69,19 @@ then proceed normally with remaining arguments.
 `permitFactories` shows how to use `permitFor` to build `Permits` and then how to use them using filters and allows.
 
 Ability wraps the permit execution for a given user.
-Authorizer is even higher level wrapper... to be used with middleware runner (soon)
+
+`Authorizer` is an even higher level wrapper to be used with `middleware` runner.
 
 ## Testing
 
-Should run mocha on all files in test folder?
+Run `mocha` on all files in test folder
 
-Use different report type with `-R` or `--reporter` option. Can be configured in `mocha.opts`
-
-This works already! 3 tests passes :)
-
-`$ mocha test/authorize-mw/permit_test.js`
-
-Or just run all test like so! (5 passing)
+Just run all test like this:
 
 `$ mocha`
+
+To execute individual test, sth like this:
+
+`$ mocha test/authorize-mw/permit_test.js`
 
 

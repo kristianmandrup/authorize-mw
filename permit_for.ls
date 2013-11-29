@@ -1,9 +1,9 @@
-type = require './type'
+_ = require 'prelude-ls'
 Permit = require './permit'
 
-module.exports = permitFor = (name, baseObj) ->
+module.exports = (name, baseObj) ->
   permit = new Permit(name)
-  if baseObj? && type(baseObj) is 'function'
+  if baseObj? and _.is-type 'Function', baseObj
     baseObj = baseObj()
 
   permit = permit.use baseObj

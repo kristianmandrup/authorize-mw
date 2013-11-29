@@ -1,5 +1,7 @@
 _ = require 'lodash'
 
+# TODO: Needs Testing!!!
+# Not yet completely working - needs match on all keys (complete intersection, not just one/first match
 module.exports = ->
   countProps = (obj) ->
     count = 0

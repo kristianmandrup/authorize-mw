@@ -1,7 +1,34 @@
 require '../test_setup'
 
+_         = require 'prelude-ls'
 Intersect = require '../../intersect'
-Permit = require '../../permit'
+Permit    = require '../../permit'
+
+class AdminPermit extends Permit
+  includes: ->
+    'user':
+      'role': 'admin'
+
+  # and must NOT include the following
+  excludes: ->
+    'context': 'dashboard'
+
+class GuestPermit extends Permit
+  constructor: ->
+    super
+
+  match: (access) ->
+    true
+
+access =
+  user:
+    role: 'admin'
+
+admPermit   = new AdminPermit
+guestPermit = new GuestPermit
+
+console.log admPermit.matches access
+console.log guestPermit.matches access
 
 describe 'Permit init - no args', ->
   permit = null

@@ -1,11 +1,11 @@
-_ = require 'lodash'
-Permit = require './permit'
+_       = require 'prelude-ls'
+Permit  = require './permit'
 
-module.exports = class PermitFilter
+class PermitFilter
   # go through all permits that apply
   # if any of them allows, then yes
-  @filter: (access) ->
-    console.log "access: #{access}"
+  @filter = (access) ->
     _.filter Permit.permits, (permit) ->
       permit.matches(access)
 
+module.exports = PermitFilter
