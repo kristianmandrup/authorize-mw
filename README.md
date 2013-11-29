@@ -21,16 +21,36 @@ This can be done either manually or from within an Editor (such as WebStorm or S
 
 ## Architecture
 
-A `Permit` is the main conceptual class. It contains the logic to test if it makes sense to apply in a given
-access context (given the access object). By calling `permit.matches(access)` you can see if the permit matches for
-the particular access object.
+A `Permit` is the main conceptual class. It contains the logic to test if it makes sense to apply the permit in a given
+access context. Calling `permit.matches(access)` returns true if the permit matches the `access` object.
 
-This is used by the `PermitFilter` class, to filter out all the registered permits (in `Permit.permits`) for a given access object.
-Each permit that passes this filter can then be applied for a given access permission: (user, action, object or class)
+The `access` object always contains the `user trying to ask permission. It can also contain items to identify the current context.
 
-This is where the `canRules` come into play!
+`access = {user: user, context: context}`
 
-```coffeescript
+## PermitFilter
+
+The `PermitFilter` is used to filter all the registered permits (`Permit.permits`).
+For a given access object it will return only those permits that match for that given access object.
+
+Each permit that passes this filter can then be applied to an access rule: (action, subject, context-rule).
+
+Example access rule
+
+```LiveScript
+can 'edit', 'book', (obj) ->
+  obj.author == @user.id
+```
+
+This `can` call is always executed in the context of a user (typically the current user), by means of an `Ability`.
+Each permit that matches for the given access context is then resolved to see if the user really can (is allowed)
+to perform the particular action on the subject (optionally also given the context-rule).
+This is done by executing `allows` and `disallows` for the permit, passing in the access rule.
+
+allows: If the permit contains a matching rule in canRules, the access rule will be allowed.
+disallows: If the permit contains a matching rule in cannotRules the rule will be disallowed.
+
+```LiveScript
 class Permit
   # ...
   allows: (rule) ->
@@ -41,36 +61,69 @@ class Permit
     @cannotRules.include rule
 ```
 
-Creating the permit using `permitFor factory
+## Using permit-for
+
+Creating the permit using `permit-for factory
 
 ```
-myPermit = permitFor 'a man walking into the bar', ->
-  # return true if this permit applies for this access obj
-  match: (access) ->
-    access is 'x'
+sexy-permit = permit-for 'a sexy woman',
+  # return true if this permit does not apply (should be excluded!) this access obj
+  exMatch: (access) ->
+    user = access.user
+    user.gender is 'female' and user.looks is 'sexy'
 
-  # execute all methods in Object rules (or according to current context)
   rules:
     manage: ->
-      can 'manage', ['post', 'comment']
-    publish: ->
-      can 'publish', ['post']
+      can 'manipulate', ['person'], (obj) ->
+        obj.gender is 'male'
 ```
 
-The permit, when constructed should run all the rules to build the `canRules` and `cannotRules`
-Another strategy would be to only run the rule that matches the incoming action?
+## Rules
 
-`permitFor` should also optionally take a `Permit` class argument, such as `AdminPermit` to further greater reuse!
-It should test if the first argument in a string or not. if not a string, use this as the permit class,
+The `permit`, when matched successfully for the `access` object, should run all the rules.
+This will populate the `canRules` and `cannotRules` of the permit.
+
+Another strategy would be to only run the rules that matches the incoming action,
+f.ex for the `sexy-permit` only run the `manage` rules if the user is trying to `manage` something.
+
+It has yet to be decided which of these strategies to use or if it should be up to the developer to define
+the strategy somehow.
+
+## Permit base class
+
+`permit-for` should optionally take a `Permit` class argument, such as `AdminPermit` to further greater reuse.
+i.e so that you specify the base class to be used for the instance constructed and not always just use the `Permit` class.
+It should test if the first argument is a string or not. If not a string, use this as the permit class,
 then proceed normally with remaining arguments.
 
-`myPermit = permitFor AdminPermit, 'a man walking into the bar', ->`
+Example:
 
-`permitFactories` shows how to use `permitFor` to build `Permits` and then how to use them using filters and allows.
+`admin-bar-permit = permitFor AdminPermit, 'a man walking into the bar', ->`
+
+## Ability
 
 Ability wraps the permit execution for a given user.
 
 `Authorizer` is an even higher level wrapper to be used with `middleware` runner.
+
+## Normalize
+
+The `normalize` module, contains a function that is used to normalize such things as rule actions and rule subjects.
+This is used to ensure a permit access rule is *splatted out* before adding it to `canRules` or `cannotRules`
+
+## Intersect
+
+Intersect is used as a convenient way to easily set up a matching function for a permit. If the object intersects on the
+incoming access object, the permit can be used for that access object (in that context for that user).
+
+We have yet to fully test this and make it work!
+
+## Allower
+
+Determines if a given access rule should be allowed... (see test)
+
+Note: Currently it looks like it iterates all registered permits. It should be using filtered permits somehow,
+so it only iterates the set of permits that matches the given access object (i.e user and context)
 
 ## Testing
 
@@ -80,7 +133,7 @@ Just run all test like this:
 
 `$ mocha`
 
-To execute individual test, sth like this:
+To execute individual test, do like this:
 
 `$ mocha test/authorize-mw/permit_test.js`
 
