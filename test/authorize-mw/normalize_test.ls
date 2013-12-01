@@ -2,19 +2,21 @@ require '../test_setup'
 
 _         = require 'prelude-ls'
 User      = require '../fixtures/user'
-normalize = require './normalize'
+normalize = require '../../normalize'
 
 describe 'normalize' ->
-  var user
+  var fun, str, list, fun-list, nested-fun
 
   before ->
-    fun = ->
+    fun := ->
       ["xyz"]
-    str = "abc"
-    list = ['a', 'b']
+    str := "abc"
+    list := ['a', 'b']
 
-    nested-fun = ->
-      ["abc", fun]
+    fun-list := ["abc", fun]
+
+    nested-fun := ->
+      fun-list
 
   describe 'Function' ->
     specify 'is called' ->
@@ -28,10 +30,16 @@ describe 'normalize' ->
     specify 'returned' ->
       normalize(list).should.eql list
 
+  describe 'Array with function' ->
+    specify 'normalize function' ->
+      normalize(fun-list).should.eql ["abc", "xyz"]
+
   describe 'Number' ->
     specify 'throws error' ->
-      # normalize(3).should
+      (->
+        normalize(3)
+      ).should.throw!
 
   describe 'Nested Functions' ->
     specify 'normalized to single array' ->
-      normalize(list).should.eql ["abc", "xyz"]
+      normalize(nested-fun).should.eql ["abc", "xyz"]

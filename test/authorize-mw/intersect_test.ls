@@ -5,13 +5,13 @@ User      = require '../fixtures/user'
 intersect = require('../../intersect')!
 
 describe 'Intersect' ->
-  var user-kris, guest-user, admin-user, kris-admin-user
+  var kris-user, guest-user, admin-user, kris-admin-user
 
   before ->
-    kris-user         = new User name: 'kris'
-    guest-user        = new User role: 'guest'
-    admin-user        = new User role: 'admin'
-    kris-admin-user   = new User name: 'kris', role: 'admin'
+    kris-user         := new User name: 'kris'
+    guest-user        := new User role: 'guest'
+    admin-user        := new User role: 'admin'
+    kris-admin-user   := new User name: 'kris', role: 'admin'
 
   describe 'on' ->
     specify 'does NOT intersects on object with no overlap' ->
