@@ -1,3 +1,5 @@
+_ = require 'prelude-ls'
+
 module.exports = class User
   (@obj) ->
     for key in _.keys(@obj)
