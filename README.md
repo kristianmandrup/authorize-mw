@@ -63,9 +63,11 @@ class Permit
 
 ## Using permit-for
 
-Creating the permit using `permit-for factory
+A Permit class can be created via the `permit-for` factory method.
 
-```
+Example:
+
+```LiveScript
 sexy-permit = permit-for 'a sexy woman',
   # return true if this permit does not apply (should be excluded!) this access obj
   exMatch: (access) ->
@@ -78,6 +80,17 @@ sexy-permit = permit-for 'a sexy woman',
         obj.gender is 'male'
 ```
 
+## Building Permits
+
+`permit-for` should optionally take a `Permit` class argument, such as `AdminPermit` to further greater reuse.
+i.e so that you specify the base class to be used for the instance constructed and not always just use the `Permit` class.
+It should test if the first argument is a string or not. If not a string, use this as the permit class,
+then proceed normally with remaining arguments.
+
+Example:
+
+`admin-bar-permit = permitFor AdminPermit, 'a man walking into the bar', ->`
+
 ## Rules
 
 The `permit`, when matched successfully for the `access` object, should run all the rules.
@@ -89,22 +102,13 @@ f.ex for the `sexy-permit` only run the `manage` rules if the user is trying to 
 It has yet to be decided which of these strategies to use or if it should be up to the developer to define
 the strategy somehow.
 
-## Permit base class
-
-`permit-for` should optionally take a `Permit` class argument, such as `AdminPermit` to further greater reuse.
-i.e so that you specify the base class to be used for the instance constructed and not always just use the `Permit` class.
-It should test if the first argument is a string or not. If not a string, use this as the permit class,
-then proceed normally with remaining arguments.
-
-Example:
-
-`admin-bar-permit = permitFor AdminPermit, 'a man walking into the bar', ->`
-
 ## Ability
 
 Ability wraps the permit execution for a given user.
 
-`Authorizer` is an even higher level wrapper to be used with `middleware` runner.
+## Authorizer
+
+`Authorizer` should be used to wrap an Ability for the current user. It is a middleware component that should be  used with a middleware runner (see *middleware* project). The authorizer should be used to authorize a user to access and perfor a given action on a data object of some kind.
 
 ## Normalize
 
@@ -113,10 +117,9 @@ This is used to ensure a permit access rule is *splatted out* before adding it t
 
 ## Intersect
 
-Intersect is used as a convenient way to easily set up a matching function for a permit. If the object intersects on the
-incoming access object, the permit can be used for that access object (in that context for that user).
+Intersect is used as a convenient way to easily set up a matching function for a permit. If the object intersects on the incoming access object, the permit can be used for that access object (in that context for that user).
 
-We have yet to fully test this and make it work!
+If the access object is: `{user: {role: 'admin'}, ctx: {area: 'guest'}}` and the match access of the permit is `{user: {role: 'admin'}`, then the permit match access fully intersects the access object and so the permit should apply (be used). Otherwise the permit should be ignored for that access object (if not a full intersection).  
 
 ## Allower
 
