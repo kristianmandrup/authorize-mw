@@ -20,9 +20,6 @@ class GuestPermit extends Permit
     true
 
 
-console.log admPermit.matches access
-console.log guestPermit.matches access
-
 describe 'Permit init' ->
   var access, guest-permit, admin-permit
 

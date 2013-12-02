@@ -1,4 +1,4 @@
-_ = require 'lodash'
+_ = require 'prelude-ls'
 
 # TODO: Needs Testing!!!
 # Not yet completely working - needs match on all keys (complete intersection, not just one/first match
@@ -16,23 +16,29 @@ module.exports = ->
       r = true
       for k in v1
         r = objectEquals v1[k], v2[k]
-        return false if not r
-      return true;
+        return false unless r
+      return true
     else
-      return v1 is v2;
+      return v1 is v2
 
-  recursivePartialEqual = (partial, obj) ->
-    res = false
-    for key of partial
-      a = partial[key]
-      b = obj[key]
-      continue if a is 'undefined'
+  recursivePartialEqual = (partialObj, compareObj) ->
+    res = {}
+    for key in _.keys partialObj
+      res[key] = false
+      partial = partialObj[key]
+      compare = compareObj[key]
+      continue if partial is 'undefined'
 
-      if a instanceof Object && b instanceof Object
-        recursivePartialEqual a, b if b
+      if partial instanceof Object && compare instanceof Object
+        equals = recursivePartialEqual partial, compare if compare?
       else
-        res = true if objectEquals a, b
-    res
+        equals = objectEquals partial, compare
 
-  on: (a, b) ->
-    recursivePartialEqual a, b
+      res[key] = true if equals
+
+    for key in _.keys partialObj
+      return false unless res[key]
+    true
+
+  on: (partial, obj) ->
+    recursivePartialEqual partial, obj

@@ -18,13 +18,13 @@ describe 'Intersect' ->
       intersect.on({user: 'x'}, {user: 'y'}).should.be.false
 
     specify 'does NOT intersects on users with no overlap' ->
-      intersect.on(kris-user, guest-user).should.be.false
+      intersect.on({user: kris-user}, {user: guest-user}).should.be.false
 
     specify 'intersects on same object' ->
-      intersect.on(kris-user, kris-user).should.be.true
+      intersect.on({user: kris-user}, {user: kris-user}).should.be.true
 
-    specify 'intersects on target object with partial overlap' ->
-      intersect.on(kris-admin-user, admin-user).should.be.true
+    specify 'does NOT intersects when partial is > obj' ->
+      intersect.on({user: kris-admin-user}, {user: admin-user}).should.be.false
 
-    specify 'does NOT intersects on src object with partial overlap on target obj' ->
-      intersect.on(admin-user, kris-admin-user).should.be.false
+    specify 'intersects on object with partial overlap on target obj' ->
+      intersect.on({user: admin-user}, {user: kris-admin-user}).should.be.true

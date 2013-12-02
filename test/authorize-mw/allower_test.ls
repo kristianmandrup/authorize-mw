@@ -4,8 +4,6 @@ _         = require 'prelude-ls'
 User      = require '../fixtures/user'
 Book      = require '../fixtures/book'
 
-require '../fixtures/permits'
-
 describe 'Allower', ->
   var user, allower
 
