@@ -17,12 +17,12 @@ describe 'PermitMatcher' ->
     user-permit := permit-for 'User',
       match: (access) ->
         user = access.user
-        _.is-type user 'Object'
+        _.is-type 'Object', user
 
     guest-permit := permit-for 'Guest',
       match: (access) ->
         user = access.user
-        _.is-type user 'Object'
+        _.is-type 'Object', user
         user.role is 'guest'
 
     admin-permit := permit-for 'Admin',
@@ -50,4 +50,5 @@ describe 'PermitMatcher' ->
       permit-matcher.match(user-access).should.be.true
 
   describe 'intersectOn item' ->
-    specify 'intersects with user-access' ->
+    specify 'intersects when same object' ->
+      permit-matcher.intersectOn(user-access, user-access).should.be.true

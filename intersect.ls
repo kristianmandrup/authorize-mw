@@ -23,6 +23,9 @@ module.exports = ->
 
   recursivePartialEqual = (partialObj, compareObj) ->
     res = {}
+    return false unless partialObj? and compareObj?
+    return false if _.is-type 'Unknown' partialObj or _.is-type 'Unknown' compareObj
+
     for key in _.keys partialObj
       res[key] = false
       partial = partialObj[key]
