@@ -4,6 +4,7 @@ _         = require 'prelude-ls'
 User      = require '../fixtures/user'
 Book      = require '../fixtures/book'
 
+Permit        = require '../../permit'
 permit-for    = require '../../permit_for'
 
 describe 'permit-for' ->
@@ -28,7 +29,7 @@ describe 'permit-for' ->
 
   describe 'guest permit' ->
     specify 'creates a permit' ->
-      guest-permit.constructor.should.be.an.instanceOf Permit
+      guest-permit.constructor.display-name.should.be.eql 'Permit'
 
     specify 'permit has the name Guest' ->
       guest-permit.name.should.eql 'Guest'
@@ -41,7 +42,7 @@ describe 'permit-for' ->
 
   describe 'admin permit' ->
     specify 'creates a permit' ->
-      admin-permit.constructor.should.be.an.instanceOf Permit
+      admin-permit.constructor.display-name.should.be.eql 'Permit'
 
     specify 'permit has the name Admin' ->
       admin-permit.name.should.eql 'Admin'

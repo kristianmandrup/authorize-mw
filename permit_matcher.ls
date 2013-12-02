@@ -10,18 +10,22 @@ module.exports = class PermitMatcher
 
   match: (access) ->
     # use object intersection test if permit has includes or excludes
+    return false unless @permit
+
     matchInclude = true
-    if @match? && @match typeof Function
-      matchInclude = @match access
+    unless _.is-type 'Undefined' @permit.match
+      if _.is-type 'Function' @permit.match
+        matchInclude = @permit.match access
 
     matchExclude = false
-    if @exMatch? && @exMatch typeof Function
-      matchExclude = @exMatch access
+    unless _.is-type 'Undefined' @permit.ex-match
+      if _.is-type 'Function' @permit.ex-match
+        matchExclude = @permit.ex-match access
 
     # call function if function, otherwise use static value
     res = {}
-    res.include = @intersectOn @includes
-    res.exclude = @intersectOn @excludes
+    res.include = @intersectOn @permit.includes
+    res.exclude = @intersectOn @permit.excludes
     (res.include or matchInclude) and not (res.exclude or matchExclude)
 
   intersectOn: (item) ->

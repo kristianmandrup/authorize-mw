@@ -116,9 +116,15 @@ This is used to ensure a permit access rule is *splatted out* before adding it t
 
 ## Intersect
 
-Intersect is used as a convenient way to easily set up a matching function for a permit. If the object intersects on the incoming access object, the permit can be used for that access object (in that context for that user).
+Intersect is used as a convenient way to easily set up a matching function for a permit.
+If the object intersects on the incoming access object,
+the permit can be used for that access object (in that context for that user).
 
-If the access object is: `{user: {role: 'admin'}, ctx: {area: 'guest'}}` and the match access of the permit is `{user: {role: 'admin'}`, then the permit match access fully intersects the access object and so the permit should apply (be used). Otherwise the permit should be ignored for that access object (if not a full intersection).  
+If the access object is: `{user: {role: 'admin'}, ctx: {area: 'guest'}}` and the match access of the permit is `{user: {role: 'admin'}`,
+then the permit match access fully intersects the access object and so the permit should apply (be used).
+Otherwise the permit should be ignored for that access object (if not a full intersection).
+
+It really works :)
 
 ## Allower
 

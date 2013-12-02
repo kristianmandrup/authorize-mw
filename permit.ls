@@ -1,4 +1,5 @@
-_ = require 'prelude-ls'
+_   = require 'prelude-ls'
+lo  = require 'lodash'
 require 'sugar'
 
 Util = require './util'
@@ -16,6 +17,9 @@ module.exports = class Permit
   (@name = 'unknown') ->
     @canRules = []
     @cannotRules = []
+
+  use: (obj) ->
+    lo.extend @, obj
 
   canRules: []
   cannotRules: []
