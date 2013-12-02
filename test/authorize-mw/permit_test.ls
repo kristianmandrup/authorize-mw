@@ -1,7 +1,6 @@
 require '../test_setup'
 
 _         = require 'prelude-ls'
-Intersect = require '../../intersect'
 Permit    = require '../../permit'
 
 class AdminPermit extends Permit
@@ -20,57 +19,55 @@ class GuestPermit extends Permit
   match: (access) ->
     true
 
-access =
-  user:
-    role: 'admin'
-
-admPermit   = new AdminPermit
-guestPermit = new GuestPermit
 
 console.log admPermit.matches access
 console.log guestPermit.matches access
 
-describe 'Permit init - no args', ->
-  permit = null
+describe 'Permit init' ->
+  var access, guest-permit, admin-permit
 
-  before( ->
-    permit = new Permit()
-  )
+  before ->
+    guest-permit    := new GuestPermit
+    admin-permit    := new AdminPermit
 
-  it 'creates a permit with the name unknown', ->
+    access =
+      user:
+        role: 'admin'
+
+
+  specify 'creates a permit with the name unknown' ->
     permit.name.should.be('unknown')
 
-  it 'creates a permit with an Intersect', ->
+  specify 'creates a permit with an Intersect' ->
     permit.intersect.should.be.instanceOf(Object).and.have.property('on')
 
-describe 'Permit init', ->
-  permit = null
+describe 'Permit init' ->
+  var permit
 
-  before( ->
-    permit = new Permit('hello')
-  )
+  before ->
+    permit := new Permit 'hello'
 
-  it 'creates a permit with an Intersect', ->
+  specify 'has an empty canRules list' ->
+    permit.canRules.should.be.empty
 
-  it 'has an empty canRules list', ->
-
-  it 'has an empty cannotRules list', ->
+  specify 'has an empty cannotRules list' ->
+    permit.cannotRules.should.be.empty
 
 ###
-describe 'Permit matching', ->
-  it 'matches an accesObj if no match rules or match function', ->
+describe 'Permit matching' ->
+  specify 'matches an accesObj if no match rules or match function' ->
 
-  it 'matches an accesObj on includes', ->
+  specify 'matches an accesObj on includes' ->
 
-  it 'does not match an accesObj if excludes function matches', ->
+  specify 'does not match an accesObj if excludes function matches' ->
 
-  it 'does not match an accesObj if both includes an excludes function matches', ->
+  specify 'does not match an accesObj if both includes an excludes function matches' ->
 
-  it 'matches if match function matches and no includes or excludes function', ->
+  specify 'matches if match function matches and no includes or excludes function' ->
 
-describe 'Permit rule registration', ->
-  it 'registers a valid rule', ->
+describe 'Permit rule registration' ->
+  specify 'registers a valid rule' ->
 
-  it 'does not registers an invalid rule', ->
+  specify 'does not registers an invalid rule' ->
 ###
 

@@ -3,45 +3,53 @@ require '../test_setup'
 _         = require 'prelude-ls'
 User      = require '../fixtures/user'
 
+Ability   = require '../../ability'
+Permit    = require '../../permit'
+permit-for    = require '../../permit_for'
+PermitMatcher = require '../../permit_matcher'
+
 describe 'Ability' ->
-  var user, ability, access
+  var user-kris, guest-user, admin-user
+  var kris-ability, guest-ability, admin-ability
+  var empty-access, user-access, guest-access, admin-access, kris-access
+  var user-permit, guest-permit, admin-permit, auth-permit
 
   before ->
-    user-kris   = new User name: 'kris'
-    guest-user  = new User role: 'guest'
-    admin-user  = new User name: 'kris', role: 'admin'
+    user-kris   := new User name: 'kris'
+    guest-user  := new User role: 'guest'
+    admin-user  := new User name: 'kris', role: 'admin'
 
-    kris-ability    = new Ability user-kris
-    admin-ability   = new Ability admin-user
-    guest-ability   = new Ability guest-user
+    kris-ability    := new Ability user-kris
+    guest-ability   := new Ability guest-user
+    admin-ability   := new Ability admin-user
 
-    empty_access = {}
-    user-access =
+    empty-access  := {}
+    user-access   :=
       user: {}
 
-    guest-access =
+    guest-access  :=
       user:
         role: 'guest'
 
-    admin-access =
+    admin-access  :=
       user:
         role: 'admin'
 
-    kris-access =
+    kris-access   :=
       user:
         role: 'admin'
         name: 'kris'
       ctx:
         auth: true
 
-    user-permit = permit-for 'User',
+    user-permit   := permit-for 'User',
       match: (access) ->
         user = access.user
         _.is-type user 'Object'
       rules: ->
         can ['read', 'edit'], 'book'
 
-    guest-permit = permit-for 'Guest',
+    guest-permit  := permit-for 'Guest',
       match: (access) ->
         user = access.user
         _.is-type user 'Object'
@@ -49,7 +57,7 @@ describe 'Ability' ->
       rules: ->
         can 'read', 'book'
 
-    admin-permit = permit-for 'admin',
+    admin-permit  := permit-for 'admin',
       match: (access) ->
         user = access.user
         _.is-type user 'Object'
@@ -57,7 +65,7 @@ describe 'Ability' ->
       rules: ->
         can 'manage', '*'
 
-    auth-permit = permit-for 'admin',
+    auth-permit   := permit-for 'admin',
       match: (access) ->
         access.ctx.auth
       rules: ->

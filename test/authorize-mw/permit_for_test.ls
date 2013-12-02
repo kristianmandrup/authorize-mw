@@ -8,21 +8,21 @@ require '../fixtures/permits'
 permit-for    = require '../../permit_for'
 
 describe 'permit-for' ->
-  var user-permit, guest-permit
+  var user-permit, guest-permit, admin-permit
 
   before ->
-    user-permit = permit-for 'User',
+    user-permit := permit-for 'User',
       match: (access) ->
         user = access.user
         _.is-type user 'Object'
 
-    guest-permit = permit-for 'Guest',
+    guest-permit := permit-for 'Guest',
       match: (access) ->
         user = access.user
         _.is-type user 'Object'
         user.role is 'guest'
 
-    admin-permit = permit-for 'Admin',
+    admin-permit := permit-for 'Admin',
       rules:
         admin: ->
           can 'manage', 'all'
