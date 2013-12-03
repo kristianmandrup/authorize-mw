@@ -9,7 +9,7 @@ module.exports = class Allower
   # TODO: perhaps rename to access-rule
   (@access) ->
     # set reference to 'global' permits registered
-    @permits = Permit.permits
+    @permits = PermitFilter.filter(@access)
 
   # go through all permits that apply
   # if any of them allows, then yes
