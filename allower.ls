@@ -8,7 +8,7 @@ module.exports = class Allower
 
   # TODO: perhaps rename to access-rule
   (@access) ->
-    # set reference to 'global' permits registered
+    # filter to only use permits that make sense for current access request
     @permits = PermitFilter.filter(@access)
 
   # go through all permits that apply
