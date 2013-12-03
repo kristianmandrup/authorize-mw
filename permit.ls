@@ -21,18 +21,16 @@ module.exports = class Permit
   use: (obj) ->
     lo.extend @, obj
 
-  canRules: []
-  cannotRules: []
-
   matcher: new PermitMatcher(@)
 
   matches: (access) ->
     matcher.match access
 
+  # TODO: Fix it!!!
   testRule: (rule) ->
     subj = canActRule[rule.subject]
     ctxRule = canActRule[rule.ctx]
-    clazz = rule.subject.type # if no type, can we detect type on structure alone?
+    clazz = rule.subject.constructor.display-name
     if ctxRule
       return ctxRule(rule) if _.is-type 'Function', ctxRule
     else 
@@ -42,13 +40,13 @@ module.exports = class Permit
 
   # TODO
   # 
-  allows: (rule) ->
-    return false if @disallows(rule)
-    canActRule = @canRules[rule.action]
+  allows: (access-rule) ->
+    return false if @disallows(access-rule)
+    canActRule = @canRules[access-rule.action]
     @testRule(canActRule)
 
   # TODO: use same approach as allows
-  disallows: (rule) -> 
+  disallows: (access-rule) ->
     cannotActRule = @cannotRules[rule.action]
     @testRule(cannotActRule)
 
@@ -65,10 +63,14 @@ module.exports = class Permit
 
   registerRule: (ruleList, actions, subjects, ctx) ->
     actions = normalize actions
-    subject = normalize subjects
+    subjects = normalize subjects
     for action in actions
-      for subject in subjects
-        @addRule ruleList, action, subject, ctx
+      # should add all subjects to rule in one go I think, then use array test on subject
+      # http://preludels.com/#find to see if subject that we try to act on is in this rule subject array
+      @addRule ruleList, action, subjects, ctx
+
+  canRules: []
+  cannotRules: []
 
   can: (actions, subjects, ctx) ->
     @registerRule @canRules, actions, subjects, ctx
@@ -76,9 +78,9 @@ module.exports = class Permit
   cannot: (actions, subjects, ctx) ->
     @registerRule @cannotRules, actions, subjects, ctx
 
-  addRule: (list, action, subject, ctx) ->
+  addRule: (list, action, subjects, ctx) ->
       actRule = list[action] || []
-      actRule.push {subject: subject, ctx: ctx}
+      actRule.push {subject: subjects, ctx: ctx}
       list[action] = actRule
 
 

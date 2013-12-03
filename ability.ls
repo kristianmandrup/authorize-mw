@@ -8,7 +8,7 @@ module.exports = class Ability
   (@user) ->
 
   accessObj: (access) ->
-    _.extend(access, user)
+    _.extend access, {user: @user}
 
   permits: (access) ->
     permits = permit-filter.matches access

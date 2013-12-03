@@ -14,6 +14,7 @@ describe 'Intersect' ->
     kris-admin-user   := new User name: 'kris', role: 'admin'
 
   describe 'on' ->
+    # test if first object (partial) intersects fully on target object
     specify 'does NOT intersects on object with no overlap' ->
       intersect.on({user: 'x'}, {user: 'y'}).should.be.false
 

@@ -4,7 +4,7 @@ Permit = require './permit'
 module.exports = class Allower
   # access rule
   # example
-  # action: 'read', subject: book
+  # { user: user, action: 'read', subject: book, ctx: {} }
 
   # TODO: perhaps rename to access-rule
   (@access) ->
@@ -13,6 +13,7 @@ module.exports = class Allower
 
   # go through all permits that apply
   # if any of them allows, then yes
+  # TODO: use permit filter
   allows: ->
     for permit in @permits
       return true if permit.allows access

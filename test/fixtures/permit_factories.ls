@@ -12,7 +12,7 @@ bar-permit = permit-for 'a man walking into the bar', ->
 
 sexy-permit = permit-for 'a sexy woman',
   # return true if this permit does not apply (should be excluded!) this access obj
-  exMatch: (access) ->
+  match: (access) ->
     user = access.user
     user.gender is 'female' and user.looks is 'sexy'
 

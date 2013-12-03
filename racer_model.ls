@@ -1,7 +1,7 @@
 # VERY experimental pseudo code mostly
 # See authorize-mw for real middleware code!
 
-# The following are mainly some ideas for intgration with Angular.js and Racer.js
+# The following are mainly some ideas for integration with Angular.js and Racer.js
 
 racer = require 'racer'
 
