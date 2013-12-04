@@ -15,7 +15,9 @@ recurse = (key, val) ->
 module.exports = class RuleApplier
   (@rules) ->
 
-# execute all rules to add can and cannot rules for given access context
+  # execute all rules to add can and cannot rules for given access context
+  # TODO: Fix - since no rule repo here! should be argument in constructor?
+
   apply-rules-for: (name, access) ->
     rules = @rules[name]
     rules access if _is-type 'Function', rules
@@ -23,6 +25,7 @@ module.exports = class RuleApplier
   apply-action-rules-for: (access-request) ->
     @apply-rules-for access-request.action, access
 
+  # only rules for the default key
   apply-default-rules: (access) ->
     @apply-rules-for 'default', access
 
