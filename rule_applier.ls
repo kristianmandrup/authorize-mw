@@ -12,13 +12,15 @@ recurse = (key, val) ->
   else
     # nothing
 
+
+# To apply a rule, means to execute the .can or .cannot statement in order to add one or more entries
+# to the corresponding can-rules or cannot-rules object in the rule-rep
 module.exports = class RuleApplier
-  (@rules) ->
+  (@repo, @rules) ->
 
-  # execute all rules to add can and cannot rules for given access context
-  # TODO: Fix - since no rule repo here! should be argument in constructor?
-
-  apply-rules-for: (name, access) ->
+  # execute all rules of a particular name
+  # not sure we should use the access-request here, just a wild idea!
+  apply-rules-for: (name, access-request) ->
     rules = @rules[name]
     rules access if _is-type 'Function', rules
 
@@ -34,5 +36,10 @@ module.exports = class RuleApplier
   apply-all-rules: ->
     @rules.each recurse
 
+  can: (actions, subjects, ctx) ->
+    @rule-repo.register-can-rule actions, subjects, ctx
+
+  cannot: (actions, subjects, ctx) ->
+    @rule-repo.register-cannot-rule actions, subjects, ctx
 
 
