@@ -7,6 +7,9 @@ Book      = require '../fixtures/book'
 Permit        = require '../../permit'
 permit-for    = require '../../permit_for'
 
+class AdminPermit extends Permit
+  type: 'admin'
+
 describe 'permit-for' ->
   var user-permit, guest-permit, admin-permit
 
@@ -22,7 +25,7 @@ describe 'permit-for' ->
         _.is-type user 'Object'
         user.role is 'guest'
 
-    admin-permit := permit-for 'Admin',
+    admin-permit := permit-for AdminPermit, 'Admin',
       rules:
         admin: ->
           can 'manage', 'all'
@@ -44,8 +47,12 @@ describe 'permit-for' ->
     specify 'creates a permit' ->
       admin-permit.constructor.display-name.should.be.eql 'Permit'
 
-    specify 'permit has the name Admin' ->
+    specify 'has the name Admin' ->
       admin-permit.name.should.eql 'Admin'
+
+    # from AdminPermit class :)
+    specify 'has the type Admin' ->
+      admin-permit.type.should.eql 'admin'
 
     specify 'sets rules to run' ->
       admin-permit.rules.should.be.an.instanceOf Object

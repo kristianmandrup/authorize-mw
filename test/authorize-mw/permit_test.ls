@@ -39,6 +39,21 @@ describe 'Permit' ->
     specify 'creates a permit with an Intersect' ->
       permit.intersect.should.be.instanceOf(Object).and.have.property('on')
 
+  describe 'use' ->
+    var permit
+
+    before ->
+      permit := new Permit 'hello'
+
+    specify 'using Object adds object to permit' ->
+      permit.use {state: 'on'}
+      permit.state.should.eql 'on'
+
+    specify 'using Function adds object received from calling function to permit' ->
+      permit.use ->
+        {state: 'off'}
+      permit.state.should.eql 'off'
+
   describe 'rules' ->
     var permit
 

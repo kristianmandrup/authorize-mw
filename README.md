@@ -88,7 +88,9 @@ then proceed normally with remaining arguments.
 
 Example:
 
-`admin-bar-permit = permitFor AdminPermit, 'a man walking into the bar', ->`
+`admin-bar-permit = permitFor AdminPermit, 'a man walking into the bar', customPermit`
+
+The `customPermit` can be either an Object or a Function.
 
 ## Rules
 
