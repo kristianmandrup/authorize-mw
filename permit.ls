@@ -24,7 +24,7 @@ module.exports = class Permit
   matcher: new PermitMatcher(@)
 
   matches: (access) ->
-    matcher.match access
+    @matcher.match access
 
   # TODO: Fix it!!!
   testRule: (rule) ->
@@ -50,39 +50,12 @@ module.exports = class Permit
     cannotActRule = @cannotRules[rule.action]
     @testRule(cannotActRule)
 
-  # execute all rules to add can and cannot rules for given access context
-  applyRulesFor: (name, access) ->
-    rules = @rules[name]
-    rules(access) if type(rules) is 'function'
+  rule-applier: new RuleApplier(@rules)
 
-  applyActionRulesFor: (access) ->
-    @applyRulesFor(access.action, access)
-
-  applyDefaultRules: (access) ->
-    @applyRulesFor('default', access)
-
-  registerRule: (ruleList, actions, subjects, ctx) ->
-    actions = normalize actions
-    subjects = normalize subjects
-    for action in actions
-      # should add all subjects to rule in one go I think, then use array test on subject
-      # http://preludels.com/#find to see if subject that we try to act on is in this rule subject array
-      @addRule ruleList, action, subjects, ctx
-
-  canRules: []
-  cannotRules: []
+  rule-repo: new RuleRepo
 
   can: (actions, subjects, ctx) ->
-    @registerRule @canRules, actions, subjects, ctx
+    @rule-repo.register-can-rule actions, subjects, ctx
 
   cannot: (actions, subjects, ctx) ->
-    @registerRule @cannotRules, actions, subjects, ctx
-
-  addRule: (list, action, subjects, ctx) ->
-      actRule = list[action] || []
-      actRule.push {subject: subjects, ctx: ctx}
-      list[action] = actRule
-
-
-
- 
+    @rule-repo.register-cannot-rule actions, subjects, ctx
