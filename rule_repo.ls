@@ -4,7 +4,9 @@
 # Then you can match an access-request (action, subject)
 # Simple!
 
-require 'sugar'
+_ = require 'prelude-ls'
+
+normalize = require './normalize'
 
 module.export = class RuleRepo
   can-rules: {}
@@ -15,35 +17,26 @@ module.export = class RuleRepo
     action = access-request.action
     subject = clazz = access-request.subject.constructor.display-name
 
-    # call matchCan or matchCannot
-    @["match#{act}"] action, subject
+    action-subjects = @["#{act}Rules"][action]
+    _.find subject, action-subjects
 
-  # will try to find a matching subject for the key of the action in the
-  match-can: (action, subject) ->
-    act-rule = @can-rules[action]
-    _.find act-rule, subject
+  # for now, lets forget about ctx
+  add-rule: (rule-container, action, subjects) ->
+    rule-subjects = rule-container[action] || []
+    rule-subjects.push subjects
 
-  # will try to find a matching subject for the key of the action in the
-  match-cannot: (action, subject) ->
-    act-rule = @cannot-rules[action]
-    _.find act-rule subject
+    rule-container[action] = rule-subjects # do we need this step?
 
-  add-rule: (list, action, subjects, ctx) ->
-    actRule = list[action] || []
-    actRule.push {subject: subjects, ctx: ctx}
-    list[action] = actRule
+  container-for: (act) ->
+    act = act.to-lower-case!
+    @["#{act}Rules"]
 
-  register-rule: (rule-list, actions, subjects, ctx) ->
+  # rule-container
+  register-rule: (act, actions, subjects) ->
     actions = normalize actions
     subjects = normalize subjects
+    rule-container = container-for act # can-rules or cannot-rules
     for action in actions
       # should add all subjects to rule in one go I think, then use array test on subject
       # http://preludels.com/#find to see if subject that we try to act on is in this rule subject array
-      @addRule rule-list, action, subjects, ctx
-
-  # TODO: not sure yet how to use the ctx - see CanCan for inspiration!
-  register-can-rule: (actions, subjects, ctx) ->
-    register-rule @can-rules, actions, subjects, ctx
-
-  register-cannot-rule: (actions, subjects, ctx) ->
-    register-rule @cannot-rules, actions, subjects, ctx
+      @add-rule rule-container, action, subjects

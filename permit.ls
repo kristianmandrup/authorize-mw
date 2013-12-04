@@ -9,8 +9,6 @@ PermitAllower = require './permit_allower'
 RuleApplier   = require './rule_applier'
 RuleRepo      = require './rule_repo'
 
-normalize = require './normalize'
-
 module.exports = class Permit
   # class methods/variables
   @permits = []

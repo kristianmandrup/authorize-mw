@@ -20,7 +20,7 @@ class GuestPermit extends Permit
     true
 
 
-describe 'Permit init' ->
+describe 'Permit' ->
   var access, guest-permit, admin-permit
 
   before ->
@@ -32,39 +32,39 @@ describe 'Permit init' ->
         role: 'admin'
 
 
-  specify 'creates a permit with the name unknown' ->
-    permit.name.should.be('unknown')
+  describe 'init' ->
+    specify 'creates a permit with the name unknown' ->
+      permit.name.should.be('unknown')
 
-  specify 'creates a permit with an Intersect' ->
-    permit.intersect.should.be.instanceOf(Object).and.have.property('on')
+    specify 'creates a permit with an Intersect' ->
+      permit.intersect.should.be.instanceOf(Object).and.have.property('on')
 
-describe 'Permit init' ->
-  var permit
+  describe 'rules' ->
+    var permit
 
-  before ->
-    permit := new Permit 'hello'
+    before ->
+      permit := new Permit 'hello'
 
-  specify 'has an empty canRules list' ->
-    permit.canRules.should.be.empty
+    specify 'has an empty canRules list' ->
+      permit.canRules.should.be.empty
 
-  specify 'has an empty cannotRules list' ->
-    permit.cannotRules.should.be.empty
+    specify 'has an empty cannotRules list' ->
+      permit.cannotRules.should.be.empty
 
-###
-describe 'Permit matching' ->
-  specify 'matches an accesObj if no match rules or match function' ->
+  describe 'Permit matching' ->
+    specify 'matches an accesObj if no match rules or match function' ->
 
-  specify 'matches an accesObj on includes' ->
+    specify 'matches an accesObj on includes' ->
 
-  specify 'does not match an accesObj if excludes function matches' ->
+    specify 'does not match an accesObj if excludes function matches' ->
 
-  specify 'does not match an accesObj if both includes an excludes function matches' ->
+    specify 'does not match an accesObj if both includes an excludes function matches' ->
 
-  specify 'matches if match function matches and no includes or excludes function' ->
+    specify 'matches if match function matches and no includes or excludes function' ->
 
-describe 'Permit rule registration' ->
-  specify 'registers a valid rule' ->
+  describe 'Permit rule registration' ->
+    specify 'registers a valid rule' ->
 
-  specify 'does not registers an invalid rule' ->
-###
+    specify 'does not registers an invalid rule' ->
+
 
