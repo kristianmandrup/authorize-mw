@@ -22,37 +22,26 @@ module.exports = class Permit
     lo.extend @, obj
 
   matcher: new PermitMatcher(@)
+  rule-applier: new RuleApplier(@rules)
+  rule-repo: new RuleRepo
 
   matches: (access) ->
     @matcher.match access
 
-  # TODO: Fix it!!!
-  testRule: (rule) ->
-    subj = canActRule[rule.subject]
-    ctxRule = canActRule[rule.ctx]
-    clazz = rule.subject.constructor.display-name
-    if ctxRule
-      return ctxRule(rule) if _.is-type 'Function', ctxRule
-    else 
-      return true if subj is clazz and not ctxRule
-    # if no rule match
-    false
+  test-access: (act, access-request) ->
+    # try to find matching action/subject combi for canRule in rule-repo
+    subj = @rule-repo.match-rule act, access-request
+    subj? # true if not null
 
-  # TODO
-  # 
-  allows: (access-rule) ->
-    return false if @disallows(access-rule)
-    canActRule = @canRules[access-rule.action]
-    @testRule(canActRule)
+  # if permit disallows, then it doesn't matter if there is also a rule that allows
+  # A cannot rule always wins!
+  allows: (access-request) ->
+    return false if @disallows access-request
+    @test-access 'can', access-request
 
-  # TODO: use same approach as allows
+  # if no explicit cannot rule matches, we assume the user IS NOT disallowed
   disallows: (access-rule) ->
-    cannotActRule = @cannotRules[rule.action]
-    @testRule(cannotActRule)
-
-  rule-applier: new RuleApplier(@rules)
-
-  rule-repo: new RuleRepo
+    @test-access 'cannot', access-rule
 
   can: (actions, subjects, ctx) ->
     @rule-repo.register-can-rule actions, subjects, ctx
