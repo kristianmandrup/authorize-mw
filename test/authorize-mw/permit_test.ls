@@ -46,21 +46,12 @@ describe 'Permit' ->
       permit := new Permit 'hello'
 
     specify 'has an empty canRules list' ->
-      permit.canRules.should.be.empty
+      permit.can-rules!.should.be.empty
 
     specify 'has an empty cannotRules list' ->
-      permit.cannotRules.should.be.empty
+      permit.cannot-rules!.should.be.empty
 
-  describe 'Permit matching' ->
-    specify 'matches an accesObj if no match rules or match function' ->
-
-    specify 'matches an accesObj on includes' ->
-
-    specify 'does not match an accesObj if excludes function matches' ->
-
-    specify 'does not match an accesObj if both includes an excludes function matches' ->
-
-    specify 'matches if match function matches and no includes or excludes function' ->
+  describe 'matches' ->
 
   describe 'Permit rule registration' ->
     specify 'registers a valid rule' ->

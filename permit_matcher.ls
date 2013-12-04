@@ -14,37 +14,40 @@ Intersect = require './intersect'
 # if any of all these gives a positive match, the permit should be used for the access-request
 # otherwise the permit will be ignored
 module.exports = class PermitMatcher
-  (@permit) ->
+  (@permit, @access-request) ->
     @intersect = Intersect()
+    @validate!
 
-  match: (access-request) ->
-    # use object intersection test if permit has includes or excludes
-    throw Error "PermitMatcher missing permit" unless @permit
-    unless access? and not _.is-type 'Unknown' access
-      throw Error "Access is undefined"
-
-    console.log "access", access-request
-    match-include = true
-    if _.is-type 'Function' @permit.match
-      match-include = @permit.match access-request
-
-    match-exclude = false
-    if _.is-type 'Function' @permit.ex-match
-      match-exclude = @permit.ex-match access-request
-
-    # call function if function, otherwise use static value
-    res = {}
-
+  # TODO: This function is WAAAAYYY too complex. Divide it into smaller methods!
+  match: ->
     # includes and excludes can contain a partial (object) used to do intersection test on access-request
-    res.include = @intersect-on @permit.includes, access-request
-    res.exclude = @intersect-on @permit.excludes, access-request
+    (@include! or @custom-match!) and not (@exclude! or @custom-exmatch!)
 
-    (res.include or match-include) and not (res.exclude or match-exclude)
+  include: ->
+    @intersect-on @permit.includes
 
-  intersect-on: (partial, access-request) ->
+  exclude: ->
+    @intersect-on @permit.excludes
+
+  custom-exmatch: ->
+    if _.is-type 'Function' @permit.ex-match
+      return @permit.ex-match @access-request
+    false
+
+  custom-match: ->
+    if _.is-type 'Function' @permit.match
+      return @permit.match @access-request
+    false
+
+  intersect-on: (partial) ->
     return false unless partial?
-    return false if _.is-type 'Unknown' item
 
     if _.is-type 'Function' partial
       partial = partial!
-    @intersect.on partial, access
+    @intersect.on partial, @access-request
+
+  validate: ->
+    # use object intersection test if permit has includes or excludes
+    throw Error "PermitMatcher missing permit" unless @permit
+    unless @access-request? and not _.is-type 'Unknown' @access-request
+      throw Error "Access is undefined"

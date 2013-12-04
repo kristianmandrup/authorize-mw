@@ -23,14 +23,18 @@ module.exports = class Permit
   use: (obj) ->
     lo.extend @, obj
 
-  matcher:      new PermitMatcher @
+  matcher: (access-request) ->
+    new PermitMatcher @, access-request
+
   rule-applier: new RuleApplier @rule-repo, @rules
   rule-repo:    new RuleRepo
   allower:      new PermitAllower @rule-repo
 
   # See if this permit should apply (be used) for the given access request
   matches: (access-request) ->
-    @matcher.match access-request
+    @matcher(access-request).match!
 
-
-
+  can-rules: ->
+    @rule-repo.can-rules
+  cannot-rules: ->
+    @rule-repo.cannot-rules
