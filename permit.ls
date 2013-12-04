@@ -28,7 +28,7 @@ module.exports = class Permit
   matcher:      new PermitMatcher @
   rule-applier: new RuleApplier @rule-repo, @rules
   rule-repo:    new RuleRepo
-  allower:      new PermitAllower @
+  allower:      new PermitAllower @rule-repo
 
   # See if this permit should apply (be used) for the given access request
   matches: (access-request) ->

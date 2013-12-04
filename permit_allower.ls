@@ -1,6 +1,5 @@
 module.exports = class PermitAllower
-  (@permit) ->
-    @rule-repo = permit.rule-repo
+  (@rule-repo) ->
 
   test-access: (act, access-request) ->
     # try to find matching action/subject combi for canRule in rule-repo
