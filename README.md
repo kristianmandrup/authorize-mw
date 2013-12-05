@@ -53,13 +53,34 @@ disallows: If the permit contains a matching rule in cannotRules the rule will b
 ```LiveScript
 class Permit
   # ...
-  allows: (rule) ->
-    return false if @disallows(rule)
-    @canRules.include rule
+  allows: (access-request) ->
+    permit-allower(access-request).allows!
 
   disallows: (rule) ->
-    @cannotRules.include rule
+    permit-allower(access-request).disallows!
 ```
+
+## Permit Allower
+
+The Permit Allower has the responsibility to determine if the permit allows a given action on a subject (an access request).
+
+```LiveScript
+class PermitAllower
+  (@permit, @access-request) ->
+
+  # ...
+
+  allows: 
+    return false if @disallows @access-request
+    @can-rules.include @access-request
+
+  disallows: (rule) ->
+    @cannot-rules.include @access-request
+```
+
+## Rule Repository
+
+Each permit also has a Rule Repository `rule-repo`, an instance of RuleRepo class. The rule-repo stores all the access rules that the permit allows or disallows for.
 
 ## Using permit-for
 
