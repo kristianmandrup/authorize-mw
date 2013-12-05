@@ -4,10 +4,12 @@ Authorization middleware for Node.js and Javascript platform in general (with a 
 
 ## Requirements
 
-Node.s installed on your computer (http://www.node.org)
-*LiveScript*
+* Node.js installed on your computer (http://www.node.org)
+* *LiveScript* (http://livescript.net/)
 
 ## Install
+
+Install livescript for node globally, then install all the node dependencies (see `packages.json`)
 
 ```
 $ npm install LiveScript -g
@@ -16,7 +18,7 @@ $ npm install
 
 Compile LiveScript files!
 
-This can be done either manually or from within an Editor (such as WebStorm or Sublime Text) using a LiveScript editor plugin.
+This can be done either manually or from within an editor (such as WebStorm or Sublime Text) using a LiveScript editor plugin.
 
 ## Architecture
 
@@ -25,7 +27,26 @@ access context. Calling `permit.matches(access)` returns true if the permit matc
 
 The `access` object always contains the `user trying to ask permission. It can also contain items to identify the current context.
 
-`access = {user: user, context: context}`
+`access = {user: user, ctx: context}`
+
+## AccessRequest
+
+This class holds the access request object.
+
+`{user: user, action: 'read', subject: book, ctx: context}`
+
+```LiveScript
+class AccessRequest
+  # factory method
+  @from  = (obj) ->
+    new AccessRequest(obj.user, obj.action, obj.subject, obj.ctx)
+
+  # constructor
+  (@user, @action, @subject, @ctx) ->
+
+  # normalize action and subject if they are not each a String
+  normalize: ->  
+```
 
 ## Permit
 
