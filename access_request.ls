@@ -10,9 +10,10 @@ module.exports = class AccessRequest
 
   # constructor
   (@user, @action, @subject, @ctx) ->
+    @normalize
 
   # normalize action and subject if they are not each a String
   normalize: ->
-    @action = normalize action
-    @subject = normalize subject
+    @action = normalize @action
+    @subject = normalize @subject
 

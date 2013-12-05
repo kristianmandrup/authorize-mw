@@ -1,22 +1,24 @@
+AccessRequest = require './access_request'
+
 module.exports = class Authorizer
   (@user) ->
 
   # can user do action on object in context
-  run: (action, object, context) ->
-    @can(action, object, context)
+  run: (action, subject, context) ->
+    @can action, subject, context
 
   ability: ->
     @current-ability ||= new Ability(@user)
 
-  access: (action, obj, ctx) ->
-    {action: action, obj: obj, ctx: context}
+  access: (action, subject, ctx) ->
+    new AccessRequest action, subject, ctx
 
   # note that object can be a class or instance
-  authorize: (action, obj, context) ->
-    @ability!.authorize @access(action, obj, context)
+  authorize: (action, subject, context) ->
+    @ability!.authorize @access(action, subject, context)
 
-  can: (action, obj, context) ->
-    @ability!.can @access(action, obj, context)
+  can: (action, subject, context) ->
+    @ability!.can @access(action, subject, context)
 
-  cannot: (action, obj, context) ->
-    @ability!.cannot @access(action, obj, context)
+  cannot: (action, subject, context) ->
+    @ability!.cannot @access(action, subject, context)

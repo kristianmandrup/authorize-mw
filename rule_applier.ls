@@ -12,9 +12,6 @@ recurse = (key, val) ->
     val!
   when 'Object'
     _.each(val, recurse)
-  else
-    # nothing
-
 
 # To apply a rule, means to execute the .can or .cannot statement in order to add one or more entries
 # to the corresponding can-rules or cannot-rules object in the rule-rep
@@ -24,8 +21,12 @@ module.exports = class RuleApplier
   # execute all rules of a particular name
   # not sure we should use the access-request here, just a wild idea!
   apply-rules-for: (name, access-request) ->
-    rules = @rules[name]
-    rules access if _.is-type 'Function', rules
+    named-rules = @rules[name]
+    if _.is-type 'Function', named-rules
+      named-rules.call @, access-request
+    else
+      throw Error "rules key for #{name} should be a function that resolves one or more rules"
+
 
   apply-action-rules-for: (access-request) ->
     @apply-rules-for access-request.action, access-request
@@ -40,9 +41,11 @@ module.exports = class RuleApplier
     @rules.each recurse
 
   can: (actions, subjects, ctx) ->
-    @rule-repo.register-rule 'can', actions, subjects, ctx
+    console.log "can", actions, subjects
+    @repo.register-rule 'can', actions, subjects, ctx
 
   cannot: (actions, subjects, ctx) ->
-    @rule-repo.register-rule 'cannot', actions, subjects, ctx
+    console.log "cannot", actions, subjects
+    @repo.register-rule 'cannot', actions, subjects, ctx
 
 

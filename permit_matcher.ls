@@ -18,7 +18,6 @@ module.exports = class PermitMatcher
     @intersect = Intersect()
     @validate!
 
-  # TODO: This function is WAAAAYYY too complex. Divide it into smaller methods!
   match: ->
     # includes and excludes can contain a partial (object) used to do intersection test on access-request
     (@include! or @custom-match!) and not (@exclude! or @custom-exmatch!)

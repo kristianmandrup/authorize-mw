@@ -25,7 +25,8 @@ This can be done either manually or from within an editor (such as WebStorm or S
 A `Permit` is the main conceptual class. It contains the logic to test if it makes sense to apply the permit in a given
 access context. Calling `permit.matches(access)` returns true if the permit matches the `access` object.
 
-The `access` object always contains the `user trying to ask permission. It can also contain items to identify the current context.
+The `access` object always contains the `user trying to ask permission.
+It can also contain items to identify the current context.
 
 `access = {user: user, ctx: context}`
 
@@ -50,7 +51,7 @@ class AccessRequest
 
 ## Permit
 
-The Permit class holds a list of all the registered permits in `Permit.permits`. You can get a named permit using `Permit.get(name)`. The `matches` method is used to see if the permit should be used for a given access-request (TODO: create a class `AccessRequest`).
+The Permit class holds a list of all the registered permits in `Permit.permits`. You can get a named permit using `Permit.get(name)`. The `matches` method is used to see if the permit should be used for a given access-request.
 
 ```LiveScript
 class Permit
@@ -80,7 +81,8 @@ This `can` call is always executed in the context of a user (typically the curre
 
 ## PermitFilter
 
-The `PermitFilter` is used to filter a set of permits for a given access request. The filter will return only those permits that match for the access object. Typically the permit filter will be applied on all the registered permits in `Permit.permits`).
+The `PermitFilter` is used to filter a set of permits for a given access request. The filter will return only those permits that match for the access object.
+Typically the permit filter will be applied on all the registered permits in `Permit.permits`).
 
 ## Permit Allower
 
@@ -118,7 +120,8 @@ class Permit
 
 ## Rule Repository
 
-Each permit also has a Rule Repository `rule-repo`, an instance of RuleRepo class. The rule-repo stores all the access rules that the permit allows or disallows for.
+Each permit also has a Rule Repository `rule-repo`, an instance of RuleRepo class.
+The rule-repo stores all the access rules that the permit allows or disallows for.
 
 ```LiveScript
 class RuleRepo
@@ -133,8 +136,11 @@ class RuleRepo
 
 ## Rule Applier
 
-Used to apply a set of rules and add them to the rule repository. A permit would have a set of rules defined on itself (the rules key) and use the rule applier to add all or some of these rules to the rule repo.
-This can be done either dynamically, just before testing or allow/disallow an access-request, or it can be done statically, as the permit is initially created or even using a combination of these approaches.
+Used to apply a set of rules and add them to the rule repository.
+A permit would have a set of rules defined on itself (the rules key) and use the rule applier to add all or
+some of these rules to the rule repo.
+This can be done either dynamically, just before testing or allow/disallow an access-request, or it can be
+done statically, as the permit is initially created or even using a combination of these approaches.
 
 ```LiveScript
 class RuleApplier
@@ -147,7 +153,8 @@ class RuleApplier
 
 ## Permit Matcher
 
-The Permit Matcher is used to test if a permit matches for a given access request and should be used to grant permission or not for that request.
+The Permit Matcher is used to test if a permit matches for a given access request and should be used to grant
+permission or not for that request.
 
 ```LiveScript
 class PermitMatcher
@@ -206,7 +213,9 @@ Ability wraps the permit execution for a given user.
 
 ## Authorizer
 
-`Authorizer` should be used to wrap an Ability for the current user. It is a middleware component that should be  used with a middleware runner (see *middleware* project). The authorizer should be used to authorize a user to access and perfor a given action on a data object of some kind.
+`Authorizer` should be used to wrap an Ability for the current user. It is a middleware component that should be
+used with a middleware runner (see *middleware* project). The authorizer should be used to authorize a user to
+access and perfor a given action on a data object of some kind.
 
 ## Normalize
 
