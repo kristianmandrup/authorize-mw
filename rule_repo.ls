@@ -40,9 +40,12 @@ module.exports = class RuleRepo
 
   # rule-container
   register-rule: (act, actions, subjects) ->
+    # TODO: perhaps use AccessRequest.normalize
     actions = normalize actions
     subjects = normalize subjects
+
     rule-container = @container-for act # can-rules or cannot-rules
+
     for action in actions
       # should add all subjects to rule in one go I think, then use array test on subject
       # http://preludels.com/#find to see if subject that we try to act on is in this rule subject array

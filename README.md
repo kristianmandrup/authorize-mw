@@ -4,10 +4,12 @@ Authorization middleware for Node.js and Javascript platform in general (with a 
 
 ## Requirements
 
-Node.s installed on your computer (http://www.node.org)
-*LiveScript*
+* Node.js installed on your computer (http://www.node.org)
+* *LiveScript* (http://livescript.net/)
 
 ## Install
+
+Install livescript for node globally, then install all the node dependencies (see `packages.json`)
 
 ```
 $ npm install LiveScript -g
@@ -16,7 +18,7 @@ $ npm install
 
 Compile LiveScript files!
 
-This can be done either manually or from within an Editor (such as WebStorm or Sublime Text) using a LiveScript editor plugin.
+This can be done either manually or from within an editor (such as WebStorm or Sublime Text) using a LiveScript editor plugin.
 
 ## Architecture
 
@@ -25,14 +27,47 @@ access context. Calling `permit.matches(access)` returns true if the permit matc
 
 The `access` object always contains the `user trying to ask permission. It can also contain items to identify the current context.
 
-`access = {user: user, context: context}`
+`access = {user: user, ctx: context}`
 
-## PermitFilter
+## AccessRequest
 
-The `PermitFilter` is used to filter all the registered permits (`Permit.permits`).
-For a given access object it will return only those permits that match for that given access object.
+This class holds the access request object.
 
-Each permit that passes this filter can then be applied to an access rule: (action, subject, context-rule).
+`{user: user, action: 'read', subject: book, ctx: context}`
+
+```LiveScript
+class AccessRequest
+  # factory method
+  @from  = (obj) ->
+    new AccessRequest(obj.user, obj.action, obj.subject, obj.ctx)
+
+  # constructor
+  (@user, @action, @subject, @ctx) ->
+
+  # normalize action and subject if they are not each a String
+  normalize: ->  
+```
+
+## Permit
+
+The Permit class holds a list of all the registered permits in `Permit.permits`. You can get a named permit using `Permit.get(name)`. The `matches` method is used to see if the permit should be used for a given access-request (TODO: create a class `AccessRequest`).
+
+```LiveScript
+class Permit
+  # class methods/variables
+  @permits = []
+
+  # get a named permit
+  @get = (name) ->
+
+  # constructor
+  (@name = 'unknown', @description = '') ->
+  
+  matches: (access-request) ->
+    @matcher(access-request).match!  
+```
+
+## Access rule
 
 Example access rule
 
@@ -41,23 +76,85 @@ can 'edit', 'book', (obj) ->
   obj.author == @user.id
 ```
 
-This `can` call is always executed in the context of a user (typically the current user), by means of an `Ability`.
+This `can` call is always executed in the context of a user (typically the current user), usually provided/encapsulated by an `Ability`.
+
+## PermitFilter
+
+The `PermitFilter` is used to filter a set of permits for a given access request. The filter will return only those permits that match for the access object. Typically the permit filter will be applied on all the registered permits in `Permit.permits`).
+
+## Permit Allower
+
+The Permit Allower has the responsibility to determine if the permit allows a given action on a subject (an access request).
+
+```LiveScript
+class PermitAllower
+  (@permit, @access-request) ->
+
+  # ...
+
+  allows: 
+    return false if @disallows @access-request
+    @can-rules.include @access-request
+
+  disallows: (rule) ->
+    @cannot-rules.include @access-request
+```
+
 Each permit that matches for the given access context is then resolved to see if the user really can (is allowed)
 to perform the particular action on the subject (optionally also given the context-rule).
-This is done by executing `allows` and `disallows` for the permit, passing in the access rule.
-
-allows: If the permit contains a matching rule in canRules, the access rule will be allowed.
-disallows: If the permit contains a matching rule in cannotRules the rule will be disallowed.
 
 ```LiveScript
 class Permit
+  permit-allower (access-request) ->
+    new PermitAllower(@, access-request)
+
   # ...
-  allows: (rule) ->
-    return false if @disallows(rule)
-    @canRules.include rule
+  allows: (access-request) ->
+    permit-allower(access-request).allows!
 
   disallows: (rule) ->
-    @cannotRules.include rule
+    permit-allower(access-request).disallows!
+```
+
+## Rule Repository
+
+Each permit also has a Rule Repository `rule-repo`, an instance of RuleRepo class. The rule-repo stores all the access rules that the permit allows or disallows for.
+
+```LiveScript
+class RuleRepo
+  can-rules: {}
+  cannot-rules: {}
+
+  match-rule: (act, access-request) ->
+    # matching logic
+  register-rule: (act, actions, subjects)
+    # add rule to can-rules or cannot-rules
+```
+
+## Rule Applier
+
+Used to apply a set of rules and add them to the rule repository. A permit would have a set of rules defined on itself (the rules key) and use the rule applier to add all or some of these rules to the rule repo.
+This can be done either dynamically, just before testing or allow/disallow an access-request, or it can be done statically, as the permit is initially created or even using a combination of these approaches.
+
+```LiveScript
+class RuleApplier
+  (@repo, @rules) ->
+  
+  apply-rules-for: (name, access-request) ->
+  
+  apply-all-rules: ->
+```
+
+## Permit Matcher
+
+The Permit Matcher is used to test if a permit matches for a given access request and should be used to grant permission or not for that request.
+
+```LiveScript
+class PermitMatcher
+  (@permit) ->
+    @intersect = Intersect()
+
+  match: (access) ->
 ```
 
 ## Using permit-for
