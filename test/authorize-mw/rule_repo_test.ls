@@ -9,14 +9,16 @@ describe 'Rule Repository (RuleRepo)' ->
   var access-request, rule, rule-repo
   var book
 
+  rule-repo = new RuleRepo
+
   can = (actions, subjects, ctx) ->
-    @rule-repo.register-can-rule actions, subjects
+    rule-repo.register-rule 'can', actions, subjects
 
   cannot = (actions, subjects, ctx) ->
-    @rule-repo.register-cannot-rule actions, subjects
+    rule-repo.register-rule 'cannot', actions, subjects
 
   before ->
-    rule-repo := new RuleRepo
+
     book      := new Book 'Far and away'
 
     rule      := can 'read', 'Book'
@@ -46,7 +48,7 @@ describe 'Rule Repository (RuleRepo)' ->
       rule-repo.register-rule('can', 'read', 'Book')
 
     specify 'throws error on invalid rule' ->
-      ( -> rule-repo.register-rule 'can', 'read', null).throws Error
+      ( -> rule-repo.register-rule 'can', 'read', null).should.throw!
 
   describe 'add-rule' ->
     var container
@@ -58,10 +60,10 @@ describe 'Rule Repository (RuleRepo)' ->
       container['read'].should.include 'Book'
 
     specify 'throws error if container is null' ->
-      ( -> rule-repo.add-rule null, 'read', 'Book' ).throws Error
+      ( -> rule-repo.add-rule null, 'read', 'Book' ).should.throw!
 
     specify 'throws error if container is not an Object' ->
-      ( -> rule-repo.add-rule [], 'read', 'Book' ).throws Error
+      ( -> rule-repo.add-rule [], 'read', 'Book' ).should.throw!
 
   describe 'match-rule' ->
     var read-book-rule, publish-book-rule

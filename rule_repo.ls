@@ -5,10 +5,11 @@
 # Simple!
 
 _ = require 'prelude-ls'
+require 'sugar'
 
 normalize = require './normalize'
 
-module.export = class RuleRepo
+module.exports = class RuleRepo
   can-rules: {}
   cannot-rules: {}
 
@@ -17,11 +18,15 @@ module.export = class RuleRepo
     action = access-request.action
     subject = clazz = access-request.subject.constructor.display-name
 
-    action-subjects = @["#{act}Rules"][action]
-    _.find subject, action-subjects
+    rule-container = @container-for act
+
+    action-subjects = rule-container[action]
+    return false unless _.is-type 'Array', action-subjects
+    action-subjects.index-of(subject) != -1
 
   # for now, lets forget about ctx
   add-rule: (rule-container, action, subjects) ->
+    throw Error("Container must be an object") unless _.is-type 'Object' rule-container
     rule-subjects = rule-container[action] || []
     rule-subjects.push subjects
 
@@ -29,13 +34,15 @@ module.export = class RuleRepo
 
   container-for: (act) ->
     act = act.to-lower-case!
-    @["#{act}Rules"]
+    c = @["#{act}Rules"]
+    throw Error "No valid rule container for: #{act}" unless _.is-type 'Object', c
+    c
 
   # rule-container
   register-rule: (act, actions, subjects) ->
     actions = normalize actions
     subjects = normalize subjects
-    rule-container = container-for act # can-rules or cannot-rules
+    rule-container = @container-for act # can-rules or cannot-rules
     for action in actions
       # should add all subjects to rule in one go I think, then use array test on subject
       # http://preludels.com/#find to see if subject that we try to act on is in this rule subject array
