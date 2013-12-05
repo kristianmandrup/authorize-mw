@@ -2,6 +2,7 @@ require '../test_setup'
 
 _             = require 'prelude-ls'
 RuleApplier   = require '../../rule_applier'
+RuleRepo      = require '../../rule_repo'
 
 User      = require '../fixtures/user'
 Book      = require '../fixtures/book'
@@ -12,14 +13,15 @@ describe 'Permit init' ->
 
   # TODO: Fix test!
 
+  rule-repo = new RuleRepo
+
   can = (actions, subjects, ctx) ->
-    @rule-repo.register-can-rule actions, subjects
+    rule-repo.register-can-rule actions, subjects
 
   cannot = (actions, subjects, ctx) ->
-    @rule-repo.register-cannot-rule actions, subjects
+    rule-repo.register-cannot-rule actions, subjects
 
   before ->
-    rule-applier  := new RuleApplier
     book          := new Book 'Far and away'
 
     rules         :=
@@ -33,14 +35,11 @@ describe 'Permit init' ->
         can     'read',   'Book'
         cannot  'write',  'Book'
 
+    rule-applier  := new RuleApplier rule-repo, rules
+
     access-request :=
       action: 'read'
       subject: book
-
-
-  apply-rules-for: (name, access-request) ->
-    rules = @rules[name]
-    rules access if _is-type 'Function', rules
 
   describe 'apply-rules-for' ->
     before ->

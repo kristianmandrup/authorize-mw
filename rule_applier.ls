@@ -3,6 +3,9 @@
 # The permit can be setup to either apply all rules, (iterating through the rules object)
 # or just apply a subset depending on the context (fx the action of the incoming access-request)
 
+_ = require 'prelude-ls'
+require 'sugar'
+
 recurse = (key, val) ->
   switch typeof! val
   when 'Function'
@@ -22,14 +25,14 @@ module.exports = class RuleApplier
   # not sure we should use the access-request here, just a wild idea!
   apply-rules-for: (name, access-request) ->
     rules = @rules[name]
-    rules access if _is-type 'Function', rules
+    rules access if _.is-type 'Function', rules
 
   apply-action-rules-for: (access-request) ->
-    @apply-rules-for access-request.action, access
+    @apply-rules-for access-request.action, access-request
 
   # only rules for the default key
-  apply-default-rules: (access) ->
-    @apply-rules-for 'default', access
+  apply-default-rules: (access-request) ->
+    @apply-rules-for 'default', access-request
 
   # should iterate through rules object recursively and execute any function found
   # using sugar .each: http://sugarjs.com/api
@@ -37,9 +40,9 @@ module.exports = class RuleApplier
     @rules.each recurse
 
   can: (actions, subjects, ctx) ->
-    @rule-repo.register-can-rule actions, subjects, ctx
+    @rule-repo.register-rule 'can', actions, subjects, ctx
 
   cannot: (actions, subjects, ctx) ->
-    @rule-repo.register-cannot-rule actions, subjects, ctx
+    @rule-repo.register-rule 'cannot', actions, subjects, ctx
 
 
