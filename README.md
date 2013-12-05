@@ -46,18 +46,79 @@ Each permit that matches for the given access context is then resolved to see if
 to perform the particular action on the subject (optionally also given the context-rule).
 This is done by executing `allows` and `disallows` for the permit, passing in the access rule.
 
-allows: If the permit contains a matching rule in canRules, the access rule will be allowed.
-disallows: If the permit contains a matching rule in cannotRules the rule will be disallowed.
+allows: If the permit contains a matching rule access request will be allowed.
+disallows: If the permit contains a matching rule in cannot-rules the access request will be disallowed.
 
 ```LiveScript
 class Permit
+  permit-allower (access-request) ->
+    new PermitAllower(@, access-request)
+
   # ...
-  allows: (rule) ->
-    return false if @disallows(rule)
-    @canRules.include rule
+  allows: (access-request) ->
+    permit-allower(access-request).allows!
 
   disallows: (rule) ->
-    @cannotRules.include rule
+    permit-allower(access-request).disallows!
+```
+
+## Permit Allower
+
+The Permit Allower has the responsibility to determine if the permit allows a given action on a subject (an access request).
+
+```LiveScript
+class PermitAllower
+  (@permit, @access-request) ->
+
+  # ...
+
+  allows: 
+    return false if @disallows @access-request
+    @can-rules.include @access-request
+
+  disallows: (rule) ->
+    @cannot-rules.include @access-request
+```
+
+## Rule Repository
+
+Each permit also has a Rule Repository `rule-repo`, an instance of RuleRepo class. The rule-repo stores all the access rules that the permit allows or disallows for.
+
+```LiveScript
+class RuleRepo
+  can-rules: {}
+  cannot-rules: {}
+
+  match-rule: (act, access-request) ->
+    # matching logic
+  register-rule: (act, actions, subjects)
+    # add rule to can-rules or cannot-rules
+```
+
+## Rule Applier
+
+Used to apply a set of rules and add them to the rule repository. A permit would have a set of rules defined on itself (the rules key) and use the rule applier to add all or some of these rules to the rule repo.
+This can be done either dynamically, just before testing or allow/disallow an access-request, or it can be done statically, as the permit is initially created or even using a combination of these approaches.
+
+```LiveScript
+class RuleApplier
+  (@repo, @rules) ->
+  
+  apply-rules-for: (name, access-request) ->
+  
+  apply-all-rules: ->
+```
+
+## Permit Matcher
+
+The Permit Matcher is used to test if a permit matches for a given access request and should be used to grant permission or not for that request.
+
+```LiveScript
+class PermitMatcher
+  (@permit) ->
+    @intersect = Intersect()
+
+  match: (access) ->
 ```
 
 ## Using permit-for
