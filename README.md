@@ -27,6 +27,25 @@ The `access` object always contains the `user trying to ask permission. It can a
 
 `access = {user: user, context: context}`
 
+## Permit
+
+The Permit class holds a list of all the registered permits in `Permit.permits`. You can get a named permit using `Permit.get(name)`. The `matches` method is used to see if the permit should be used for a given access-request (TODO: create a class `AccessRequest`).
+
+```LiveScript
+class Permit
+  # class methods/variables
+  @permits = []
+
+  # get a named permit
+  @get = (name) ->
+
+  # constructor
+  (@name = 'unknown', @description = '') ->
+  
+  matches: (access-request) ->
+    @matcher(access-request).match!  
+```
+
 ## PermitFilter
 
 The `PermitFilter` is used to filter all the registered permits (`Permit.permits`).
