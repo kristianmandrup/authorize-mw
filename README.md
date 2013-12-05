@@ -46,12 +46,7 @@ class Permit
     @matcher(access-request).match!  
 ```
 
-## PermitFilter
-
-The `PermitFilter` is used to filter all the registered permits (`Permit.permits`).
-For a given access object it will return only those permits that match for that given access object.
-
-Each permit that passes this filter can then be applied to an access rule: (action, subject, context-rule).
+## Access rule
 
 Example access rule
 
@@ -60,26 +55,11 @@ can 'edit', 'book', (obj) ->
   obj.author == @user.id
 ```
 
-This `can` call is always executed in the context of a user (typically the current user), by means of an `Ability`.
-Each permit that matches for the given access context is then resolved to see if the user really can (is allowed)
-to perform the particular action on the subject (optionally also given the context-rule).
-This is done by executing `allows` and `disallows` for the permit, passing in the access rule.
+This `can` call is always executed in the context of a user (typically the current user), usually provided/encapsulated by an `Ability`.
 
-allows: If the permit contains a matching rule access request will be allowed.
-disallows: If the permit contains a matching rule in cannot-rules the access request will be disallowed.
+## PermitFilter
 
-```LiveScript
-class Permit
-  permit-allower (access-request) ->
-    new PermitAllower(@, access-request)
-
-  # ...
-  allows: (access-request) ->
-    permit-allower(access-request).allows!
-
-  disallows: (rule) ->
-    permit-allower(access-request).disallows!
-```
+The `PermitFilter` is used to filter a set of permits for a given access request. The filter will return only those permits that match for the access object. Typically the permit filter will be applied on all the registered permits in `Permit.permits`).
 
 ## Permit Allower
 
@@ -97,6 +77,22 @@ class PermitAllower
 
   disallows: (rule) ->
     @cannot-rules.include @access-request
+```
+
+Each permit that matches for the given access context is then resolved to see if the user really can (is allowed)
+to perform the particular action on the subject (optionally also given the context-rule).
+
+```LiveScript
+class Permit
+  permit-allower (access-request) ->
+    new PermitAllower(@, access-request)
+
+  # ...
+  allows: (access-request) ->
+    permit-allower(access-request).allows!
+
+  disallows: (rule) ->
+    permit-allower(access-request).disallows!
 ```
 
 ## Rule Repository
