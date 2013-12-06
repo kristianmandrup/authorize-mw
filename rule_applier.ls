@@ -3,15 +3,15 @@
 # The permit can be setup to either apply all rules, (iterating through the rules object)
 # or just apply a subset depending on the context (fx the action of the incoming access-request)
 
+_ = require 'prelude-ls'
+require 'sugar'
+
 recurse = (key, val) ->
   switch typeof! val
   when 'Function'
     val!
   when 'Object'
     _.each(val, recurse)
-  else
-    # nothing
-
 
 # To apply a rule, means to execute the .can or .cannot statement in order to add one or more entries
 # to the corresponding can-rules or cannot-rules object in the rule-rep
@@ -21,15 +21,19 @@ module.exports = class RuleApplier
   # execute all rules of a particular name
   # not sure we should use the access-request here, just a wild idea!
   apply-rules-for: (name, access-request) ->
-    rules = @rules[name]
-    rules access if _is-type 'Function', rules
+    named-rules = @rules[name]
+    if _.is-type 'Function', named-rules
+      named-rules.call @, access-request
+    else
+      throw Error "rules key for #{name} should be a function that resolves one or more rules"
+
 
   apply-action-rules-for: (access-request) ->
-    @apply-rules-for access-request.action, access
+    @apply-rules-for access-request.action, access-request
 
   # only rules for the default key
-  apply-default-rules: (access) ->
-    @apply-rules-for 'default', access
+  apply-default-rules: (access-request) ->
+    @apply-rules-for 'default', access-request
 
   # should iterate through rules object recursively and execute any function found
   # using sugar .each: http://sugarjs.com/api
@@ -37,9 +41,11 @@ module.exports = class RuleApplier
     @rules.each recurse
 
   can: (actions, subjects, ctx) ->
-    @rule-repo.register-can-rule actions, subjects, ctx
+    console.log "can", actions, subjects
+    @repo.register-rule 'can', actions, subjects, ctx
 
   cannot: (actions, subjects, ctx) ->
-    @rule-repo.register-cannot-rule actions, subjects, ctx
+    console.log "cannot", actions, subjects
+    @repo.register-rule 'cannot', actions, subjects, ctx
 
 

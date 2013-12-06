@@ -8,15 +8,20 @@ Book        = require '../fixtures/book'
 describe 'Rule Repository (RuleRepo)' ->
   var access-request, rule, rule-repo
   var book
-
+  var can, cannot
 
   before ->
     console.log RuleRepo.canrules
 
     rule-repo := new RuleRepo
+
+    can := (actions, subjects, ctx) ->
+      rule-repo.register-rule 'can', actions, subjects
+
+    cannot := (actions, subjects, ctx) ->
+      rule-repo.register-rule 'cannot', actions, subjects
+
     book      := new Book 'Far and away'
-
-
     rule      := can 'read', 'Book'
 
     access-request :=
@@ -24,12 +29,6 @@ describe 'Rule Repository (RuleRepo)' ->
       subject: book
 
 
-  can = (actions, subjects, ctx) ->
-    #console.log 'hola'+rule-repo.register-can-rule
-    rule-repo.register-can-rule actions, subjects
-
-  cannot = (actions, subjects, ctx) ->
-    #@rule-repo.register-cannot-rule actions, subjects
 
 
 
@@ -51,26 +50,39 @@ describe 'Rule Repository (RuleRepo)' ->
       rule-repo.container-for('cannot').should.eql rule-repo.cannot-rules
 
   xdescribe 'register-rule' ->
+
+    var repo
+    before ->
+      repo := new RuleRepo.clear!
+
     specify 'can register a valid rule' ->
-      rule-repo.register-rule('can', 'read', 'Book')
+      repo.register-rule('can', 'read', 'Book')
+      repo.can-rules.should.eql {
+        'read': ['Book']
+      }
 
     specify 'throws error on invalid rule' ->
-      ( -> rule-repo.register-rule 'can', 'read', null).throws Error
+      ( -> repo.register-rule 'can', 'read', null).should.throw!
 
   xdescribe 'add-rule' ->
     var container
+    var repo
     before ->
       container := {}
+      repo := new RuleRepo.clear!
 
     specify 'can add a valid rule' ->
-      rule-repo.add-rule(container, 'read', 'Book')
+      repo.add-rule(container, 'read', 'Book')
+      repo.can-rules.should.eql {
+        'read': ['Book']
+      }
       container['read'].should.include 'Book'
 
     specify 'throws error if container is null' ->
-      ( -> rule-repo.add-rule null, 'read', 'Book' ).throws Error
+      ( -> repo.add-rule null, 'read', 'Book' ).should.throw!
 
     specify 'throws error if container is not an Object' ->
-      ( -> rule-repo.add-rule [], 'read', 'Book' ).throws Error
+      ( -> repo.add-rule [], 'read', 'Book' ).should.throw!
 
   xdescribe 'match-rule' ->
     var read-book-rule, publish-book-rule
