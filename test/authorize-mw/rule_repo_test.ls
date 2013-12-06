@@ -9,15 +9,13 @@ describe 'Rule Repository (RuleRepo)' ->
   var access-request, rule, rule-repo
   var book
 
-  can = (actions, subjects, ctx) ->
-    @rule-repo.register-can-rule actions, subjects
-
-  cannot = (actions, subjects, ctx) ->
-    @rule-repo.register-cannot-rule actions, subjects
 
   before ->
+    console.log RuleRepo.canrules
+
     rule-repo := new RuleRepo
     book      := new Book 'Far and away'
+
 
     rule      := can 'read', 'Book'
 
@@ -25,30 +23,41 @@ describe 'Rule Repository (RuleRepo)' ->
       action: 'read'
       subject: book
 
-  specify 'has can-rules' ->
-    rule-repo.can-rules.should.be.an.instance-of Object
 
-  specify 'has cannot-rules' ->
-    rule-repo.can-rules.should.be.an.instance-of Object
+  can = (actions, subjects, ctx) ->
+    #console.log 'hola'+rule-repo.register-can-rule
+    rule-repo.register-can-rule actions, subjects
 
-  specify 'has cannot-rules' ->
-    rule-repo.can-rules.should.be.an.instance-of Object
+  cannot = (actions, subjects, ctx) ->
+    #@rule-repo.register-cannot-rule actions, subjects
 
-  describe 'container-for' ->
+
+
+  xspecify 'has can-rules' ->
+    console.log 'hola '+rule-repo.can-rules
+    rule-repo.can-rules.should.be.an.instanceof Object
+
+  xspecify 'has cannot-rules' ->
+    rule-repo.can-rules.should.be.an.instanceof Object
+
+  xspecify 'has cannot-rules' ->
+    rule-repo.can-rules.should.be.an.instanceof Object
+
+  xdescribe 'container-for' ->
     specify 'can' ->
       rule-repo.container-for('can').should.eql rule-repo.can-rules
 
     specify 'cannot' ->
       rule-repo.container-for('cannot').should.eql rule-repo.cannot-rules
 
-  describe 'register-rule' ->
+  xdescribe 'register-rule' ->
     specify 'can register a valid rule' ->
       rule-repo.register-rule('can', 'read', 'Book')
 
     specify 'throws error on invalid rule' ->
       ( -> rule-repo.register-rule 'can', 'read', null).throws Error
 
-  describe 'add-rule' ->
+  xdescribe 'add-rule' ->
     var container
     before ->
       container := {}
@@ -63,7 +72,7 @@ describe 'Rule Repository (RuleRepo)' ->
     specify 'throws error if container is not an Object' ->
       ( -> rule-repo.add-rule [], 'read', 'Book' ).throws Error
 
-  describe 'match-rule' ->
+  xdescribe 'match-rule' ->
     var read-book-rule, publish-book-rule
 
     before ->
