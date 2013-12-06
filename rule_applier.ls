@@ -40,11 +40,12 @@ module.exports = class RuleApplier
   apply-all-rules: ->
     @rules.each recurse
 
-  can: (actions, subjects, ctx) ->
+  # so as not to be same name as can method used "from the outside, ie. via Ability"
+  ucan: (actions, subjects, ctx) ->
     console.log "can", actions, subjects
     @repo.register-rule 'can', actions, subjects, ctx
 
-  cannot: (actions, subjects, ctx) ->
+  ucannot: (actions, subjects, ctx) ->
     console.log "cannot", actions, subjects
     @repo.register-rule 'cannot', actions, subjects, ctx
 

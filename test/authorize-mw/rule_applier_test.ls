@@ -32,14 +32,14 @@ describe 'Permit init' ->
 
     rules         :=
       edit: ->
-        @can     'edit',   'Book'
-        @cannot  'write',  'Book'
+        @ucan     'edit',   'Book'
+        @ucannot  'write',  'Book'
       read: ->
-        @can    'read',   ['Book', 'Paper', 'Project']
-        @cannot 'delete', ['Paper', 'Project']
+        @ucan    'read',   ['Book', 'Paper', 'Project']
+        @ucannot 'delete', ['Paper', 'Project']
       default: ->
-        @can     'read',   'Book'
-        @cannot  'write',  'Book'
+        @ucan     'read',   'Book'
+        @ucannot  'write',  'Book'
 
     rule-applier  := new RuleApplier rule-repo, rules
 

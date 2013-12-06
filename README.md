@@ -73,11 +73,24 @@ class Permit
 Example access rule
 
 ```LiveScript
-can 'edit', 'book', (obj) ->
+@ucan 'edit', 'book', (obj) ->
   obj.author == @user.id
 ```
 
-This `can` call is always executed in the context of a user (typically the current user), usually provided/encapsulated by an `Ability`.
+This `ucan` call is always executed in the context of the `RuleApplier` which contains the `ucan` and `ucannot` methods,
+which both register the rule in the rule repository (see `RuleRepo`).
+
+## Ability access
+
+Example user access request (attempt)
+
+```LiveScript
+can 'edit', book
+```
+
+This `can` call will create/return an Ability for the current user and then create an `access-request` (`AccessRequest` instance).
+This will then be sent to an `Allower` who will determine if the user has the permission (is allowed) to do the particular action
+ on that particular object (optionally: given the current context).
 
 ## PermitFilter
 
@@ -149,6 +162,8 @@ class RuleApplier
   apply-rules-for: (name, access-request) ->
   
   apply-all-rules: ->
+
+  # ...
 ```
 
 ## Permit Matcher
@@ -179,7 +194,7 @@ sexy-permit = permit-for 'a sexy woman',
 
   rules:
     manage: ->
-      can 'manipulate', ['person'], (obj) ->
+      @ucan 'manipulate', ['person'], (obj) ->
         obj.gender is 'male'
 ```
 
@@ -231,8 +246,6 @@ the permit can be used for that access object (in that context for that user).
 If the access object is: `{user: {role: 'admin'}, ctx: {area: 'guest'}}` and the match access of the permit is `{user: {role: 'admin'}`,
 then the permit match access fully intersects the access object and so the permit should apply (be used).
 Otherwise the permit should be ignored for that access object (if not a full intersection).
-
-It really works :)
 
 ## Allower
 
