@@ -105,6 +105,20 @@ describe 'Permit' ->
     specify 'will NOT match request to publish a book' ->
       permit.matches(publish-book-request).should.be.true
 
+  describe 'can rules' ->
+    specify 'are empty' ->
+      permit.can-rules.should.be.empty
+
+    specify 'same as repo rules' ->
+      permit.can-rules.should.be.eql permit.rule-repo.can-rules
+
+  describe 'cannot rules' ->
+    specify 'are empty' ->
+      permit.cannot-rules.should.be.empty
+
+    specify 'same as repo rules' ->
+      permit.cannot-rules.should.be.eql permit.rule-repo.cannot-rules
+
   describe 'Rules application' ->
     var guest-permit
     before ->
