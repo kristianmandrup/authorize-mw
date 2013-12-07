@@ -27,10 +27,6 @@ describe 'Permit' ->
     guest-permit    := new GuestPermit
     admin-permit    := new AdminPermit
 
-    access =
-      user:
-        role: 'admin'
-
 
   describe 'init' ->
     specify 'creates a permit with the name unknown' ->
@@ -66,11 +62,86 @@ describe 'Permit' ->
     specify 'has an empty cannotRules list' ->
       permit.cannot-rules!.should.be.empty
 
+  describe 'matcher' ->
+    var access-request
+
+    before ->
+      access-request := {}
+
+    specify 'can NOT create matcher without access request' ->
+      ( -> permit.matcher!).should.throw
+
+    specify 'create matcher with access request' ->
+      permit.matcher(access-request).constructor.should.eql PermitMatcher
+
+  describe 'rule-applier' ->
+    specify 'has a rule-applier' ->
+      permit.rule-applier.constructor.should.eql RuleApplier
+
+  describe 'rule-repo' ->
+    specify 'has a rule-repo' ->
+      permit.rule-repo.constructor.should.eql RuleRepo
+
+  describe 'allower' ->
+    specify 'has an allower' ->
+      permit.allower.constructor.should.eql PermitAllower
+
   describe 'matches' ->
+    var book, read-book-request, publish-book-request
 
-  describe 'Permit rule registration' ->
-    specify 'registers a valid rule' ->
+    make-request = (action) ->
+        user: {}
+        action: action
+        subject: book
 
-    specify 'does not registers an invalid rule' ->
+    before ->
+      book                  := new Book 'a book'
+      read-book-request     := make-request 'read'
+      publish-book-request  := make-request 'publish'
+
+    specify 'will match request to read a book' ->
+      permit.matches(read-book-request).should.be.true
+
+    specify 'will NOT match request to publish a book' ->
+      permit.matches(publish-book-request).should.be.true
+
+  describe 'Rules application' ->
+    var guest-permit
+    before ->
+      guest-permit    := permit-for GuestPermit, 'books', ->
+      rules:
+        read: ->
+          @ucan 'read' 'Book'
+        write: ->
+          @ucan 'write' 'Book'
+
+    describe 'static rules application' ->
+      before ->
+        guest-permit.register-rules!
+
+      specify 'registers a read-book rule' ->
+        guest-permit.rule-repo.can-rules['read'].should.eql ['Book']
+
+      specify 'registers a write-book rule' ->
+        guest-permit.rule-repo.can-rules['write'].should.eql ['Book']
+
+    describe 'dynamic rules application' ->
+      var book, access-request
+
+      before ->
+          book := new Book 'a book'
+          access-request :=
+            user:
+              role: 'admin'
+            action: 'read'
+            subject: book
+
+          guest-permit.register-rules access-request
+
+      specify 'registers a read-book rule' ->
+        guest-permit.rule-repo.can-rules['read'].should.eql ['Book']
+
+      specify 'does NOT register a write-book rule' ->
+        # guest-permit.rule-repo.can-rules['write'].should.be.undefined
 
 
