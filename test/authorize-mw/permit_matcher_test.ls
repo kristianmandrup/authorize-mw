@@ -28,7 +28,7 @@ describe 'PermitMatcher' ->
     admin-permit := permit-for 'Admin',
       rules:
         admin: ->
-          can 'manage', 'all'
+          @ucan 'manage', 'all'
 
     userless-access := {ctx: {area: 'guest'}}
     user-access     := {user: user-kris}
@@ -47,14 +47,34 @@ describe 'PermitMatcher' ->
       permit-matcher.intersectOn(user-access, user-access).should.be.true
 
   describe 'include' ->
-    specify 'matches access-request on includes intersect' ->
+    describe 'includes user.name: kris' ->
+      before ->
+        permit-matcher.includes = {user: {name: 'kris'}}
 
-    specify 'does NOT match access-request since NO includes intersect' ->
+      specify 'matches access-request on includes intersect' ->
+        permit-matcher.include!.should.be.true
+
+    describe 'includes empty {}' ->
+      before ->
+        permit-matcher.includes = {}
+
+      specify 'does NOT match access-request since NO includes intersect' ->
+        permit-matcher.include!.should.be.false
 
   describe 'exclude' ->
-    specify 'matches access-request on excludes intersect' ->
+    describe 'includes user.name: kris' ->
+      before ->
+        permit-matcher.includes = {user: {name: 'kris'}}
+
+      specify 'matches access-request on excludes intersect' ->
+        permit-matcher.exclude!.should.be.true
+
+    describe 'includes empty {}' ->
+      before ->
+        permit-matcher.includes = {}
 
     specify 'does NOT match access-request since NO excludes intersect' ->
+        permit-matcher.exclude!.should.be.false
 
   describe 'custom-match' ->
     specify 'matches access-request using permit.match' ->
