@@ -27,20 +27,58 @@ module.exports = class RuleApplier
   ctx: ->
     @access-request.ctx
 
-  # execute all rules of a particular name
-  # not sure we should use the access-request here, just a wild idea!
-  apply-rules-for: (name) ->
-    named-rules = @rules[name]
+  # execute all rules of a particular name (optionally within specific context, such as area, action or role)
+  #
+  # context:
+  # rules:
+  #   action:
+  #     read: ->
+  #     ....
+  #   role:
+  #     admin: ->
+  #     guest: ->
+  #   area:
+  #     admin: ->
+  #     guest: ->
+  #     member: ->
+  #
+  apply-rules-for: (name, context) ->
+    rules = @rules
+    if _.is-type 'String', context
+      rules = @rules[context] if _.is-type 'Object' @rules[context]
+
+    named-rules = rules[name]
     if _.is-type 'Function', named-rules
       named-rules.call @, @access-request
     else
-      throw Error "rules key for #{name} should be a function that resolves one or more rules"
+      # just ignore it ;)
+      # throw Error "rules key for #{name} should be a function that resolves one or more rules"
 
+  # for more advances cases, also pass context 'action' as 2nd param
   apply-action-rules: ->
     @apply-rules-for @action
 
+  # typically used for role specific rules:
+  # rules:
+  #   admin: ->
+  #     @ucan 'manage', '*'
+  #
+  # apply-rules-for user.role
+  #
+  # but could also be used for user specific rules,
+  # such as on user name, email or whatever, even age (minor < 18y old!?)
+  #
   apply-user-rules: ->
 
+  # such as where on the site is the user?
+  # guest area, member area? admin area?
+  # which rules should apply?
+  # rules:
+  #   area:
+  #     admin: ->
+  #       @ucan 'manage', '*'
+  #
+  #
   apply-ctx-rules: ->
 
   apply-rules: ->
@@ -66,6 +104,10 @@ module.exports = class RuleApplier
     @rules.each recurse
 
   # so as not to be same name as can method used "from the outside, ie. via Ability"
+  # for the functions within rules object, they are executed with the rule applier as this (@) - ie. the context
+  # and thus have @ucan and @ucannot available within that context!
+  # for the @apply-action-rules, we could return a function, where the current action is also in the context,
+  # and is the default action for all @ucan and @ucannot calls!!
   ucan: (actions, subjects, ctx) ->
     console.log "can", actions, subjects
     @repo.register-rule 'can', actions, subjects, ctx
