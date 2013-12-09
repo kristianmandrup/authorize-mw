@@ -11,26 +11,17 @@ class AdminPermit extends Permit
   type: 'admin'
 
 describe 'permit-for' ->
-  var user-permit, guest-permit, admin-permit
-
   before ->
-    user-permit := permit-for 'User',
-      match: (access) ->
-        user = access.user
-        _.is-type user 'Object'
-
-    guest-permit := permit-for 'Guest',
-      match: (access) ->
-        user = access.user
-        _.is-type user 'Object'
-        user.role is 'guest'
-
-    admin-permit := permit-for AdminPermit, 'Admin',
-      rules:
-        admin: ->
-          can 'manage', 'all'
-
+    # 
   describe 'guest permit' ->
+    var guest-permit
+    before ->
+      guest-permit := permit-for 'Guest',
+        match: (access) ->
+          user = access.user
+          _.is-type user 'Object'
+          user.role is 'guest'
+      
     specify 'creates a permit' ->
       guest-permit.constructor.display-name.should.be.eql 'Permit'
 
@@ -44,6 +35,14 @@ describe 'permit-for' ->
       guest-permit.cannotRules.should.eql []
 
   describe 'admin permit' ->
+    var admin-permit
+    
+    before ->
+      admin-permit := permit-for AdminPermit, 'Admin',
+        rules:
+          admin: ->
+            @ucan 'manage', 'all'
+
     specify 'creates a permit' ->
       admin-permit.constructor.display-name.should.be.eql 'Permit'
 
