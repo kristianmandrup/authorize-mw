@@ -16,24 +16,40 @@ recurse = (key, val) ->
 # To apply a rule, means to execute the .can or .cannot statement in order to add one or more entries
 # to the corresponding can-rules or cannot-rules object in the rule-rep
 module.exports = class RuleApplier
-  (@repo, @rules) ->
+  (@repo, @rules, @access-request) ->
+
+  action: ->
+    @access-request.action
+
+  user: ->
+    @access-request.user
+
+  ctx: ->
+    @access-request.ctx
 
   # execute all rules of a particular name
   # not sure we should use the access-request here, just a wild idea!
-  apply-rules-for: (name, access-request) ->
+  apply-rules-for: (name) ->
     named-rules = @rules[name]
     if _.is-type 'Function', named-rules
-      named-rules.call @, access-request
+      named-rules.call @, @access-request
     else
       throw Error "rules key for #{name} should be a function that resolves one or more rules"
 
+  apply-action-rules: ->
+    @apply-rules-for @action
 
-  apply-action-rules-for: (access-request) ->
-    @apply-rules-for access-request.action, access-request
+  apply-user-rules: ->
 
-  # only rules for the default key
-  apply-default-rules: (access-request) ->
-    @apply-rules-for 'default', access-request
+  apply-ctx-rules: ->
+
+  apply-static-rules: ->
+    apply-rules-for 'default'
+
+  apply-dynamic-rules: (access-request) ->
+    @apply-action-rules
+    @apply-user-rules
+    @apply-ctx-rules
 
   # should iterate through rules object recursively and execute any function found
   # using sugar .each: http://sugarjs.com/api
