@@ -43,10 +43,19 @@ module.exports = class RuleApplier
 
   apply-ctx-rules: ->
 
-  apply-static-rules: ->
-    apply-rules-for 'default'
+  apply-rules: ->
+    switch typeof @rules
+    when 'Function'
+      @rules!
+    when 'Object'
+      if _.is-type 'Object', @access-request
+        @apply-access-rules!
+      else
+        @apply-rules-for 'default'
+    else
+      throw Error "rules must be a Function or an Object, was: #{@rules}"
 
-  apply-dynamic-rules: (access-request) ->
+  apply-access-rules: ->
     @apply-action-rules
     @apply-user-rules
     @apply-ctx-rules

@@ -29,6 +29,7 @@ module.exports = class Permit
 
   rule-applier-class: RuleApplier
   rule-applier: (access-request) ->
+    access-request = null unless _.is-type 'Object', access-request
     new @rule-applier-class @rule-repo, @rules, access-request
 
   rule-repo:    new RuleRepo
@@ -38,12 +39,9 @@ module.exports = class Permit
   matches: (access-request) ->
     @matcher(access-request).match!
 
-  apply-static-rules: ->
-    rule-applier!.apply-static-rules!
-
   # always called (can be overridden for custom behavior)
-  apply-dynamic-rules: (access-request) ->
-    rule-applier(access-request).apply-dynamic-rules!
+  apply-rules: (access-request) ->
+    @rule-applier(access-request).apply-rules!
 
   can-rules: ->
     @rule-repo.can-rules

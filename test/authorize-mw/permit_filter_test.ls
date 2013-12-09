@@ -46,7 +46,6 @@ describe 'permit-filter' ->
           user = access.user
           _.is-type user 'Object'
           user.role is 'admin'
-      
 
     specify 'return only permits that apply for an admin user' ->
       PermitFilter.filter(admin-user).should.eql [admin-permit]

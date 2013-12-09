@@ -141,7 +141,8 @@ describe 'Permit' ->
 
     describe 'static rules application' ->
       before ->
-        guest-permit.apply-static-rules!
+        # static application when no access-request passed
+        guest-permit.apply-rules!
 
       specify 'registers a read-book rule' ->
         guest-permit.can-rules['read'].should.eql ['Book']
@@ -160,7 +161,8 @@ describe 'Permit' ->
             action: 'read'
             subject: book
 
-          guest-permit.apply-dynamic-rules access-request
+          # dynamic application when access-request passed
+          guest-permit.apply-rules access-request
 
       specify 'registers a read-book rule' ->
         guest-permit.can-rules['read'].should.eql ['Book']

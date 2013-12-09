@@ -47,7 +47,7 @@ describe 'Ability' ->
         user = access.user
         _.is-type user 'Object'
       rules: ->
-        can ['read', 'edit'], 'book'
+        @ucan ['read', 'edit'], 'book'
 
     guest-permit  := permit-for 'Guest',
       match: (access) ->
@@ -55,7 +55,7 @@ describe 'Ability' ->
         _.is-type user 'Object'
         user.role is 'guest'
       rules: ->
-        can 'read', 'book'
+        @ucan 'read', 'book'
 
     admin-permit  := permit-for 'admin',
       match: (access) ->
@@ -63,13 +63,13 @@ describe 'Ability' ->
         _.is-type user 'Object'
         user.role is 'admin'
       rules: ->
-        can 'manage', '*'
+        @ucan 'manage', '*'
 
     auth-permit   := permit-for 'admin',
       match: (access) ->
         access.ctx.auth
       rules: ->
-        can 'manage', 'book'
+        @ucan 'manage', 'book'
 
   specify 'creates an Ability' ->
     ability.constructor.should.be.an.instanceOf Ability
