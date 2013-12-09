@@ -38,7 +38,7 @@ describe 'Allower', ->
           user = access.user
           _.is-type user 'Object'
         rules: ->
-          can 'view', 'book'
+          @ucan 'view', 'book'
 
       guest-permit = permit-for 'Guest',
         match: (access) ->
@@ -46,7 +46,7 @@ describe 'Allower', ->
           _.is-type user 'Object'
           user.role is 'guest'
         rules: ->
-          can 'read', 'book'
+          @ucan 'read', 'book'
 
       editor-permit = permit-for 'Editor',
         match: (access) ->
@@ -54,7 +54,7 @@ describe 'Allower', ->
           _.is-type user 'Object'
           user.role is 'editor'
         rules: ->
-          can ['read', 'write'], 'book'
+          @ucan ['read', 'write'], 'book'
 
     specify 'read a book access should be allowed' ->
       read-book-allower.allows!.should.be true
@@ -70,7 +70,7 @@ describe 'Allower', ->
           user = access.user
           _.is-type user 'Object'
         rules: ->
-          can 'view', 'book'
+          @ucan 'view', 'book'
 
       guest-permit = permit-for 'Guest',
         match: (access) ->
@@ -78,7 +78,7 @@ describe 'Allower', ->
           _.is-type user 'Object'
           user.role is 'guest'
         rules: ->
-          can 'read', 'book'
+          @ucan 'read', 'book'
 
       editor-permit = permit-for 'Editor',
         match: (access) ->
@@ -86,7 +86,7 @@ describe 'Allower', ->
           _.is-type user 'Object'
           user.role is 'editor'
         rules: ->
-          can ['read', 'write'], 'book'
+          @ucan ['read', 'write'], 'book'
 
     specify 'read a book access should NOT be disallowed' ->
       read-book-allower.disallows!.should.be false

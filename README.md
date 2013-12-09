@@ -179,6 +179,10 @@ class PermitMatcher
   match: (access) ->
 ```
 
+## Rule Repository
+
+Each permit also has a Rule Repository `rule-repo`, an instance of RuleRepo class. The rule-repo stores all the access rules that the permit allows or disallows for.
+
 ## Using permit-for
 
 A Permit class can be created via the `permit-for` factory method.

@@ -77,9 +77,19 @@ describe 'PermitMatcher' ->
         permit-matcher.exclude!.should.be.false
 
   describe 'custom-match' ->
+    var access-request, access-request-alt
+    var matching-permit-matcher, none-matching.permit-matcher
+    before ->
+      access-request := {}
+
+      matching-permit-matcher := new PermitMatcher access-request
+      none-matching.permit-matcher := new PermitMatcher access-request
+
     specify 'matches access-request using permit.match' ->
+      matching-permit-matcher.custom-match.should.be.true
 
     specify 'does NOT match access-request since permit.match does NOT match' ->
+      none-matching.permit-matcher.custom-match.should.be.false
 
   describe 'custom-match' ->
     specify 'matches access-request using permit.ex-match' ->

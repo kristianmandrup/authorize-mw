@@ -36,3 +36,27 @@ describe 'PermitAllower' ->
 
     specify 'does NOT find match for can publish/Book' ->
       permit-allower.test-access('can', publish-book-rule).should.be.true
+
+  describe 'allows' ->
+    before ->
+      # set up rule repo with can 'read', 'Book' rule!!!
+      rule-repo :=
+        'read': ['Book']
+
+    specify 'allows guest user to read a book' ->
+      #
+
+    specify 'does NOT allow guest user to write a book' ->
+      #
+
+  describe 'disallows' ->
+    before ->
+      # set up rule repo with can 'read', 'Book' rule!!!
+      rule-repo :=
+        'read': ['Book']
+
+    specify 'disallows guest user from writinga book' ->
+      #
+
+    specify 'does NOT disallow guest user from reading a book' ->
+      #
