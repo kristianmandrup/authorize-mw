@@ -3,6 +3,8 @@ require '../test_setup'
 _         = require 'prelude-ls'
 Permit    = require '../../permit'
 
+RuleApplier = require '../../rule_applier'
+
 class AdminPermit extends Permit
   includes: ->
     'user':
@@ -62,6 +64,10 @@ describe 'Permit' ->
     specify 'has an empty cannotRules list' ->
       permit.cannot-rules!.should.be.empty
 
+  describe 'rule-applier-class' ->
+    specify 'permit by default has rule-applier-class = RuleApplier' ->
+      guest-permit.rule-applier-class.should.eql RuleApplier
+
   describe 'matcher' ->
     var access-request
 
@@ -85,6 +91,10 @@ describe 'Permit' ->
   describe 'allower' ->
     specify 'has an allower' ->
       permit.allower.constructor.should.eql PermitAllower
+
+  describe 'permit-matcher-class' ->
+    specify 'permit by default has permit-matcher-class = PermitMatcher' ->
+      guest-permit.permit-matcher-class.should.eql RuleApplier
 
   describe 'matches' ->
     var book, read-book-request, publish-book-request
@@ -131,13 +141,13 @@ describe 'Permit' ->
 
     describe 'static rules application' ->
       before ->
-        guest-permit.register-rules!
+        guest-permit.apply-static-rules!
 
       specify 'registers a read-book rule' ->
-        guest-permit.rule-repo.can-rules['read'].should.eql ['Book']
+        guest-permit.can-rules['read'].should.eql ['Book']
 
       specify 'registers a write-book rule' ->
-        guest-permit.rule-repo.can-rules['write'].should.eql ['Book']
+        guest-permit.can-rules['write'].should.eql ['Book']
 
     describe 'dynamic rules application' ->
       var book, access-request
@@ -150,12 +160,12 @@ describe 'Permit' ->
             action: 'read'
             subject: book
 
-          guest-permit.register-rules access-request
+          guest-permit.apply-dynamic-rules access-request
 
       specify 'registers a read-book rule' ->
-        guest-permit.rule-repo.can-rules['read'].should.eql ['Book']
+        guest-permit.can-rules['read'].should.eql ['Book']
 
       specify 'does NOT register a write-book rule' ->
-        # guest-permit.rule-repo.can-rules['write'].should.be.undefined
+        guest-permit.can-rules['write'].should.be.undefined
 
 

@@ -23,15 +23,11 @@ module.exports = class Permit
   use: (obj) ->
     lo.extend @, obj
 
-  permit-matcher-class: ->
-    PermitMatcher
-
+  permit-matcher-class: PermitMatcher
   matcher: (access-request) ->
-    new permit-matcher-class @, access-request
+    new @permit-matcher-class @, access-request
 
-  rule-applier-class: ->
-    RuleApplier
-
+  rule-applier-class: RuleApplier
   rule-applier: (access-request) ->
     new @rule-applier-class @rule-repo, @rules, access-request
 
@@ -46,7 +42,7 @@ module.exports = class Permit
     rule-applier!.apply-static-rules!
 
   # always called (can be overridden for custom behavior)
-  apply-rules: (access-request) ->
+  apply-dynamic-rules: (access-request) ->
     rule-applier(access-request).apply-dynamic-rules!
 
   can-rules: ->
