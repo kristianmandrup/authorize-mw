@@ -18,6 +18,8 @@ module.exports = class Permit
     permit = @permits[name] || throw Error("No permit '#{name}' is registered")
 
   (@name = 'unknown', @description = '') ->
+    # apply static rules
+    apply-rules!
 
   # used by permit-for to extend specific permit from base class (prototype)
   use: (obj) ->

@@ -6,22 +6,23 @@ module.exports = class Allower
   # example
   # { user: user, action: 'read', subject: book, ctx: {} }
 
-  # TODO: perhaps rename to access-rule
-  (@access) ->
+  (@access-request) ->
     # filter to only use permits that make sense for current access request
-    @permits = PermitFilter.filter(@access)
+    @permits = PermitFilter.filter(@access-request)
 
   # go through all permits that apply
   # if any of them allows, then yes
-  # TODO: use permit filter
   allows: ->
-    for permit in @permits
-      return true if permit.allows access
-    false
+    execute-for 'allows'
 
   # go through all permits that apply
   # if any of them disallows, then yes
   disallows: ->
+    execute-for 'disallows'
+
+  pemits-allow: (type) ->
     for permit in @permits
-      return true if permit.disallows access
+      # apply dynamic rules
+      permit.apply-rules! @access-request
+      return true if permit[type] @access-request
     false
