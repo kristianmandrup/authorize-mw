@@ -6,15 +6,13 @@ User      = require '../fixtures/user'
 Book      = require '../fixtures/book'
 
 describe 'PermitAllower' ->
-  var access-request, read-book-rule, publish-book-rule, rule-repo, permit-allower
+  var rule-repo, permit-allower
   var book
 
   before ->
+    # setup for all tests
     rule-repo := new RuleRepo
     book      := new Book 'Far and away'
-
-    read-book-rule := {action: 'read', subject: 'Book'}
-    publish-book-rule := {action: 'publish', subject: 'Book'}
 
     permit-allower := new PermitAllower(rule-repo)
 
@@ -26,10 +24,11 @@ describe 'PermitAllower' ->
       permit-allower.rule-repo.constructor.should.be.eql RuleRepo
 
   describe 'test-access' ->
+    var read-book-rule, publish-book-rule
+    
     before ->
-      # set up rule repo with can 'read', 'Book' rule!!!
-      rule-repo :=
-        'read': ['Book']
+      read-book-rule := {action: 'read', subject: 'Book'}
+      publish-book-rule := {action: 'publish', subject: 'Book'}
 
     specify 'finds match for can read/Book' ->
       permit-allower.test-access('can', read-book-rule).should.be.true
@@ -39,24 +38,32 @@ describe 'PermitAllower' ->
 
   describe 'allows' ->
     before ->
-      # set up rule repo with can 'read', 'Book' rule!!!
-      rule-repo :=
-        'read': ['Book']
+      read-book-request :=
+        user: {}
+        action: 'read'
 
+      write-book-request :=
+        user: {}
+        action: 'read'
+        
     specify 'allows guest user to read a book' ->
-      #
+      permit-allower.allows(read-book-request).should.be.true
 
     specify 'does NOT allow guest user to write a book' ->
-      #
+      permit-allower.allows(write-book-request).should.be.false
 
   describe 'disallows' ->
     before ->
-      # set up rule repo with can 'read', 'Book' rule!!!
-      rule-repo :=
-        'read': ['Book']
+      read-book-request :=
+        user: {}
+        action: 'read'
 
-    specify 'disallows guest user from writinga book' ->
-      #
+      write-book-request :=
+        user: {}
+        action: 'read'
+
+    specify 'disallows guest user from writing a book' ->
+      permit-allower.disallows(write-book-request).should.be.true
 
     specify 'does NOT disallow guest user from reading a book' ->
-      #
+      permit-allower.allows(read-book-request).should.be.false
