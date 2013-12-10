@@ -27,6 +27,12 @@ module.exports = class RuleApplier
   ctx: ->
     @access-request.ctx
 
+  can-rules: ->
+    @repo.can-rules
+
+  cannot-rules: ->
+    @repo.cannot-rules
+
   # execute all rules of a particular name (optionally within specific context, such as area, action or role)
   #
   # context:

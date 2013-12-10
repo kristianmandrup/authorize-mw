@@ -8,24 +8,8 @@ User      = require '../fixtures/user'
 Book      = require '../fixtures/book'
 
 describe 'Permit init' ->
-  var access-request, rules, rule-repo, rule-applier
+  var access-request, rule-repo, rules, rule-applier
   var book
-
-  # TODO: Fix test!
-
-  rule-repo = new RuleRepo
-
-  can = (actions, subjects, ctx) ->
-    rule-repo.register-rule 'can', actions, subjects
-
-  cannot = (actions, subjects, ctx) ->
-    rule-repo.register-rule 'cannot', actions, subjects
-
-  can-rules = ->
-    rule-repo.can-rules
-
-  cannot-rules = ->
-    rule-repo.cannot-rules
 
   before ->
     book          := new Book 'Far and away'
@@ -41,44 +25,47 @@ describe 'Permit init' ->
         @ucan     'read',   'Book'
         @ucannot  'write',  'Book'
 
-    rule-applier  := new RuleApplier rule-repo, rules
-
     access-request :=
       action: 'read'
       subject: book
 
   describe 'apply-rules-for' ->
     before ->
+      rule-repo     := new RuleRepo
+      rule-applier  := new RuleApplier rule-repo, rules, access-request
+
       rule-applier.apply-rules-for 'edit'
 
     specify 'adds all can rules' ->
-      can-rules!.should.be.eql {
+      rule-repo.can-rules.should.be.eql {
         edit: ['Book']
       }
 
     specify 'adds all cannot rules' ->
-      cannot-rules!.should.be.eql {
+      rule-repo.cannot-rules.should.be.eql {
         write: ['Book']
       }
 
-  xdescribe 'apply-action-rules-for' ->
+  describe 'apply-action-rules-for read' ->
     before ->
       # adds only the 'read' rules (see access-request.action)
-      rule-applier.apply-action-rules-for access-request
+      rule-repo     := new RuleRepo
+      rule-applier  := new RuleApplier rule-repo, rules, access-request
+      rule-applier.apply-action-rules!
 
     specify 'adds all can rules' ->
-      can-rules.should.be.eql {
-        read: ['Book', 'Paper', 'Project']
+      rule-repo.can-rules.should.be.eql {
+        edit: ['Book']
       }
 
     specify 'adds all cannot rules' ->
-      cannot-rules.should.be.eql {
-        delete: ['Paper', 'Project']
+      rule-repo.cannot-rules.should.be.eql {
+        write: ['Book']
       }
 
   xdescribe 'apply-default-rules' ->
     before ->
-      rule-applier.apply-default-rules
+      rule-applier.apply-default-rules!
 
     specify 'adds all can rules' ->
       can-rules.should.be.eql {
@@ -92,7 +79,7 @@ describe 'Permit init' ->
 
   xdescribe 'apply-all' ->
     before ->
-      rule-applier.apply-all
+      rule-applier.apply-all!
 
     specify 'adds all can rules' ->
       can-rules.should.be.eql {

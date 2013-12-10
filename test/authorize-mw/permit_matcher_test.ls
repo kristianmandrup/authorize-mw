@@ -78,7 +78,7 @@ describe 'PermitMatcher' ->
 
   describe 'custom-match' ->
     var access-request, access-request-alt
-    var matching-permit-matcher, none-matching.permit-matcher
+
     before ->
       access-request := {}
 
@@ -106,7 +106,6 @@ describe 'PermitMatcher' ->
 
   xdescribe 'custom-ex-match' ->
     var access-request, access-request-alt
-    var matching-permit-matcher, none-matching.permit-matcher
     before ->
       access-request := {}
 
@@ -119,7 +118,7 @@ describe 'PermitMatcher' ->
           _.is-type 'Object', user
 
     specify 'matches access-request using permit.ex-match' ->
-      matching-permit-matcher.custom-ex-match.should.be.true
+      matching.permit-matcher.custom-ex-match.should.be.true
 
     specify 'does NOT match access-request since permit.match does NOT match' ->
       none-matching.permit-matcher.custom-ex-match.should.be.false
