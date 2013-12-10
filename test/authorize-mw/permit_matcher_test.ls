@@ -7,17 +7,17 @@ permit-for    = require '../../permit_for'
 PermitMatcher = require '../../permit_matcher'
 
 describe 'PermitMatcher' ->
-  var user-kris, user-permit, guest-permit, admin-permit
+  var user-kris
+  var user-permit, guest-permit, admin-permit
+  
+  matching = {}
+  none-matching = {}
+  
   var permit-matcher
   var userless-access, user-access
 
   before ->
     user-kris   := new User name: 'kris'
-
-    user-permit := permit-for 'User',
-      match: (access) ->
-        user = access.user
-        _.is-type 'Object', user
 
     guest-permit := permit-for 'Guest',
       match: (access) ->
@@ -62,16 +62,16 @@ describe 'PermitMatcher' ->
         permit-matcher.include!.should.be.false
 
   describe 'exclude' ->
-    describe 'includes user.name: kris' ->
+    describe 'excludes user.name: kris' ->
       before ->
-        permit-matcher.includes = {user: {name: 'kris'}}
+        permit-matcher.excludes = {user: {name: 'kris'}}
 
       specify 'matches access-request on excludes intersect' ->
         permit-matcher.exclude!.should.be.true
 
-    describe 'includes empty {}' ->
+    describe 'excludes empty {}' ->
       before ->
-        permit-matcher.includes = {}
+        permit-matcher.excludes = {}
 
     specify 'does NOT match access-request since NO excludes intersect' ->
         permit-matcher.exclude!.should.be.false
@@ -82,8 +82,13 @@ describe 'PermitMatcher' ->
     before ->
       access-request := {}
 
-      matching-permit-matcher := new PermitMatcher access-request
+      matching.permit-matcher := new PermitMatcher access-request
       none-matching.permit-matcher := new PermitMatcher access-request
+      
+      user-permit := permit-for 'User',
+        match: (access) ->
+          user = access.user
+          _.is-type 'Object', user
 
     specify 'matches access-request using permit.match' ->
       matching-permit-matcher.custom-match.should.be.true
@@ -91,10 +96,42 @@ describe 'PermitMatcher' ->
     specify 'does NOT match access-request since permit.match does NOT match' ->
       none-matching.permit-matcher.custom-match.should.be.false
 
-  describe 'custom-match' ->
+    describe 'invalid match method' ->
+      before ->
+        user-permit := permit-for 'User',
+          match: void
+
+      specify 'should throw error' ->
+        ( -> none-matching.permit-matcher.custom-match ).should.throw
+
+  xdescribe 'custom-ex-match' ->
+    var access-request, access-request-alt
+    var matching-permit-matcher, none-matching.permit-matcher
+    before ->
+      access-request := {}
+
+      matching.permit-matcher := new PermitMatcher access-request
+      none-matching.permit-matcher := new PermitMatcher access-request
+
+      user-permit := permit-for 'User',
+        ex-match: (access) ->
+          user = access.user
+          _.is-type 'Object', user
+
     specify 'matches access-request using permit.ex-match' ->
+      matching-permit-matcher.custom-ex-match.should.be.true
 
     specify 'does NOT match access-request since permit.match does NOT match' ->
+      none-matching.permit-matcher.custom-ex-match.should.be.false
+
+    describe 'invalid ex-match method' ->
+      before ->
+        user-permit := permit-for 'User',
+          ex-match: void
+          
+      specify 'should throw error' ->
+        ( -> none-matching.permit-matcher.custom-ex-match ).should.throw
+
 
   describe 'match access' ->
     specify 'does not match access without user' ->
