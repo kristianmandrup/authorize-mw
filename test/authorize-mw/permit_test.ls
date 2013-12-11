@@ -128,11 +128,16 @@ describe 'Permit' ->
       read-book-request     := make-request 'read'
       publish-book-request  := make-request 'publish'
 
+      permit.match = (access) ->
+        action = if access? then access.action else {}
+        action is 'read'
+
+
     specify 'will match request to read a book' ->
       permit.matches(read-book-request).should.be.true
 
-    xspecify 'will NOT match request to publish a book' ->
-      permit.matches(publish-book-request).should.be.true
+    specify 'will NOT match request to publish a book' ->
+      permit.matches(publish-book-request).should.be.false
 
   describe 'can rules' ->
     specify 'are empty' ->
