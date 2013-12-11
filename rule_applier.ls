@@ -13,10 +13,18 @@ recurse = (key, val, ctx) ->
   when 'Object'
     _.each(val, recurse, ctx)
 
+valid_rules = (rules)->
+  _.is-type('Object', rules) or _.is-type('Function', rules)
+
 # To apply a rule, means to execute the .can or .cannot statement in order to add one or more entries
 # to the corresponding can-rules or cannot-rules object in the rule-rep
 module.exports = class RuleApplier
   (@repo, @rules, @access-request) ->
+    unless _.is-type('Object', @repo)
+      throw Error "RuleApplier must be passed a RuleRepo, was: #{@repo}"
+
+    unless valid_rules @rules
+      throw Error "RuleApplier must be passed the rules to be applied, was: #{@rules}"
 
   action: ->
     @access-request.action
@@ -87,15 +95,18 @@ module.exports = class RuleApplier
   #
   apply-ctx-rules: ->
 
+  apply-default-rules: ->
+    if _.is-type 'Object', @access-request
+      @apply-access-rules!
+    else
+      @apply-rules-for 'default'
+
   apply-rules: ->
     switch typeof @rules
     when 'function'
       @rules!
     when 'object'
-      if _.is-type 'Object', @access-request
-        @apply-access-rules!
-      else
-        @apply-rules-for 'default'
+      @apply-default-rules!
     else
       throw Error "rules must be a Function or an Object, was: #{@rules}"
 

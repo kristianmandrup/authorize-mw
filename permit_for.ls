@@ -18,7 +18,8 @@ module.exports = (base-clazz, name, base-obj) ->
     base-obj = base-obj!
 
   # extend permit with custom functionality
-  permit = permit.use base-obj
+  if _.is-type 'Object', base-obj
+    permit = permit.use base-obj
   # register permit in Permit.permit
   Permit.permits.push permit
-  permit
+  permit.init!

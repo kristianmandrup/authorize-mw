@@ -9,6 +9,9 @@ PermitAllower = require './permit_allower'
 RuleApplier   = require './rule_applier'
 RuleRepo      = require './rule_repo'
 
+valid_rules = (rules)->
+  _.is-type('Object', rules) or _.is-type('Function', rules)
+
 module.exports = class Permit
   # class methods/variables
   @permits = []
@@ -18,11 +21,19 @@ module.exports = class Permit
     permit = @permits[name] || throw Error("No permit '#{name}' is registered")
 
   (@name = 'unknown', @description = '') ->
-    # apply static rules
-    apply-rules!
+
+  init: ->
+    console.log "init", @rules
+    if valid_rules @rules
+      # apply static rules
+      @apply-rules!
+    else
+      throw Error "No rules defined for permit: #{name}"
+    @
 
   # used by permit-for to extend specific permit from base class (prototype)
   use: (obj) ->
+    console.log "extend", @, obj
     lo.extend @, obj
 
   permit-matcher-class: PermitMatcher

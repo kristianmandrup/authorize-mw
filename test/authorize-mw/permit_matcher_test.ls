@@ -25,6 +25,10 @@ describe 'PermitMatcher' ->
         _.is-type 'Object', user
         user.role is 'guest'
 
+      rules: ->
+        @ucan 'read', 'Book'
+
+
     admin-permit := permit-for 'Admin',
       rules:
         admin: ->
@@ -90,6 +94,9 @@ describe 'PermitMatcher' ->
           user = access.user
           _.is-type 'Object', user
 
+        rules: ->
+          @ucan 'read', 'Book'
+
     specify 'matches access-request using permit.match' ->
       matching-permit-matcher.custom-match.should.be.true
 
@@ -116,6 +123,9 @@ describe 'PermitMatcher' ->
         ex-match: (access) ->
           user = access.user
           _.is-type 'Object', user
+
+        rules: ->
+          @ucan 'read', 'Book'
 
     specify 'matches access-request using permit.ex-match' ->
       matching.permit-matcher.custom-ex-match.should.be.true

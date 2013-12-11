@@ -3,7 +3,8 @@ require '../test_setup'
 _         = require 'prelude-ls'
 Permit    = require '../../permit'
 
-RuleApplier = require '../../rule_applier'
+RuleApplier     = require '../../rule_applier'
+PermitMatcher   = require '../../permit_matcher'
 
 class AdminPermit extends Permit
   includes: ->
@@ -94,7 +95,7 @@ describe 'Permit' ->
 
   describe 'permit-matcher-class' ->
     specify 'permit by default has permit-matcher-class = PermitMatcher' ->
-      guest-permit.permit-matcher-class.should.eql RuleApplier
+      guest-permit.permit-matcher-class.should.eql PermitMatcher
 
   describe 'matches' ->
     var book, read-book-request, publish-book-request
