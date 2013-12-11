@@ -16,6 +16,9 @@ module.exports = class Permit
   # class methods/variables
   @permits = []
 
+  @clear_permits = ->
+    @@permits = []
+
   # get a named permit
   @get = (name) ->
     @permits[name] || throw Error("No permit '#{name}' is registered")

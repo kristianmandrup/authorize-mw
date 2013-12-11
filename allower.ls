@@ -1,5 +1,5 @@
-_ = require 'lodash'
-Permit = require './permit'
+Permit        = require './permit'
+PermitFilter  = require './permit_filter'
 
 module.exports = class Allower
   # access rule
@@ -13,16 +13,16 @@ module.exports = class Allower
   # go through all permits that apply
   # if any of them allows, then yes
   allows: ->
-    execute-for 'allows'
+    @test 'allows'
 
   # go through all permits that apply
   # if any of them disallows, then yes
   disallows: ->
-    execute-for 'disallows'
+    @test 'disallows'
 
-  pemits-allow: (type) ->
+  test: (allow-type) ->
     for permit in @permits
       # apply dynamic rules
       permit.apply-rules! @access-request
-      return true if permit[type] @access-request
+      return true if permit[allow-type] @access-request
     false
