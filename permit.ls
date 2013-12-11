@@ -39,6 +39,8 @@ module.exports = class Permit
       lo.extend @, obj
     else throw Error "Can only extend permit with an Object, was: #{typeof obj}"
 
+  rules: ->
+
   permit-matcher-class: PermitMatcher
   matcher: (access-request) ->
     new @permit-matcher-class @, access-request
