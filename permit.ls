@@ -16,7 +16,7 @@ module.exports = class Permit
   # class methods/variables
   @permits = []
 
-  @clear_permits = ->
+  @clear-permits = ->
     @@permits = []
 
   # get a named permit
@@ -53,8 +53,16 @@ module.exports = class Permit
     access-request = null unless _.is-type 'Object', access-request
     new @rule-applier-class @rule-repo, @rules, access-request
 
-  rule-repo:    new RuleRepo
-  allower:      new PermitAllower @rule-repo
+  rule-repo: new RuleRepo
+
+  allower: ->
+    new PermitAllower @rule-repo
+
+  allows: (access-request) ->
+    @allower!.allows access-request
+
+  disallows: (access-request) ->
+    @allower!.disallows access-request
 
   clear: ->
     @rule-repo.clear!

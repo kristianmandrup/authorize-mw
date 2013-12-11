@@ -1,5 +1,9 @@
+_ = require 'prelude-ls'
+
 module.exports = class PermitAllower
   (@rule-repo) ->
+    unless _.is-type 'Object', @rule-repo
+      throw Error "PermitAllower must take a RuleRepo in constructor, was: #{@rule-repo}"
 
   test-access: (act, access-request) ->
     # try to find matching action/subject combi for canRule in rule-repo

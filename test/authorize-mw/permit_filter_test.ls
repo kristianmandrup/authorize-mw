@@ -32,7 +32,7 @@ describe 'permit-filter' ->
       guest-user  := new User role: 'guest'
       access-request := {user: guest-user}
 
-      Permit.clear_permits!
+      Permit.clear-permits!
 
       guest-permit := permit-for 'Guest',
         match: (access) ->
@@ -53,7 +53,7 @@ describe 'permit-filter' ->
       admin-user  := new User role: 'admin'
       access-request := {user: admin-user}
 
-      Permit.clear_permits!
+      Permit.clear-permits!
 
       guest-permit := permit-for 'Guest',
         match: (access) ->

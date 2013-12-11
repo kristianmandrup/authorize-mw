@@ -13,6 +13,8 @@ class PermitFilter
     unless _.is-type 'Array', Permit.permits
       throw Error "Permit.permits which contain all registered permits, must be an Array, was: #{typeof Permit.permits}"
 
+    console.log access-request, Permit.permits
+
     _.filter matching, Permit.permits
 
 module.exports = PermitFilter

@@ -109,7 +109,7 @@ describe 'Permit' ->
 
   describe 'allower' ->
     specify 'has an allower' ->
-      permit.allower.constructor.should.eql PermitAllower
+      permit.allower!.constructor.should.eql PermitAllower
 
   describe 'permit-matcher-class' ->
     specify 'permit by default has permit-matcher-class = PermitMatcher' ->
