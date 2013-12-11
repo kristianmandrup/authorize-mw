@@ -6,12 +6,12 @@
 _ = require 'prelude-ls'
 require 'sugar'
 
-recurse = (key, val) ->
+recurse = (key, val, ctx) ->
   switch typeof! val
   when 'Function'
-    val!
+    val.call ctx
   when 'Object'
-    _.each(val, recurse)
+    _.each(val, recurse, ctx)
 
 # To apply a rule, means to execute the .can or .cannot statement in order to add one or more entries
 # to the corresponding can-rules or cannot-rules object in the rule-rep
@@ -51,7 +51,7 @@ module.exports = class RuleApplier
   apply-rules-for: (name, context) ->
     rules = @rules
     if _.is-type 'String', context
-      rules = @rules[context] if _.is-type 'Object' @rules[context]
+      rules = rules[context] if _.is-type 'Object' rules[context]
 
     named-rules = rules[name]
     if _.is-type 'Function', named-rules
@@ -62,7 +62,7 @@ module.exports = class RuleApplier
 
   # for more advances cases, also pass context 'action' as 2nd param
   apply-action-rules: ->
-    @apply-rules-for @action
+    @apply-rules-for @action!
 
   # typically used for role specific rules:
   # rules:
@@ -89,9 +89,9 @@ module.exports = class RuleApplier
 
   apply-rules: ->
     switch typeof @rules
-    when 'Function'
+    when 'function'
       @rules!
-    when 'Object'
+    when 'object'
       if _.is-type 'Object', @access-request
         @apply-access-rules!
       else
@@ -100,14 +100,21 @@ module.exports = class RuleApplier
       throw Error "rules must be a Function or an Object, was: #{@rules}"
 
   apply-access-rules: ->
-    @apply-action-rules
-    @apply-user-rules
-    @apply-ctx-rules
+    @apply-action-rules!
+    @apply-user-rules!
+    @apply-ctx-rules!
 
   # should iterate through rules object recursively and execute any function found
   # using sugar .each: http://sugarjs.com/api
   apply-all-rules: ->
-    @rules.each recurse
+    switch typeof @rules
+    when 'object'
+      rules = @rules
+      ctx = @
+      _.keys(rules).each (key) ->
+        recurse key, rules[key], ctx
+    else
+      throw Error "rules must be an Object was: #{typeof @rules}"
 
   # so as not to be same name as can method used "from the outside, ie. via Ability"
   # for the functions within rules object, they are executed with the rule applier as this (@) - ie. the context
@@ -115,11 +122,9 @@ module.exports = class RuleApplier
   # for the @apply-action-rules, we could return a function, where the current action is also in the context,
   # and is the default action for all @ucan and @ucannot calls!!
   ucan: (actions, subjects, ctx) ->
-    console.log "can", actions, subjects
     @repo.register-rule 'can', actions, subjects, ctx
 
   ucannot: (actions, subjects, ctx) ->
-    console.log "cannot", actions, subjects
     @repo.register-rule 'cannot', actions, subjects, ctx
 
 
