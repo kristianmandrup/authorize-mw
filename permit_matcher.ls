@@ -39,11 +39,15 @@ module.exports = class PermitMatcher
     false
 
   intersect-on: (partial) ->
+    console.log "partial", partial
     return false unless partial?
 
     if _.is-type 'Function' partial
       partial = partial!
-    @intersect.on partial, @access-request
+    console.log "intersect", @intersect
+    res = @intersect.on partial, @access-request
+    console.log "res", res
+    res
 
   validate: ->
     # use object intersection test if permit has includes or excludes

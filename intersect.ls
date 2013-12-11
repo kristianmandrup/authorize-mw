@@ -1,7 +1,5 @@
 _ = require 'prelude-ls'
 
-# TODO: Needs Testing!!!
-# Not yet completely working - needs match on all keys (complete intersection, not just one/first match
 module.exports = ->
   countProps = (obj) ->
     count = 0
@@ -40,8 +38,12 @@ module.exports = ->
       res[key] = true if equals
 
     for key in _.keys partialObj
-      return false unless res[key]
+      unless res[key]
+        # console.log "bad intersect for: #{key}"
+        return false
+    # console.log "good intersect!"
     true
 
   on: (partial, obj) ->
+    # console.log "on", partial, obj
     recursivePartialEqual partial, obj
