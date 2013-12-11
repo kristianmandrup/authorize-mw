@@ -39,11 +39,8 @@ module.exports = ->
 
     for key in _.keys partialObj
       unless res[key]
-        # console.log "bad intersect for: #{key}"
         return false
-    # console.log "good intersect!"
     true
 
   on: (partial, obj) ->
-    # console.log "on", partial, obj
     recursivePartialEqual partial, obj
