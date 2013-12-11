@@ -48,5 +48,5 @@ module.exports = class PermitMatcher
   validate: ->
     # use object intersection test if permit has includes or excludes
     throw Error "PermitMatcher missing permit" unless @permit
-    unless @access-request? and not _.is-type 'Unknown' @access-request
-      throw Error "Access is undefined"
+    if @access-request? and _.is-type 'Unknown' @access-request
+      throw Error "access-request is undefined"

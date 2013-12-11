@@ -21,18 +21,19 @@ describe 'permit-for' ->
           user = access.user
           _.is-type user 'Object'
           user.role is 'guest'
-      
-    specify 'creates a permit' ->
-      guest-permit.constructor.display-name.should.be.eql 'Permit'
+        rules: ->
+
+    specify 'creates a permit made from Permit' ->
+      guest-permit.constructor.should.eql Permit
 
     specify 'permit has the name Guest' ->
       guest-permit.name.should.eql 'Guest'
 
     specify 'has empty canRules' ->
-      guest-permit.canRules.should.eql []
+      guest-permit.can-rules!.should.eql {}
 
     specify 'has empty cannotRules' ->
-      guest-permit.cannotRules.should.eql []
+      guest-permit.cannot-rules!.should.eql {}
 
   describe 'admin permit' ->
     var admin-permit
@@ -44,7 +45,7 @@ describe 'permit-for' ->
             @ucan 'manage', 'all'
 
     specify 'creates a permit' ->
-      admin-permit.constructor.display-name.should.be.eql 'Permit'
+      admin-permit.constructor.should.eql AdminPermit
 
     specify 'has the name Admin' ->
       admin-permit.name.should.eql 'Admin'

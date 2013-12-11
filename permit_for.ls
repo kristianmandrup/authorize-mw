@@ -8,9 +8,9 @@ Permit = require './permit'
 module.exports = (base-clazz, name, base-obj) ->
   # tweak args if no base class as first arg
   if _.is-type 'String', base-clazz
-    base-clazz = Permit
-    name = base-clazz
     base-obj = name
+    name = base-clazz
+    base-clazz = Permit
 
   permit = new base-clazz name
 

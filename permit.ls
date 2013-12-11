@@ -18,23 +18,26 @@ module.exports = class Permit
 
   # get a named permit
   @get = (name) ->
-    permit = @permits[name] || throw Error("No permit '#{name}' is registered")
+    @permits[name] || throw Error("No permit '#{name}' is registered")
 
   (@name = 'unknown', @description = '') ->
+    unless _.is-type 'String', @name
+      throw Error "Name of permit must be a String, was: #{@name}"
 
   init: ->
-    console.log "init", @rules
     if valid_rules @rules
       # apply static rules
       @apply-rules!
     else
-      throw Error "No rules defined for permit: #{name}"
+      throw Error "No rules defined for permit: #{@name}"
     @
 
   # used by permit-for to extend specific permit from base class (prototype)
   use: (obj) ->
-    console.log "extend", @, obj
-    lo.extend @, obj
+    obj = obj! if _.is-type 'Function', obj
+    if _.is-type 'Object', obj
+      lo.extend @, obj
+    else throw Error "Can only extend permit with an Object, was: #{typeof obj}"
 
   permit-matcher-class: PermitMatcher
   matcher: (access-request) ->
@@ -47,6 +50,9 @@ module.exports = class Permit
 
   rule-repo:    new RuleRepo
   allower:      new PermitAllower @rule-repo
+
+  clear: ->
+    @rule-repo.clear!
 
   # See if this permit should apply (be used) for the given access request
   matches: (access-request) ->

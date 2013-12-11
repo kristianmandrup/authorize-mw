@@ -19,9 +19,16 @@ describe 'PermitMatcher' ->
   before ->
     user-kris   := new User name: 'kris'
 
+    user-permit := permit-for 'User',
+      match: (access) ->
+        user = if access? then access.user else {}
+        _.is-type 'Object', user
+
+      rules: ->
+
     guest-permit := permit-for 'Guest',
       match: (access) ->
-        user = access.user
+        user = if access? then access.user else {}
         _.is-type 'Object', user
         user.role is 'guest'
 
@@ -50,7 +57,7 @@ describe 'PermitMatcher' ->
     specify 'intersects when same object' ->
       permit-matcher.intersectOn(user-access, user-access).should.be.true
 
-  describe 'include' ->
+  xdescribe 'include' ->
     describe 'includes user.name: kris' ->
       before ->
         permit-matcher.includes = {user: {name: 'kris'}}
@@ -65,7 +72,7 @@ describe 'PermitMatcher' ->
       specify 'does NOT match access-request since NO includes intersect' ->
         permit-matcher.include!.should.be.false
 
-  describe 'exclude' ->
+  xdescribe 'exclude' ->
     describe 'excludes user.name: kris' ->
       before ->
         permit-matcher.excludes = {user: {name: 'kris'}}
@@ -80,7 +87,7 @@ describe 'PermitMatcher' ->
     specify 'does NOT match access-request since NO excludes intersect' ->
         permit-matcher.exclude!.should.be.false
 
-  describe 'custom-match' ->
+  xdescribe 'custom-match' ->
     var access-request, access-request-alt
 
     before ->
@@ -107,6 +114,7 @@ describe 'PermitMatcher' ->
       before ->
         user-permit := permit-for 'User',
           match: void
+          rules: ->
 
       specify 'should throw error' ->
         ( -> none-matching.permit-matcher.custom-match ).should.throw
@@ -142,7 +150,7 @@ describe 'PermitMatcher' ->
         ( -> none-matching.permit-matcher.custom-ex-match ).should.throw
 
 
-  describe 'match access' ->
+  xdescribe 'match access' ->
     specify 'does not match access without user' ->
       permit-matcher.match(userless-access).should.be.false
 

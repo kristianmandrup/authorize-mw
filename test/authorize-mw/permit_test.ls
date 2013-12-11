@@ -3,8 +3,12 @@ require '../test_setup'
 _         = require 'prelude-ls'
 Permit    = require '../../permit'
 
+RuleRepo        = require '../../rule_repo'
 RuleApplier     = require '../../rule_applier'
 PermitMatcher   = require '../../permit_matcher'
+PermitAllower   = require '../../permit_allower'
+permit-for      = require '../../permit_for'
+Book            = require '../fixtures/book'
 
 class AdminPermit extends Permit
   includes: ->
@@ -16,27 +20,28 @@ class AdminPermit extends Permit
     'context': 'dashboard'
 
 class GuestPermit extends Permit
-  constructor: ->
-    super
+  (name, desc) ->
+    super ...
 
   match: (access) ->
     true
 
 
 describe 'Permit' ->
-  var access, guest-permit, admin-permit
+  var access, permit, guest-permit, admin-permit
 
   before ->
+    permit          := new Permit
     guest-permit    := new GuestPermit
     admin-permit    := new AdminPermit
 
 
-  describe 'init' ->
-    specify 'creates a permit with the name unknown' ->
-      permit.name.should.be('unknown')
+  describe 'init creates a permit ' ->
+    specify 'with the name unknown' ->
+      permit.name.should.eql 'unknown'
 
-    specify 'creates a permit with an Intersect' ->
-      permit.intersect.should.be.instanceOf(Object).and.have.property('on')
+    specify 'and no description' ->
+      permit.description.should.eql ''
 
   describe 'use' ->
     var permit
@@ -82,8 +87,21 @@ describe 'Permit' ->
       permit.matcher(access-request).constructor.should.eql PermitMatcher
 
   describe 'rule-applier' ->
+    var access-request
+
+    before ->
+      access-request := {}
+      permit.rules = ->
+
     specify 'has a rule-applier' ->
-      permit.rule-applier.constructor.should.eql RuleApplier
+      permit.rule-applier!.constructor.should.eql RuleApplier
+
+    describe 'constructed with access request' ->
+      specify 'has a rule-applier ' ->
+        permit.rule-applier(access-request).constructor.should.eql RuleApplier
+
+      specify 'and rule-applier has access request' ->
+        permit.rule-applier(access-request).access-request.should.eql access-request
 
   describe 'rule-repo' ->
     specify 'has a rule-repo' ->
@@ -113,43 +131,41 @@ describe 'Permit' ->
     specify 'will match request to read a book' ->
       permit.matches(read-book-request).should.be.true
 
-    specify 'will NOT match request to publish a book' ->
+    xspecify 'will NOT match request to publish a book' ->
       permit.matches(publish-book-request).should.be.true
 
   describe 'can rules' ->
     specify 'are empty' ->
-      permit.can-rules.should.be.empty
+      permit.can-rules!.should.be.empty
 
     specify 'same as repo rules' ->
-      permit.can-rules.should.be.eql permit.rule-repo.can-rules
+      permit.can-rules!.should.be.eql permit.rule-repo.can-rules
 
   describe 'cannot rules' ->
     specify 'are empty' ->
-      permit.cannot-rules.should.be.empty
+      permit.cannot-rules!.should.be.empty
 
     specify 'same as repo rules' ->
-      permit.cannot-rules.should.be.eql permit.rule-repo.cannot-rules
+      permit.cannot-rules!.should.be.eql permit.rule-repo.cannot-rules
 
   describe 'Rules application' ->
     var guest-permit
     before ->
       guest-permit    := permit-for GuestPermit, 'books', ->
-      rules:
-        read: ->
-          @ucan 'read' 'Book'
-        write: ->
-          @ucan 'write' 'Book'
+        rules:
+          read: ->
+            @ucan 'read' 'Book'
+          write: ->
+            @ucan 'write' 'Book'
+          default: ->
+            @ucan 'read' 'any'
 
+    # auto applies static rules by default (in init) as part of construction!
     describe 'static rules application' ->
       before ->
-        # static application when no access-request passed
-        guest-permit.apply-rules!
 
-      specify 'registers a read-book rule' ->
-        guest-permit.can-rules['read'].should.eql ['Book']
-
-      specify 'registers a write-book rule' ->
-        guest-permit.can-rules['write'].should.eql ['Book']
+      specify 'registers a read-any rule (using default)' ->
+        guest-permit.can-rules!['read'].should.eql ['any']
 
     describe 'dynamic rules application' ->
       var book, access-request
@@ -162,13 +178,12 @@ describe 'Permit' ->
             action: 'read'
             subject: book
 
+          guest-permit.clear!
           # dynamic application when access-request passed
           guest-permit.apply-rules access-request
 
       specify 'registers a read-book rule' ->
-        guest-permit.can-rules['read'].should.eql ['Book']
+        guest-permit.can-rules!['read'].should.eql ['Book']
 
       specify 'does NOT register a write-book rule' ->
-        guest-permit.can-rules['write'].should.be.undefined
-
-
+        ( -> guest-permit.can-rules!['write'].should).should.throw
