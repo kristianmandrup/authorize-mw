@@ -22,6 +22,7 @@ describe 'permit-for' ->
           _.is-type user 'Object'
           user.role is 'guest'
         rules: ->
+      guest-permit.clear!
 
     specify 'creates a permit made from Permit' ->
       guest-permit.constructor.should.eql Permit

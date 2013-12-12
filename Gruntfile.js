@@ -11,7 +11,10 @@ module.exports = function(grunt) {
         },
         src: ['test/**/rule_applier_test.js',
               'test/**/rule_repo_test.js',
-              'test/**/permit_test.js'
+              'test/**/permit_test.js',
+              'test/**/permit_matcher_test.js',
+              'test/**/permit_for_test.js',
+              'test/**/permit_filter_test.js'
         ]
       },
       all: {

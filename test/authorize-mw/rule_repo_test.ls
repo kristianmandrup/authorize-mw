@@ -13,20 +13,7 @@ describe 'Rule Repository (RuleRepo)' ->
 
   before ->
     rule-repo := new RuleRepo
-
-    can := (actions, subjects, ctx) ->
-      rule-repo.register-rule 'can', actions, subjects
-
-    cannot := (actions, subjects, ctx) ->
-      rule-repo.register-rule 'cannot', actions, subjects
-
-    book      := new Book 'Far and away'
-    rule      := can 'read', 'Book'
-
-    access-request :=
-      action: 'read'
-      subject: book
-
+    #book      := new Book 'Far and away'
 
 
   specify 'has can-rules' ->
@@ -36,62 +23,57 @@ describe 'Rule Repository (RuleRepo)' ->
     rule-repo.can-rules.should.be.an.instanceof Object
 
 
-
   describe 'container-for' ->
     specify 'can' ->
-      console.log rule-repo
       rule-repo.container-for('can').should.eql rule-repo.can-rules
 
     specify 'cannot' ->
       rule-repo.container-for('cannot').should.eql rule-repo.cannot-rules
 
+
+
   describe 'register-rule' ->
 
-    var repo
     before ->
-      (repo := new RuleRepo).clear!
+      rule-repo.clear!
 
     specify 'can register a valid rule' ->
-      repo.register-rule('can', 'read', 'Book')
-      repo.can-rules.should.eql {
-        'read': ['Book']
-      }
+      rule-repo.register-rule('can', 'read', 'Book')
+      rule-repo.should.have.property('canRules')
+      rule-repo.can-rules.should.eql {'read': ['Book']} # eql include
 
     specify 'throws error on invalid rule' ->
-      ( -> repo.register-rule 'can', 'read', null).should.throw!
+      ( -> rule-repo.register-rule 'can', 'read', null).should.throw!
+
+
 
   describe 'add-rule' ->
-    var container
-    var repo
     before ->
-      (repo := new RuleRepo).clear!
-      container := repo.can-rules
+      rule-repo.clear!
 
     specify 'can add a valid rule' ->
-      repo.add-rule(container, 'read', 'Book')
-      repo.can-rules.should.eql {
-        'read': ['Book']
-      }
+      container = rule-repo.can-rules
+      rule-repo.add-rule(container, 'read', 'Book')
+      rule-repo.can-rules.should.eql { 'read': ['Book'] }
       container['read'].should.include 'Book'
 
     specify 'throws error if container is null' ->
-      ( -> repo.add-rule null, 'read', 'Book' ).should.throw!
+      ( -> rule-repo.add-rule null, 'read', 'Book' ).should.throw!
 
     specify 'throws error if container is not an Object' ->
-      ( -> repo.add-rule [], 'read', 'Book' ).should.throw!
+      ( -> rule-repo.add-rule [], 'read', 'Book' ).should.throw!
+
 
   describe 'match-rule' ->
-    var read-book-rule, publish-book-rule
 
     before ->
-      rule-repo.can-rules :=
+      rule-repo.can-rules =
         'read': ['Book']
 
-      read-book-rule := {action: 'read', subject: 'Book'}
-      publish-book-rule := {action: 'publish', subject: 'Book'}
-
     specify 'can find rule that allows user to read a book' ->
+      read-book-rule = {action: 'read', subject: 'Book'}
       rule-repo.match-rule('can', read-book-rule).should.be.true
 
     specify 'can NOT find rule that allows user to publish a book' ->
+      publish-book-rule = {action: 'publish', subject: 'Book'}
       rule-repo.match-rule('can', publish-book-rule).should.be.false
