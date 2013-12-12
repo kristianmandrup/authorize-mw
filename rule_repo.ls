@@ -26,6 +26,10 @@ module.exports = class RuleRepo
     else
       subject-clazz = subject
 
+  find-matching-subject: (subjects, subject) ->
+    [subject, subject.to-lower-case!].any (item) ->
+      subjects.index-of(item) != -1
+
   # TODO: simplify, extract methods?
   match-rule: (act, access-request) ->
     act = act.camelize(true)
@@ -37,7 +41,7 @@ module.exports = class RuleRepo
 
     action-subjects = rule-container[action]
     return false unless _.is-type 'Array', action-subjects
-    action-subjects.index-of(subj-clazz) != -1
+    @find-matching-subject action-subjects, subj-clazz
 
   # for now, lets forget about ctx
   add-rule: (rule-container, action, subjects) ->

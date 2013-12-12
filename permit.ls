@@ -19,11 +19,13 @@ module.exports = class Permit
   @clear-permits = ->
     @@permits = []
 
+  @clean-permits = ->
+    for permit in @@permits
+      permit.clear!
+
   permit-matcher-class: PermitMatcher
   rule-applier-class: RuleApplier
   rule-repo: new RuleRepo
-
-
 
   # get a named permit
   @get = (name) ->

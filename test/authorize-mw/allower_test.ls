@@ -7,7 +7,6 @@ Allower       = require '../../allower'
 Permit        = require '../../permit'
 permit-for    = require '../../permit_for'
 
-
 describe 'Allower', ->
   var user, guest-user, admin-user, editor-user
   var allower, book
@@ -37,7 +36,6 @@ describe 'Allower', ->
 
     specify 'Allower sets own access obj' ->
       read-book-allower.access-request.should.eql read-book-access
-
   
   describe 'allows and disallows' ->
     var user-permit, guest-permit, editor-permit
@@ -61,6 +59,7 @@ describe 'Allower', ->
           _.is-type('Object', user) and user.role is 'guest'
         rules: ->
           @ucan 'read', 'book'
+          @ucannot 'write', 'book'
 
       editor-permit := permit-for 'Editor',
         match: (access) ->
@@ -73,8 +72,6 @@ describe 'Allower', ->
       # a guest user can also read a book
       # an editor user can also read and write a book
 
-      # console.log Permit.permits
-
       read-book-access        := book-access 'read', guest-user
       write-book-access       := book-access 'write', editor-user
       non-write-book-access   := book-access 'write', guest-user
@@ -84,24 +81,27 @@ describe 'Allower', ->
       non-write-book-allower  := new Allower non-write-book-access
 
     describe 'allows!' ->
-      before ->
+      before-each ->
         # local config/setup
+        Permit.clean-permits!
 
       specify 'read a book access should be allowed' ->
         read-book-allower.allows!.should.be.true
 
-      xspecify 'write a book access should be allowed' ->
+      specify 'write a book access should be allowed' ->
         write-book-allower.allows!.should.be.true
 
-      xspecify 'write a book should NOT be allowed for ' ->
+      specify 'write a book should NOT be allowed for ' ->
         non-write-book-allower.allows!.should.be.false
 
-    xdescribe 'disallows!' ->
-      before ->
+    describe 'disallows!' ->
+      before-each ->
         # local config/setup
+        Permit.clean-permits!
 
       specify 'read a book access should NOT be disallowed' ->
         read-book-allower.disallows!.should.be.false
 
+      # since explit: @ucannot 'write', 'book' on gues-permit
       specify 'write a book should be disallowed' ->
-        write-book-allower.disallows!.should.be.true
+        non-write-book-allower.disallows!.should.be.true

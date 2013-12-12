@@ -8,7 +8,7 @@ module.exports = class PermitAllower
   test-access: (act, access-request) ->
     # try to find matching action/subject combi for canRule in rule-repo
     subj = @rule-repo.match-rule act, access-request
-    subj? # true if not null
+    subj is true
 
   # if permit disallows, then it doesn't matter if there is also a rule that allows
   # A cannot rule always wins!
