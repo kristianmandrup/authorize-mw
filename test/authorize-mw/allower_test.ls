@@ -37,7 +37,8 @@ describe 'Allower', ->
     specify 'Allower sets own access obj' ->
       read-book-allower.access-request.should.eql read-book-access
 
-  describe 'allows!' ->
+  
+  describe 'allows and disallows' ->
     var user-permit, guest-permit, editor-permit
     var read-book-access, write-book-access
     var read-book-allower, write-book-allower
@@ -81,41 +82,25 @@ describe 'Allower', ->
       write-book-allower      := new Allower write-book-access
       non-write-book-allower  := new Allower non-write-book-access
 
-    specify 'read a book access should be allowed' ->
-      read-book-allower.allows!.should.be.true
+    describe 'allows!' ->
+      before ->
+        # local config/setup
 
-    specify 'write a book access should be allowed' ->
-      write-book-allower.allows!.should.be.true
+      specify 'read a book access should be allowed' ->
+        read-book-allower.allows!.should.be.true
 
-    specify 'write a book should NOT be allowed for ' ->
-      non-write-book-allower.allows!.should.be.false
+      specify 'write a book access should be allowed' ->
+        write-book-allower.allows!.should.be.true
 
-  xdescribe 'disallows!' ->
-    before ->
-      # setup permits here !!
-      user-permit = permit-for 'User',
-        match: (access) ->
-          user = if access? then access.user else void
-          _.is-type 'Object', user
-        rules: ->
-          @ucan 'view', 'book'
+      specify 'write a book should NOT be allowed for ' ->
+        non-write-book-allower.allows!.should.be.false
 
-      guest-permit = permit-for 'Guest',
-        match: (access) ->
-          user = if access? then access.user else void
-          _.is-type('Object', user) and user.role is 'guest'
-        rules: ->
-          @ucan 'read', 'book'
+    xdescribe 'disallows!' ->
+      before ->
+        # local config/setup
 
-      editor-permit = permit-for 'Editor',
-        match: (access) ->
-          user = if access? then access.user else void
-          _.is-type('Object', user) and user.role is 'editor'
-        rules: ->
-          @ucan ['read', 'write'], 'book'
+      specify 'read a book access should NOT be disallowed' ->
+        read-book-allower.disallows!.should.be.false
 
-    specify 'read a book access should NOT be disallowed' ->
-      read-book-allower.disallows!.should.be.false
-
-    specify 'write a book should be disallowed' ->
-      write-book-allower.disallows!.should.be.true
+      specify 'write a book should be disallowed' ->
+        write-book-allower.disallows!.should.be.true
