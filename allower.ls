@@ -9,7 +9,6 @@ module.exports = class Allower
   (@access-request) ->
     # filter to only use permits that make sense for current access request
     @permits = PermitFilter.filter(@access-request)
-    console.log @permits
 
   # go through all permits that apply
   # if any of them allows, then yes

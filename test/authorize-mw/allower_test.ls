@@ -11,7 +11,7 @@ permit-for    = require '../../permit_for'
 describe 'Allower', ->
   var user, guest-user, admin-user, editor-user
   var allower, book
-  var read-book-allower, write-book-allower
+  var read-book-allower
 
   book-access = (action, user) ->
     {user: user, action: action, subject: book}
@@ -30,6 +30,7 @@ describe 'Allower', ->
     before ->
       # init local vars
       read-book-access    := book-access 'read', guest-user
+      read-book-allower   := new Allower read-book-access
 
     specify 'return Allower instance' ->
       read-book-allower.constructor.should.eql Allower
@@ -72,7 +73,7 @@ describe 'Allower', ->
       # a guest user can also read a book
       # an editor user can also read and write a book
 
-      console.log Permit.permits
+      # console.log Permit.permits
 
       read-book-access        := book-access 'read', guest-user
       write-book-access       := book-access 'write', editor-user
@@ -89,10 +90,10 @@ describe 'Allower', ->
       specify 'read a book access should be allowed' ->
         read-book-allower.allows!.should.be.true
 
-      specify 'write a book access should be allowed' ->
+      xspecify 'write a book access should be allowed' ->
         write-book-allower.allows!.should.be.true
 
-      specify 'write a book should NOT be allowed for ' ->
+      xspecify 'write a book should NOT be allowed for ' ->
         non-write-book-allower.allows!.should.be.false
 
     xdescribe 'disallows!' ->
