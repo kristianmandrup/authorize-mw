@@ -29,8 +29,6 @@ describe 'Rule Repository (RuleRepo)' ->
 
 
 
-
-
   specify 'has can-rules' ->
     rule-repo.can-rules.should.be.an.instanceof Object
 
@@ -38,8 +36,10 @@ describe 'Rule Repository (RuleRepo)' ->
     rule-repo.can-rules.should.be.an.instanceof Object
 
 
+
   describe 'container-for' ->
     specify 'can' ->
+      console.log rule-repo
       rule-repo.container-for('can').should.eql rule-repo.can-rules
 
     specify 'cannot' ->

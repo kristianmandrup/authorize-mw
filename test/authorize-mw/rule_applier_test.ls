@@ -7,7 +7,7 @@ RuleRepo      = require '../../rule_repo'
 User      = require '../fixtures/user'
 Book      = require '../fixtures/book'
 
-describe 'Permit init' ->
+describe 'Rule Applier (RuleApplier)' ->
   var book
 
   debug-repo = (txt, repo) ->

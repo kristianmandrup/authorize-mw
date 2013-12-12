@@ -9,7 +9,10 @@ module.exports = function(grunt) {
         options: {
           reporter: 'spec'
         },
-        src: ['test/**/permit_test.js']
+        src: ['test/**/rule_applier_test.js',
+              'test/**/rule_repo_test.js',
+              'test/**/permit_test.js'
+        ]
       },
       all: {
         options: {
@@ -31,7 +34,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-mocha-test');
 
   // Default task.
-  grunt.registerTask('default', ['mochaTest:acceptance_test']);
+  grunt.registerTask('default', ['mochaTest:test']);
 
 };
 

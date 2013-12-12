@@ -19,6 +19,12 @@ module.exports = class Permit
   @clear-permits = ->
     @@permits = []
 
+  permit-matcher-class: PermitMatcher
+  rule-applier-class: RuleApplier
+  rule-repo: new RuleRepo
+
+
+
   # get a named permit
   @get = (name) ->
     @permits[name] || throw Error("No permit '#{name}' is registered")
@@ -35,6 +41,11 @@ module.exports = class Permit
       throw Error "No rules defined for permit: #{@name}"
     @
 
+  clear: ->
+    @rule-repo.clear!
+
+
+
   # used by permit-for to extend specific permit from base class (prototype)
   use: (obj) ->
     obj = obj! if _.is-type 'Function', obj
@@ -44,16 +55,13 @@ module.exports = class Permit
 
   rules: ->
 
-  permit-matcher-class: PermitMatcher
   matcher: (access-request) ->
     new @permit-matcher-class @, access-request
 
-  rule-applier-class: RuleApplier
   rule-applier: (access-request) ->
     access-request = null unless _.is-type 'Object', access-request
     new @rule-applier-class @rule-repo, @rules, access-request
 
-  rule-repo: new RuleRepo
 
   allower: ->
     new PermitAllower @rule-repo
@@ -64,8 +72,6 @@ module.exports = class Permit
   disallows: (access-request) ->
     @allower!.disallows access-request
 
-  clear: ->
-    @rule-repo.clear!
 
   # See if this permit should apply (be used) for the given access request
   matches: (access-request) ->

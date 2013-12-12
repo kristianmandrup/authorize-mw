@@ -63,6 +63,7 @@ describe 'Permit' ->
 
     before ->
       permit := new Permit 'hello'
+      permit.clear!
 
     specify 'has an empty canRules list' ->
       permit.can-rules!.should.be.empty
