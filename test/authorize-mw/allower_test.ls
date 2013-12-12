@@ -9,9 +9,8 @@ permit-for    = require '../../permit_for'
 
 
 describe 'Allower', ->
-  var user, guest-user, admin-user
+  var user, guest-user, admin-user, editor-user
   var allower, book
-  var read-book-access, write-book-access
   var read-book-allower, write-book-allower
 
   book-access = (action, user) ->
@@ -21,24 +20,26 @@ describe 'Allower', ->
     user          := new User name: 'kris'
     guest-user    := new User name: 'kris', role: 'guest'
     admin-user    := new User name: 'kris', role: 'admin'
+    editor-user    := new User name: 'kris', role: 'editor'
 
     book          := new Book title: 'to the moon and back'
 
-    read-book-access    := book-access 'read', guest-user
-    write-book-access   := book-access 'write', admin-user
-
   describe 'read-book-allower' ->
+    var read-book-access
+    
     before ->
       # init local vars
+      read-book-access    := book-access 'read', guest-user
 
-    xspecify 'return Allower instance' ->
+    specify 'return Allower instance' ->
       read-book-allower.constructor.should.eql Allower
 
-    xspecify 'Allower sets own access obj' ->
+    specify 'Allower sets own access obj' ->
       read-book-allower.access-request.should.eql read-book-access
 
   describe 'allows!' ->
     var user-permit, guest-permit, editor-permit
+    var read-book-access, write-book-access
     var read-book-allower, write-book-allower
 
     before ->
@@ -66,16 +67,28 @@ describe 'Allower', ->
         rules: ->
           @ucan ['read', 'write'], 'book'
 
+      # any user can view a book
+      # a guest user can also read a book
+      # an editor user can also read and write a book
+
       console.log Permit.permits
 
-      read-book-allower   := new Allower read-book-access
-      write-book-allower  := new Allower write-book-access
+      read-book-access        := book-access 'read', guest-user
+      write-book-access       := book-access 'write', editor-user
+      non-write-book-access   := book-access 'write', guest-user
+
+      read-book-allower       := new Allower read-book-access
+      write-book-allower      := new Allower write-book-access
+      non-write-book-allower  := new Allower non-write-book-access
 
     specify 'read a book access should be allowed' ->
       read-book-allower.allows!.should.be.true
 
-    xspecify 'write a book should NOT be allowed' ->
-      write-book-allower.allows!.should.be.false
+    specify 'write a book access should be allowed' ->
+      write-book-allower.allows!.should.be.true
+
+    specify 'write a book should NOT be allowed for ' ->
+      non-write-book-allower.allows!.should.be.false
 
   xdescribe 'disallows!' ->
     before ->
