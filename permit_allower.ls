@@ -18,4 +18,5 @@ module.exports = class PermitAllower
 
   # if no explicit cannot rule matches, we assume the user IS NOT disallowed
   disallows: (access-request) ->
+    return false if @allows access-request
     @test-access 'cannot', access-request
