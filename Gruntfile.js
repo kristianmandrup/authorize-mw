@@ -14,7 +14,8 @@ module.exports = function(grunt) {
               'test/**/permit_test.js',
               'test/**/permit_matcher_test.js',
               'test/**/permit_for_test.js',
-              'test/**/permit_filter_test.js'
+              'test/**/permit_filter_test.js',
+              'test/**/permit_allower_test.js'
         ]
       },
       all: {
