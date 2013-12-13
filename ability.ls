@@ -12,10 +12,10 @@ module.exports = class Ability
   # adds the user of the ability to the access-request object
   # TODO: should use AccessRequest here!?
   accessObj: (access-request) ->
-    lo.extend access-request, {user: @user}
+    lo.merge access-request, @user
 
   permits: (access-request) ->
-    permits = permit-filter.matches access-request
+    permits = permit-filter.filter access-request
 
   allower: (access-request) ->
     new Allower(@accessObj access-request)

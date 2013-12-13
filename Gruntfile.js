@@ -18,7 +18,8 @@ module.exports = function(grunt) {
               'test/**/permit_allower_test.js',
               'test/**/normalize_test.js',
               'test/**/intersect_test.js',
-              'test/**/allower_test.js'
+              'test/**/allower_test.js',
+              'test/**/ability_test.js'
         ]
       },
       all: {
