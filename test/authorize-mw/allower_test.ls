@@ -9,19 +9,19 @@ permit-for    = require '../../permit_for'
 
 describe 'Allower', ->
   var user, guest-user, admin-user, editor-user
-  var allower, book
+  var allower, book, book-access
   var read-book-allower
 
-  book-access = (action, user) ->
-    {user: user, action: action, subject: book}
 
   before ->
-    user          := new User name: 'kris'
-    guest-user    := new User name: 'kris', role: 'guest'
-    admin-user    := new User name: 'kris', role: 'admin'
-    editor-user    := new User name: 'kris', role: 'editor'
+    user        := new User name: 'kris'
+    guest-user  := new User name: 'kris', role: 'guest'
+    admin-user  := new User name: 'kris', role: 'admin'
+    editor-user := new User name: 'kris', role: 'editor'
 
-    book          := new Book title: 'to the moon and back'
+    book        := new Book title: 'to the moon and back'
+    book-access := (action, user) ->
+      {user: user, action: action, subject: book}
 
   describe 'read-book-allower' ->
     var read-book-access

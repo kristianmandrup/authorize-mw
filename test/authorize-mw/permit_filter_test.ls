@@ -18,6 +18,9 @@ describe 'permit-filter' ->
     before ->
       user  := new User name: 'Javier'
       access-request := {user: user}
+
+      Permit.clear-permits!
+      
       user-permit := permit-for 'User',
         match: (access) ->
           user = if access? then access.user else void
