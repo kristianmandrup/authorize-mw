@@ -8,9 +8,9 @@ Permit = require './permit'
 module.exports = (base-clazz, name, base-obj) ->
   # tweak args if no base class as first arg
   if _.is-type 'String', base-clazz
-    base-clazz = Permit
-    name = base-clazz
     base-obj = name
+    name = base-clazz
+    base-clazz = Permit
 
   permit = new base-clazz name
 
@@ -18,7 +18,8 @@ module.exports = (base-clazz, name, base-obj) ->
     base-obj = base-obj!
 
   # extend permit with custom functionality
-  permit = permit.use base-obj
+  if _.is-type 'Object', base-obj
+    permit = permit.use base-obj
   # register permit in Permit.permit
   Permit.permits.push permit
-  permit
+  permit.init!

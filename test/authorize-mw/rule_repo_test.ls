@@ -10,6 +10,7 @@ describe 'Rule Repository (RuleRepo)' ->
   var book
   var can, cannot
 
+
   before ->
     rule-repo := new RuleRepo
 
@@ -26,26 +27,29 @@ describe 'Rule Repository (RuleRepo)' ->
       action: 'read'
       subject: book
 
+
+
   specify 'has can-rules' ->
-    rule-repo.can-rules.should.be.an.instance-of Object
+    rule-repo.can-rules.should.be.an.instanceof Object
 
   specify 'has cannot-rules' ->
-    rule-repo.can-rules.should.be.an.instance-of Object
+    rule-repo.can-rules.should.be.an.instanceof Object
 
-  specify 'has cannot-rules' ->
-    rule-repo.can-rules.should.be.an.instance-of Object
+
 
   describe 'container-for' ->
     specify 'can' ->
+      console.log rule-repo
       rule-repo.container-for('can').should.eql rule-repo.can-rules
 
     specify 'cannot' ->
       rule-repo.container-for('cannot').should.eql rule-repo.cannot-rules
 
-  xdescribe 'register-rule' ->
+  describe 'register-rule' ->
+
     var repo
     before ->
-      repo := new RuleRepo.clear!
+      (repo := new RuleRepo).clear!
 
     specify 'can register a valid rule' ->
       repo.register-rule('can', 'read', 'Book')
@@ -56,12 +60,12 @@ describe 'Rule Repository (RuleRepo)' ->
     specify 'throws error on invalid rule' ->
       ( -> repo.register-rule 'can', 'read', null).should.throw!
 
-  xdescribe 'add-rule' ->
+  describe 'add-rule' ->
     var container
     var repo
     before ->
-      container := {}
-      repo := new RuleRepo.clear!
+      (repo := new RuleRepo).clear!
+      container := repo.can-rules
 
     specify 'can add a valid rule' ->
       repo.add-rule(container, 'read', 'Book')

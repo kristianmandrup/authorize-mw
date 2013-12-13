@@ -7,102 +7,175 @@ RuleRepo      = require '../../rule_repo'
 User      = require '../fixtures/user'
 Book      = require '../fixtures/book'
 
-describe 'Permit init' ->
-  var access-request, rules, rule-repo, rule-applier
+describe 'Rule Applier (RuleApplier)' ->
   var book
 
-  # TODO: Fix test!
-
-  rule-repo = new RuleRepo
-
-  can = (actions, subjects, ctx) ->
-    rule-repo.register-rule 'can', actions, subjects
-
-  cannot = (actions, subjects, ctx) ->
-    rule-repo.register-rule 'cannot', actions, subjects
-
-  can-rules = ->
-    rule-repo.can-rules
-
-  cannot-rules = ->
-    rule-repo.cannot-rules
+  debug-repo = (txt, repo) ->
+    console.log txt, repo
+    console.log repo.can-rules
+    console.log repo.cannot-rules
 
   before ->
     book          := new Book 'Far and away'
 
-    rules         :=
-      edit: ->
-        @can     'edit',   'Book'
-        @cannot  'write',  'Book'
-      read: ->
-        @can    'read',   ['Book', 'Paper', 'Project']
-        @cannot 'delete', ['Paper', 'Project']
-      default: ->
-        @can     'read',   'Book'
-        @cannot  'write',  'Book'
-
-    rule-applier  := new RuleApplier rule-repo, rules
-
-    access-request :=
-      action: 'read'
-      subject: book
-
   describe 'apply-rules-for' ->
+    var access-request, rule-repo, rule-applier, rules
+
     before ->
+      rules         :=
+        edit: ->
+          @ucan     'edit',   'Book'
+          @ucannot  'write',  'Book'
+        read: ->
+          @ucan    'read',   ['Book', 'Paper', 'Project']
+          @ucannot 'delete', ['Paper', 'Project']
+
+      access-request :=
+        action: 'read'
+        subject: book
+
+      rule-repo     := new RuleRepo
+      rule-applier  := new RuleApplier rule-repo, rules, access-request
+
       rule-applier.apply-rules-for 'edit'
 
     specify 'adds all can rules' ->
-      can-rules!.should.be.eql {
+      rule-repo.can-rules.should.be.eql {
         edit: ['Book']
       }
 
     specify 'adds all cannot rules' ->
-      cannot-rules!.should.be.eql {
+      rule-repo.cannot-rules.should.be.eql {
         write: ['Book']
       }
 
-  xdescribe 'apply-action-rules-for' ->
+  describe 'apply-action-rules-for :read' ->
+    var read-access-request, rule-repo, rule-applier, rules
+
     before ->
+      rules         :=
+        edit: ->
+          @ucan     'edit',   'Book'
+          @ucannot  'write',  'Book'
+        read: ->
+          @ucan    'read',   'Project'
+          @ucannot 'delete', 'Paper'
+
+      read-access-request :=
+        action: 'read'
+        subject: book
+
       # adds only the 'read' rules (see access-request.action)
-      rule-applier.apply-action-rules-for access-request
+      rule-repo     := new RuleRepo('action repo').clear!
+      rule-applier  := new RuleApplier rule-repo, rules, read-access-request
+
+      rule-applier.apply-action-rules!
 
     specify 'adds all can rules' ->
-      can-rules.should.be.eql {
-        read: ['Book', 'Paper', 'Project']
+      rule-repo.can-rules.should.be.eql {
+        read: ['Project']
       }
 
     specify 'adds all cannot rules' ->
-      cannot-rules.should.be.eql {
-        delete: ['Paper', 'Project']
+      rule-repo.cannot-rules.should.be.eql {
+        delete: ['Paper']
       }
 
-  xdescribe 'apply-default-rules' ->
+  describe 'apply-rules' ->
+    describe 'static' ->
+      var read-access-request, rule-repo, rule-applier, rules
+
+      before ->
+        rules         :=
+          edit: ->
+            @ucan     'edit',   'Book'
+            @ucannot  'write',  'Book'
+          read: ->
+            @ucan    'read',   'Project'
+            @ucannot 'delete', 'Paper'
+          default: ->
+            @ucan    'read',   'Paper'
+
+        read-access-request :=
+          action: 'read'
+          subject: book
+
+        # adds only the 'read' rules (see access-request.action)
+        rule-repo     := new RuleRepo('static repo').clear!
+        rule-applier  := new RuleApplier rule-repo, rules
+
+        rule-applier.apply-rules!
+
+      specify 'adds all static can rules' ->
+        rule-repo.can-rules.should.be.eql {
+          read: ['Paper']
+        }
+
+      specify 'adds all static cannot rules' ->
+        rule-repo.cannot-rules.should.be.eql {
+        }
+
+    describe 'dynamic' ->
+      var read-access-request, rule-repo, rule-applier, rules
+
+      before ->
+        rules         :=
+          edit: ->
+            @ucan     'edit',   'Book'
+            @ucannot  'write',  'Book'
+          read: ->
+            @ucan    'read',   'Project'
+            @ucannot 'delete', 'Paper'
+
+        read-access-request :=
+          action: 'read'
+          subject: book
+
+        # adds only the 'read' rules (see access-request.action)
+        rule-repo     := new RuleRepo('action repo').clear!
+        rule-applier  := new RuleApplier rule-repo, rules, read-access-request
+
+        rule-applier.apply-rules read-access-request
+
+      specify 'adds all dynamic can rules (only read)' ->
+        rule-repo.can-rules.should.be.eql {
+          read: ['Project']
+        }
+
+      specify 'adds all dynamic cannot rules (only read)' ->
+        rule-repo.cannot-rules.should.be.eql {
+          delete: ['Paper']
+        }
+
+  describe 'apply-all' ->
+    var read-access-request, rule-repo, rule-applier, rules
+
     before ->
-      rule-applier.apply-default-rules
+      read-access-request :=
+        action: 'read'
+        subject: book
+
+      rules         :=
+        edit: ->
+          @ucan     'edit',   'Book'
+        read: ->
+          @ucan     'read',   'Project'
+        default: ->
+          @ucannot  'write', 'Book'
+
+      rule-repo     := new RuleRepo('action repo').clear!
+      rule-applier  := new RuleApplier rule-repo, rules, read-access-request
+
+      rule-applier.apply-all-rules!
 
     specify 'adds all can rules' ->
-      can-rules.should.be.eql {
-        read: ['Book']
-      }
-
-    specify 'adds all cannot rules' ->
-      cannot-rules.should.be.eql {
-        write: ['Book']
-      }
-
-  xdescribe 'apply-all' ->
-    before ->
-      rule-applier.apply-all
-
-    specify 'adds all can rules' ->
-      can-rules.should.be.eql {
+      rule-repo.can-rules.should.be.eql {
         edit: ['Book']
-        read: ['Book', 'Paper', 'Project']
+        read: ['Project']
       }
 
     specify 'adds all cannot rules' ->
-      cannot-rules.should.be.eql {
+      rule-repo.cannot-rules.should.be.eql {
         write: ['Book']
-        delete: ['Paper', 'Project']
       }
 

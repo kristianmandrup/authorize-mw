@@ -43,10 +43,11 @@ module.exports = class PermitMatcher
 
     if _.is-type 'Function' partial
       partial = partial!
-    @intersect.on partial, @access-request
+    res = @intersect.on partial, @access-request
+    res
 
   validate: ->
     # use object intersection test if permit has includes or excludes
     throw Error "PermitMatcher missing permit" unless @permit
-    unless @access-request? and not _.is-type 'Unknown' @access-request
-      throw Error "Access is undefined"
+    if @access-request? and _.is-type 'Unknown' @access-request
+      throw Error "access-request is undefined"
