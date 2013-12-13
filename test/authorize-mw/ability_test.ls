@@ -1,9 +1,10 @@
 require '../test_setup'
 
 _             = require 'prelude-ls'
-lo            = require 'prelude-ls'
+lo            = require 'lodash'
 User          = require '../fixtures/user'
 
+Allower       = require '../../allower'
 Ability       = require '../../ability'
 Permit        = require '../../permit'
 permit-for    = require '../../permit_for'
@@ -38,7 +39,7 @@ describe 'Ability' ->
 
     admin-access  := role-access 'admin'
 
-    kris-access   := lo.extend admin-access, {
+    kris-access   := lo.extend {}, admin-access, {
       user:
         name: 'kris'
       ctx:
@@ -48,54 +49,46 @@ describe 'Ability' ->
     user-permit   := permit-for 'User',
       match: (access) ->
         user = if access? then access.user else void
-        _.is-type user 'Object'
+        _.is-type 'Object' user
       rules: ->
         @ucan ['read', 'edit'], 'book'
 
     guest-permit  := permit-for 'Guest',
       match: (access) ->
         user = if access? then access.user else void
-        _.is-type user 'Object'
-        user.role is 'guest'
+        _.is-type 'Object', user and user.role is 'guest'
       rules: ->
         @ucan 'read', 'book'
 
     admin-permit  := permit-for 'admin',
       match: (access) ->
         user = if access? then access.user else void
-        _.is-type user 'Object'
-        user.role is 'admin'
+        _.is-type 'Object', user and user.role is 'admin'
       rules: ->
         @ucan 'manage', '*'
 
     auth-permit   := permit-for 'admin',
       match: (access) ->
-        access.ctx.auth
+        ctx = if access? then access.ctx else void
+        _.is-type 'Object', ctx and ctx.auth?
       rules: ->
         @ucan 'manage', 'book'
 
   specify 'creates an Ability' ->
-    ability.constructor.should.eql Ability
+    kris-ability.constructor.should.eql Ability
 
   specify 'Ability has user kris' ->
-    ability.user.should.eql user
+    kris-ability.user.should.eql user-kris
 
   describe 'accessObj' ->
     before ->
       # init local vars
 
     specify 'extends empty access with user' ->
-      ability.access-obj(empty-access).should.eql {
-        user:
-          name: 'kris'
-      }
+      kris-ability.access-obj(empty-access).user.name.should.eql 'kris'
 
-    specify 'extends access with user.name' ->
-      ability.access-obj(guest-access).should.eql {
-        user:
-          role: 'guest'
-          name: 'kris'
-      }
+    xspecify 'extends access with user.role' ->
+      kris-ability.access-obj(guest-access).user.role.should.eql 'guest'
 
   xdescribe 'permits' ->
     before ->
@@ -115,10 +108,10 @@ describe 'Ability' ->
       # init local vars
 
     specify 'return Allower instance' ->
-      ability.allower(access).constructor.should.eql Allower
+      kris-ability.allower(empty-access).constructor.should.eql Allower
 
-    specify 'Allower sets own access obj' ->
-      ability.allower(user-access).access.should.eql user-access
+    specify 'Allower sets own access-request obj' ->
+      kris-ability.allower(user-access).access-request.should.eql user-access
 
   xdescribe 'allowed-for' ->
     before ->

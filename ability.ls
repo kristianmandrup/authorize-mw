@@ -1,4 +1,5 @@
-_ = require 'prelude-ls'
+_   = require 'prelude-ls'
+lo  = require 'lodash'
 
 permit-filter = require './permit_filter'
 Allower       = require './allower'
@@ -11,12 +12,12 @@ module.exports = class Ability
   # adds the user of the ability to the access-request object
   # TODO: should use AccessRequest here!?
   accessObj: (access-request) ->
-    _.extend access-request, {user: @user}
+    lo.extend access-request, {user: @user}
 
   permits: (access-request) ->
     permits = permit-filter.matches access-request
 
-  allower: (access) ->
+  allower: (access-request) ->
     new Allower(@accessObj access-request)
 
   allowed-for: (access-request) ->
