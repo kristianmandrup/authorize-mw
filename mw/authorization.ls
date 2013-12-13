@@ -1,30 +1,40 @@
 # do similar for validation!
-authorization = (context) ->
-  @context = context
 
-  currentUser: @context['currentUser']
+_           = require 'prelude-ls'
+Middleware  = require 'middleware'
+Ability     = require '../ability'
+
+authorization = class Authorization extends Middleware 
+  (context) ->
+    @context = context
+    @current-user = @context.current-user
+    @ability = new Ability @current-user
+
   run: (args) ->
     # fx create(args)
     @name = args['name']
     @collection = args['collection']
+    @ctx = args['ctx']
+    set-model!
 
-    @[name](collection)
+    @[name]
+  
   can: (action) ->
-    if currentUser.can(action, collection) then next() else false
+    if @ability.can(action, @collection, @ctx) then @next() else false
 
-  get: (collection) ->
-    can 'get one', collection
-  create: (collection) ->
-    can 'create one', collection
-  update: (collection) ->
-    can 'update one', collection
-  delete: (collection) ->
-    can 'delete one', collection
+  get: ->
+    can 'get one'
+  create: ->
+    can 'create one'
+  update: ->
+    can 'update one'
+  delete: ->
+    can 'delete one'
 
-  getAll: (collection) ->
-    can 'get many', collection
-  updateAll: (collection) ->
-    can 'update one', collection
-  deleteAll: (collection) ->
-    can 'delete one', collection
+  getAll: ->
+    can 'get many'
+  updateAll: ->
+    can 'update one'
+  deleteAll: ->
+    can 'delete one'
 
