@@ -11,8 +11,35 @@ class AdminPermit extends Permit
   type: 'admin'
 
 describe 'permit-for' ->
-  before ->
-    # 
+
+  context 'multiple guest permits' ->
+    var guest-permit, other-guest-permit
+    before ->
+      guest-permit := permit-for 'Guest',
+        number: 1
+        match: (access) ->
+          @matching(access).role 'guest'
+
+      other-guest-permit := permit-for 'Guest',
+        number: 2
+        match: (access) ->
+          @matching(access).role 'guest'
+
+    specify 'guest permit is a Permit' ->
+      guest-permit.constuctor.should.eql Permit
+
+    specify 'guest permit name is Guest' ->
+      guest-permit.name.should.eql 'Guest'
+
+    specify 'other guest permit is void' ->
+      assert other-guest-permit, void
+
+    specify 'only one guest permit registered' ->
+      Permit.permits.size.should.eql 1
+
+    specify 'only first guest permit registered' ->
+      Permit.permits['Guest'].number.should.eql 1
+
   describe 'guest permit' ->
     var guest-permit
     before ->
