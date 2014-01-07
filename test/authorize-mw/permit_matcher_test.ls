@@ -2,6 +2,7 @@ require '../test_setup'
 
 _             = require 'prelude-ls'
 
+Book          = require '../fixtures/book'
 User          = require '../fixtures/user'
 permit-for    = require '../../permit_for'
 PermitMatcher = require '../../permit_matcher'
@@ -28,7 +29,7 @@ describe 'PermitMatcher' ->
 
     guest-permit := permit-for 'Guest',
       match: (access) ->
-        @user-match access, role: 'guest'
+        @role-match access, 'guest'
 
       rules: ->
         @ucan 'read', 'Book'
@@ -101,29 +102,51 @@ describe 'PermitMatcher' ->
         permit-matcher.exclude!.should.be.false
 
   describe 'custom-match' ->
-    var access-request, user-access-request, access-request-alt
+    var subj
+    var access-request, subj-access-request, access-request-alt, book, book-permit
     matching = {}
     none-matching = {}
 
     before ->
-      user-access-request := {user: {}}
+      book := new Book title: 'far and away'
+      subj-access-request := {user: {}, subject: book}
       access-request := {ctx: void}
 
-      matching.permit-matcher := new PermitMatcher user-access-request
-      none-matching.permit-matcher := new PermitMatcher access-request
-      
-      user-permit := permit-for 'User',
+      book-permit := permit-for 'Book',
         match: (access) ->
-          @user-match access
+          @subject-clazz-match access, 'Book'
 
         rules: ->
           @ucan 'read', 'Book'
 
-      specify 'matches access-request using permit.match' ->
-        matching.permit-matcher.custom-match!.should.be.true
+      matching.permit-matcher       := new PermitMatcher book-permit, subj-access-request
+      none-matching.permit-matcher  := new PermitMatcher book-permit, access-request
 
-      specify 'does NOT match access-request since permit.match does NOT match' ->
-        none-matching.permit-matcher.custom-match!.should.be.false
+    context 'matching permit-matcher' ->
+      before ->
+        subj := matching.permit-matcher
+
+      specify 'has permit' ->
+        subj.permit.should.eql book-permit
+
+      specify 'has subject access-request' ->
+        subj.access-request.should.eql subj-access-request
+
+    context 'matching permit-matcher' ->
+      before ->
+        subj := none-matching.permit-matcher
+
+      specify 'has permit' ->
+        subj.permit.should.eql book-permit
+
+      specify 'has access-request' ->
+        subj.access-request.should.eql access-request
+
+    specify 'matches access-request using permit.match' ->
+      matching.permit-matcher.custom-match!.should.be.true
+
+    specify 'does NOT match access-request since permit.match does NOT match' ->
+      none-matching.permit-matcher.custom-match!.should.be.false
 
     describe 'invalid match method' ->
       before ->
@@ -140,24 +163,24 @@ describe 'PermitMatcher' ->
     none-matching = {}
 
     before ->
-      user-access-request := {user: {}}
+      user-access-request := {user: {role: 'admin'}}
       access-request := {ctx: void}
-
-      matching.permit-matcher := new PermitMatcher user-access-request
-      none-matching.permit-matcher := new PermitMatcher access-request
 
       user-permit := permit-for 'ex User',
         ex-match: (access) ->
-          @user-match access
+          @user-match access, role: 'admin'
 
         rules: ->
           @ucan 'read', 'Book'
 
-      specify 'matches access-request using permit.ex-match' ->
-        matching.permit-matcher.custom-ex-match!.should.be.true
+      matching.permit-matcher := new PermitMatcher user-permit, user-access-request
+      none-matching.permit-matcher := new PermitMatcher user-permit, access-request
 
-      specify 'does NOT match access-request since permit.match does NOT match' ->
-        none-matching.permit-matcher.custom-ex-match!.should.be.false
+    specify 'matches access-request using permit.ex-match' ->
+      matching.permit-matcher.custom-ex-match!.should.be.true
+
+    specify 'does NOT match access-request since permit.match does NOT match' ->
+      none-matching.permit-matcher.custom-ex-match!.should.be.false
 
     describe 'invalid ex-match method' ->
       before ->

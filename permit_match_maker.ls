@@ -5,6 +5,7 @@
  */
 
 Intersect = require './intersect'
+require 'sugar'
 
 class MatchMaker
   (access-request) ->
@@ -56,6 +57,11 @@ class SubjectMatcher extends MatchMaker
   match: (subject) ->
     return true if super subject
     @intersect.on subject, @subject
+
+  match-clazz: (subject) ->
+    clazz = subject.camelize!
+    return false unless @subject and @subject.constructor
+    @subject.constructor.display-name is clazz
 
 class ContextMatcher extends MatchMaker
   (@access-request) ->

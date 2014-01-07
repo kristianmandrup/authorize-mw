@@ -28,7 +28,7 @@ module.exports = class PermitMatcher
   exclude: ->
     @intersect-on @permit.excludes
 
-  custom-exmatch: ->
+  custom-ex-match: ->
     if _.is-type 'Function' @permit.ex-match
       return @permit.ex-match @access-request
     false

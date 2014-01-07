@@ -69,7 +69,6 @@ module.exports = class Permit
     access-request = null unless _.is-type 'Object', access-request
     new @rule-applier-class @rule-repo, @rules, access-request
 
-
   allower: ->
     new PermitAllower @rule-repo
 
@@ -80,11 +79,16 @@ module.exports = class Permit
     @allower!.disallows access-request
 
   user-match: (access, user) ->
-    console.log "user-match", access, user
     new UserMatcher(access).match user
 
+  role-match: (access, role) ->
+    new UserMatcher(access).match {role: role}
+
   subject-match: (access, subject) ->
-    new UserMatcher(access).match subject
+    new SubjectMatcher(access).match subject
+
+  subject-clazz-match: (access, clazz) ->
+    new SubjectMatcher(access).match-clazz clazz
 
   action-match: (access, action) ->
     new ActionMatcher(access).match action
