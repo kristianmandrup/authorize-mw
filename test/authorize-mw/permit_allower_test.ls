@@ -34,49 +34,90 @@ describe 'PermitAllower' ->
       permit-allower.rule-repo.constructor.should.be.eql RuleRepo
 
   describe 'test-access' ->
-    var read-book-rule, publish-book-rule
+    var read-book-rule, publish-book-rule, lc-publish-book-rule
     
     before ->
-      read-book-rule := {action: 'read', subject: 'Book'}
-      publish-book-rule := {action: 'publish', subject: 'Book'}
+      read-book-rule :=
+        action: 'read'
+        subject: 'Book'
 
-    specify 'finds match for can read/Book' ->
-      rule-repo.register-rule('can', 'read', 'Book')
-      permit-allower.test-access('can', read-book-rule).should.be.true
+      publish-book-rule :=
+        action: 'publish'
+        subject: 'Book'
 
-    specify 'does NOT find match for can publish/Book' ->
-      rule-repo.register-rule('can', 'publish', 'Book')
-      permit-allower.test-access('can', publish-book-rule).should.be.true
+      lc-publish-book-rule :=
+        action: 'publish'
+        subject: 'book'
+
+    context 'can read book' ->
+      before-each ->
+        rule-repo.clean!
+        rule-repo.register-rule 'can', 'read', 'Book'
+        console.log rule-repo
+
+      specify 'finds match for can read/Book' ->
+        permit-allower.test-access('can', read-book-rule).should.be.true
+
+    context 'can publish book' ->
+      before-each ->
+        rule-repo.clean!
+        rule-repo.register-rule('can', 'publish', 'Book')
+        console.log rule-repo
+
+      specify 'does NOT find match for can read/Book' ->
+        permit-allower.test-access('can', read-book-rule).should.be.false
+
+      specify 'finds match for can publish/Book' ->
+        permit-allower.test-access('can', publish-book-rule).should.be.true
+
+      specify 'finds match for can publish/book' ->
+        permit-allower.test-access('can', lc-publish-book-rule).should.be.true
+
 
   describe 'allows' ->
-    var read-book-request, write-book-request
+    var read-book-request, publish-book-request
 
-    before ->
-      read-book-request  := book-request 'read'
-      write-book-request := book-request 'publish'
+    before-each ->
       rule-repo.clear!
+      read-book-request  := book-request 'read'
+      publish-book-request := book-request 'publish'
 
-    # TODO: try using before-each for rule-repo.register-rule
-    specify 'allows guest user to read a book' ->
-      rule-repo.register-rule 'can', 'read', 'Book'
-      permit-allower.allows(read-book-request).should.be.true
+    context 'can read book' ->
+      before ->
+        rule-repo.register-rule 'can', 'read', 'Book'
+        console.log rule-repo
 
-    specify 'does NOT allow guest user to write a book' ->
-      permit-allower.allows(write-book-request).should.be.false
+      specify 'should allow guest user to read a book' ->
+        permit-allower.allows(read-book-request).should.be.true
+
+    context 'cannot publish book' ->
+      before ->
+        rule-repo.register-rule 'cannot', 'publish', 'Book'
+        console.log rule-repo
+
+      specify 'does NOT allow guest user to publish a book' ->
+        permit-allower.allows(publish-book-request).should.be.false
 
   describe 'disallows' ->
-    var read-book-request, write-book-request
+    var read-book-request, publish-book-request
 
-    before ->
-      read-book-request  := book-request 'read'
-      write-book-request := book-request 'publish'
+    before-each ->
       rule-repo.clear!
+      read-book-request  := book-request 'read'
+      publish-book-request := book-request 'publish'
 
-    # TODO: try using before-each for rule-repo.register-rule
-    specify 'disallows guest user from writing a book' ->
-      rule-repo.register-rule 'cannot', 'publish', 'Book'
-      permit-allower.disallows(write-book-request).should.be.true
+    context 'cannot publish book' ->
+      before ->
+        rule-repo.register-rule 'cannot', 'publish', 'Book'
+        console.log rule-repo
 
-    specify 'does NOT disallow guest user from reading a book' ->
-      rule-repo.register-rule 'can', 'read', 'Book'
-      permit-allower.disallows(read-book-request).should.be.false
+      specify 'should disallow guest user from publishing a book' ->
+        permit-allower.disallows(publish-book-request).should.be.true
+
+    context 'can read book' ->
+      before ->
+        rule-repo.register-rule 'can', 'read', 'Book'
+        console.log rule-repo
+
+      specify 'does NOT disallow guest user from reading a book' ->
+        permit-allower.disallows(read-book-request).should.be.false

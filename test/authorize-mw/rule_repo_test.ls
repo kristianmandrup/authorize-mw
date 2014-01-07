@@ -15,13 +15,11 @@ describe 'Rule Repository (RuleRepo)' ->
     rule-repo := new RuleRepo
     #book      := new Book 'Far and away'
 
-
   specify 'has can-rules' ->
     rule-repo.can-rules.should.be.an.instanceof Object
 
   specify 'has cannot-rules' ->
     rule-repo.can-rules.should.be.an.instanceof Object
-
 
   describe 'container-for' ->
     specify 'can' ->
@@ -30,10 +28,7 @@ describe 'Rule Repository (RuleRepo)' ->
     specify 'cannot' ->
       rule-repo.container-for('cannot').should.eql rule-repo.cannot-rules
 
-
-
   describe 'register-rule' ->
-
     before ->
       rule-repo.clear!
 
@@ -44,7 +39,6 @@ describe 'Rule Repository (RuleRepo)' ->
 
     specify 'throws error on invalid rule' ->
       ( -> rule-repo.register-rule 'can', 'read', null).should.throw!
-
 
 
   describe 'add-rule' ->
@@ -63,9 +57,27 @@ describe 'Rule Repository (RuleRepo)' ->
     specify 'throws error if container is not an Object' ->
       ( -> rule-repo.add-rule [], 'read', 'Book' ).should.throw!
 
+  describe 'find-matching-subject' ->
+    var books
+
+    before ->
+      rule-repo.clear!
+      book := new Book title: 'hi molly'
+      books := ['Book', void]
+
+    specify 'matches book on list of books' ->
+      rule-repo.find-matching-subject(books, 'book').should.be.true
+
+    specify 'matches Book on list of books' ->
+      rule-repo.find-matching-subject(books, 'Book').should.be.true
+
+    specify 'matches BooK on list of books' ->
+      rule-repo.find-matching-subject(books, 'BooK').should.be.true
+
+    specify 'does not match BoAk on list of books' ->
+      rule-repo.find-matching-subject(books, 'BoAk').should.be.false
 
   describe 'match-rule' ->
-
     before ->
       rule-repo.can-rules =
         'read': ['Book']

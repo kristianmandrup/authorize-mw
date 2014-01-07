@@ -20,6 +20,9 @@ module.exports = class RuleRepo
     @cannot-rules = {}
     @
 
+  clean: ->
+    @clear!
+
   subject-clazz: (subject)->
     if _.is-type 'Object', subject
       subject-clazz = subject.constructor.display-name
@@ -27,7 +30,8 @@ module.exports = class RuleRepo
       subject-clazz = subject
 
   find-matching-subject: (subjects, subject) ->
-    [subject, subject?.to-lower-case!].any (item) ->
+    clazzes = [subject, subject?.to-lower-case!, subject?.to-lower-case!.camelize!]
+    clazzes.any (item) ->
       subjects.index-of(item) != -1
 
   # TODO: simplify, extract methods?

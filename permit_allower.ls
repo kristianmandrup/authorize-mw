@@ -14,9 +14,10 @@ module.exports = class PermitAllower
   # A cannot rule always wins!
   allows: (access-request) ->
     return false if @disallows access-request
+    console.log 'test-access.can', access-request
     @test-access 'can', access-request
 
   # if no explicit cannot rule matches, we assume the user IS NOT disallowed
   disallows: (access-request) ->
-    #return false if @allows access-request
+    console.log 'test-access.can', access-request
     @test-access 'cannot', access-request
