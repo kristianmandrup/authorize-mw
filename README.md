@@ -255,8 +255,13 @@ Otherwise the permit should be ignored for that access object (if not a full int
 
 Determines if a given access rule should be allowed... (see test)
 
-Note: Currently it looks like it iterates all registered permits. It should be using filtered permits somehow,
-so it only iterates the set of permits that matches the given access object (i.e user and context)
+## PermitMatcher
+
+Matches a permit on either user, action or context:
+
+* UserMatcher
+* ActionMatcher
+* ContextMatcher
 
 ## Testing
 
@@ -270,4 +275,14 @@ To execute individual test, do like this:
 
 `$ mocha test/authorize-mw/permit_test.js`
 
+## Test coverage
 
+The library [istanbul](http://ariya.ofilabs.com/2012/12/javascript-code-coverage-with-istanbul.html) is used for code coverage.
+
+`$ instanbul cover mocha`
+
+ To measure coverage of individual test:
+
+ `$ instanbul cover mocha test/authorize-mw/permit_test.js`
+
+Enjoy!
