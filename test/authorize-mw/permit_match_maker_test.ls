@@ -11,10 +11,31 @@ Book          = require '../fixtures/book'
 PermitMatcher   = require '../../permit_matcher'
 match-makers    = require '../../permit_match_maker'
 
-UserMatcher   = match-makers.UserMatcher
+Intersect       = require '../../intersect'
+
+MatchMaker      = match-makers.MatchMaker
 
 describe 'MatchMaker' ->
+  var matcher
+  var access-request
+
   before ->
+    access-request := {}
+
+  describe 'create' ->
+    before ->
+      matcher        := new MatchMaker access-request
+
+    specify 'must be a user matcher' ->
+      matcher.should.be.an.instance-of MatchMaker
+
+    specify 'must have access request' ->
+      matcher.access-request.should.eql access-request
+
+    specify 'must have an intersect' ->
+      matcher.intersect.should.have.property 'on'
+
+UserMatcher   = match-makers.UserMatcher
 
 describe 'UserMatcher' ->
   var user-matcher
@@ -51,13 +72,13 @@ ActionMatcher = match-makers.ActionMatcher
 describe 'ActionMatcher' ->
   var action-matcher
 
+  var read-access-request
+
+  before ->
+    read-access-request :=
+      action: 'read'
+
   describe 'create' ->
-    var read-access-request
-
-    before ->
-      read-access-request :=
-        action: 'read'
-
     before-each ->
       action-matcher  := new ActionMatcher read-access-request
 
@@ -65,12 +86,6 @@ describe 'ActionMatcher' ->
       action-matcher.access-request.should.eql read-access-request
 
   describe 'match' ->
-    var read-access-request
-
-    before ->
-      read-access-request :=
-        action: 'read'
-
     before-each ->
       action-matcher  := new ActionMatcher read-access-request
 
@@ -78,21 +93,22 @@ describe 'ActionMatcher' ->
       action-matcher.match('read').should.be.true
 
     specify 'should NOT match write action' ->
-      action-matcher.match('write').should.be.true
+      action-matcher.match('write').should.be.false
 
 SubjectMatcher = match-makers.SubjectMatcher
 
 describe 'SubjectMatcher' ->
   var subject-matcher
   var book-access-request
-  var book
+  var book, book-title
+
+  before ->
+    book-title := 'the return of the jedi'
+    book := new Book title: book-title
+    book-access-request :=
+      subject: book
 
   describe 'create' ->
-    before ->
-      book := new Book title: 'the return of the jedi'
-      book-access-request :=
-        subject: book
-
     before-each ->
       subject-matcher  := new SubjectMatcher book-access-request
 
@@ -100,16 +116,11 @@ describe 'SubjectMatcher' ->
       subject-matcher.access-request.should.eql book-access-request
 
   describe 'match' ->
-    before ->
-      book := new Book title: 'the return of the jedi'
-      book-access-request :=
-        subject: book
-
     before-each ->
-      subject-matcher  := new ActionMatcher book-access-request
+      subject-matcher  := new SubjectMatcher book-access-request
 
     specify 'should match book: the return of the jedi' ->
-      subject-matcher.match(title: 'the return of the jedi').should.be.true
+      subject-matcher.match(title: book-title).should.be.true
 
     specify 'should NOT match book: the return to oz' ->
       subject-matcher.match(title: 'the return to oz').should.be.false
@@ -119,9 +130,11 @@ ContextMatcher = match-makers.ContextMatcher
 describe 'ContextMatcher' ->
   var ctx-matcher
   var visitor-access-request
+  var area-ctx
 
   before ->
-    visitor-access-request := {ctx: {area: 'visitior' }}
+    area-ctx := {area: 'visitor' }
+    visitor-access-request := {ctx: area-ctx }
 
   describe 'create' ->
     before-each ->
@@ -135,7 +148,7 @@ describe 'ContextMatcher' ->
       ctx-matcher  := new ContextMatcher visitor-access-request
 
     specify 'should match area: visitor' ->
-      ctx-matcher.match(area: 'visitor').should.be.true
+      ctx-matcher.match(area-ctx).should.be.true
 
     specify 'should NOT match area: member' ->
       ctx-matcher.match(area: 'member').should.be.false

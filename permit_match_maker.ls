@@ -44,7 +44,7 @@ class SubjectMatcher extends MatchMaker
     @set-subject!
 
   set-subject: ->
-    @subject ||= if @access-request? then @access-request.user else {}
+    @subject ||= if @access-request? then @access-request.subject else {}
 
   match: (subject) ->
     @intersect.on subject, @subject
@@ -61,6 +61,7 @@ class ContextMatcher extends MatchMaker
     @intersect.on ctx, @ctx
 
 module.exports =
+  MatchMaker      : MatchMaker
   UserMatcher     : UserMatcher
   ActionMatcher   : ActionMatcher
   SubjectMatcher  : SubjectMatcher
