@@ -219,64 +219,75 @@ The `custom-permit` can be either an Object or a Function.
 
 To facilitate creating generic matchers, a set of `MatchMaker` classes have been defined for each of the keys in the
 access request. These are `UserMatcher`, `ActionMatcher`, `SubjectMatcher`, `ContextMatcher`.
-The can be used either directly by instantion or via convenience methods of `Permit`
+The can be used either directly by instantiation or via the `matching(access)` convenience methods of `Permit`,
+which employs the `AccessMatcher` that in turn contains convenience methods for
+using all the specific access matchers just mentioned!
 
-Examples:
+The `Permit.matching(access)` method returns an `AccessMatcher` instance with convenience methods:
+  * user
+  * role
+  * action
+  * subject
+  * subject-clazz
+  * context
 
-Permit `user-match` method:
-
-```LiveScript
-sexy-permit = permit-for 'a sexy woman',
-  match: (access) ->
-    @user-match access, type: 'sexy' # matches if access intersects with {user: {type: 'sexy'}}
-```
-
-Permit `action-match` method:
-
-```LiveScript
-read-permit = permit-for 'a sexy woman',
-  match: (access) ->
-    @matches(access).action 'read' # matches if access intersects with {action: 'read'}
-```
-
-Permit `subject-match` method:
-
-```LiveScript
-read-permit = permit-for 'a sexy woman',
-  match: (access) ->
-    @matches(access).subject 'Book' # matches if access intersects with {subject: 'Book'}
-```
-
-Permit `context` method:
-
-```LiveScript
-read-permit = permit-for 'a sexy woman',
-  match: (access) ->
-    @matches(access).context area: 'members' # matches if access intersects with {area: 'members'}
-```
-
-Permit `role` method:
+Access `user` method:
 
 ```LiveScript
 sexy-permit = permit-for 'a sexy woman',
   match: (access) ->
-    @matches(access).has-role 'sexy' # matches if access intersects with {user: {role: 'sexy'}}
+    @matching(access).user type: 'sexy' # matches if access intersects with {user: {type: 'sexy'}}
 ```
 
-Permit `subject-clazz` method (chaining):
+Access `action` method:
+
+```LiveScript
+read-permit = permit-for 'a sexy woman',
+  match: (access) ->
+    @matching(access).action 'read' # matches if access intersects with {action: 'read'}
+```
+
+Access  `subject` method:
+
+```LiveScript
+read-permit = permit-for 'a sexy woman',
+  match: (access) ->
+    @matching(access).subject 'Book' # matches if access intersects with {subject: 'Book'}
+```
+
+Access  `context` method:
+
+```LiveScript
+read-permit = permit-for 'a sexy woman',
+  match: (access) ->
+    @matching(access).context area: 'members' # matches if access intersects with {area: 'members'}
+```
+
+Access `role` method:
+
+```LiveScript
+sexy-permit = permit-for 'a sexy woman',
+  match: (access) ->
+    @matching(access).has-role 'sexy' # matches if access intersects with {user: {role: 'sexy'}}
+
+    # same as
+    @matching(access).role('sexy').result!
+```
+
+Access `subject-clazz` method (chaining):
 
 ```LiveScript
 sexy-permit = permit-for 'a sexy woman',
   match: (access) ->
     # matches if {subject: sexy-woman} and sexy-woman.constructor is a Woman class
-    @matches(access).subject-clazz('Man').has-user(type: 'sexy')
+    @matching(access).subject-clazz('Man').has-user(type: 'sexy')
 ```
 
-They can also be used via the `match` method that takes a hash and executes chaining as above
+The `match-on` method takes a hash and executes chaining as above:
 
-`@matches(access).match(subject-clazz: 'Man', user: {type: 'sexy'}, action: 'read')`
+`@matching(access).match-on(subject-clazz: 'Man', user: {type: 'sexy'}, action: 'read')`
 
-Using `@matches(access).match` is the recommended way as it's the most elegant, easy to use DSL.
+Using `@matching(access).match-on` is the recommended way as it's the most elegant, easy to use DSL.
 
 ## Rules
 

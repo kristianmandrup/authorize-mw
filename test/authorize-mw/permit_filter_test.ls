@@ -23,7 +23,7 @@ describe 'permit-filter' ->
       
       user-permit := permit-for 'User',
         match: (access) ->
-          @user-match access
+          @matching(access).has-user
 
     specify 'return only permits that apply for a user' ->
       PermitFilter.filter(access-request).should.eql [user-permit]
@@ -38,18 +38,16 @@ describe 'permit-filter' ->
 
       guest-permit := permit-for 'Guest',
         match: (access) ->
-          user = if access? then access.user else void
-          _.is-type('Object', user) and user.role is 'guest'
+          @matching(access).has-role 'guest'
 
       admin-permit := permit-for 'Admin',
         match: (access) ->
-          user = if access? then access.user else void
-          _.is-type('Object', user) and user.role is 'admin'
+          @matching(access).has-role 'admin'
 
     specify 'return only permits that apply for a guest user' ->
       PermitFilter.filter(access-request).should.eql [guest-permit]
       
-  describe 'admin user filter' ->
+  xdescribe 'admin user filter' ->
     var admin-user, guest-permit, admin-permit, access-request
     before ->
       admin-user  := new User role: 'admin'
@@ -59,13 +57,11 @@ describe 'permit-filter' ->
 
       guest-permit := permit-for 'Guest',
         match: (access) ->
-          user = if access? then access.user else void
-          _.is-type('Object', user) and user.role is 'guest'
+          @matching(access).has-role: 'guest'
 
       admin-permit := permit-for 'Admin',
         match: (access) ->
-          user = if access? then access.user else void
-          _.is-type('Object', user) and user.role is 'admin'
+          @matching(access).has-role: 'admin'
 
     specify 'return only permits that apply for an admin user' ->
       PermitFilter.filter(access-request).should.eql [admin-permit]

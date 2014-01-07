@@ -14,8 +14,11 @@ class MatchMaker
     @set-access-request access-request
     @set-intersect!
 
-  match: (action) ->
-    return true if action is {} or action is undefined
+  match: (value) ->
+    false
+
+  death-match: (name, value) ->
+    return true if @[name] and value is void
     false
 
   set-access-request: (access-request) ->
@@ -33,7 +36,7 @@ class ActionMatcher extends MatchMaker
     @action ||= if @access-request? then @access-request.action else ''
 
   match: (action) ->
-    return true if super action
+    return true if @death-match 'action', action
     @action is action
 
 class UserMatcher extends MatchMaker
@@ -45,7 +48,7 @@ class UserMatcher extends MatchMaker
     @user ||= if @access-request? then @access-request.user else {}
 
   match: (user) ->
-    return true if super user
+    return true if @death-match 'user', user
     @intersect.on user, @user
 
 class SubjectMatcher extends MatchMaker
@@ -57,7 +60,7 @@ class SubjectMatcher extends MatchMaker
     @subject ||= if @access-request? then @access-request.subject else {}
 
   match: (subject) ->
-    return true if super subject
+    return true if @death-match 'subject', subject
     @intersect.on subject, @subject
 
   match-clazz: (subject) ->
@@ -74,7 +77,7 @@ class ContextMatcher extends MatchMaker
     @ctx ||= if @access-request? then @access-request.ctx else {}
 
   match: (ctx) ->
-    return true if super ctx
+    return true if @death-match 'ctx', ctx
     @intersect.on ctx, @ctx
 
 class AccessMatcher
@@ -93,7 +96,7 @@ class AccessMatcher
   context-matcher: ->
     @cm ||= new ContextMatcher(@access-request)
 
-  match: (hash) ->
+  match-on: (hash) ->
     all = hash
     for key in _.keys hash
       match-fun   = @[key]
@@ -101,7 +104,7 @@ class AccessMatcher
 
       if _.is-type 'Function' match-fun
         delete all[key]
-        match-fun.call(@, match-value).match(all)
+        match-fun.call(@, match-value).match-on(all)
     @result!
 
   result: ->
@@ -136,7 +139,7 @@ class AccessMatcher
     @
 
   has-subject-clazz: (clazz) ->
-    @subject-clazz(subject-clazz).result!
+    @subject-clazz(clazz).result!
 
   action: (action) ->
     @update @action-matcher!.match(action)

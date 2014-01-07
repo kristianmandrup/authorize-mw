@@ -31,6 +31,9 @@ module.exports = class Permit
     for permit in @@permits
       permit.clear!
 
+  @clean-all = ->
+    @@clean-permits!
+
   permit-matcher-class: PermitMatcher
   rule-applier-class: RuleApplier
   rule-repo: new RuleRepo

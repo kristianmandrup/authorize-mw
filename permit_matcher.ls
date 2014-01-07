@@ -3,6 +3,7 @@ require 'sugar'
 _         = require 'prelude-ls'
 Util      = require './util'
 Intersect = require './intersect'
+AccessMatcher = require('./permit_match_maker').AccessMatcher
 
 # The matcher is used to determine if the Permit should apply at all in the given access context
 # Given an access-request, it should check the permit via:
@@ -30,12 +31,20 @@ module.exports = class PermitMatcher
 
   custom-ex-match: ->
     if _.is-type 'Function' @permit.ex-match
-      return @permit.ex-match @access-request
+      res = @permit.ex-match @access-request
+      if res.constructor is AccessMatcher
+        throw Error "Wrong use of AccessMatcher in permit.match for permit #{@permit.name}, use .result! or has-xxx method to fix it"
+
+      return res
     false
 
   custom-match: ->
     if _.is-type 'Function' @permit.match
-      return @permit.match @access-request
+      res = @permit.match @access-request
+      if res.constructor is AccessMatcher
+        throw Error "Wrong use of AccessMatcher in permit.match for permit #{@permit.name}, use .result! or has-xxx method to fix it"
+
+      return res
     false
 
   intersect-on: (partial) ->

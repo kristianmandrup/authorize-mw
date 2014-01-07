@@ -6,6 +6,7 @@ Book          = require '../fixtures/book'
 User          = require '../fixtures/user'
 permit-for    = require '../../permit_for'
 PermitMatcher = require '../../permit_matcher'
+Permit        = require '../../permit'
 
 describe 'PermitMatcher' ->
   var user-kris, user-emily
@@ -23,13 +24,13 @@ describe 'PermitMatcher' ->
 
     user-permit := permit-for 'User',
       match: (access) ->
-        @user-match access
+        @matching(access).has-user!
 
       rules: ->
 
     guest-permit := permit-for 'Guest',
       match: (access) ->
-        @role-match access, 'guest'
+        @matching(access).has-role 'guest'
 
       rules: ->
         @ucan 'read', 'Book'
@@ -114,7 +115,7 @@ describe 'PermitMatcher' ->
 
       book-permit := permit-for 'Book',
         match: (access) ->
-          @subject-clazz-match access, 'Book'
+          @matching(access).has-subject-clazz 'Book'
 
         rules: ->
           @ucan 'read', 'Book'
@@ -168,7 +169,7 @@ describe 'PermitMatcher' ->
 
       user-permit := permit-for 'ex User',
         ex-match: (access) ->
-          @user-match access, role: 'admin'
+          @matching(access).has-role 'admin'
 
         rules: ->
           @ucan 'read', 'Book'
@@ -199,11 +200,11 @@ describe 'PermitMatcher' ->
 
     before ->
       user-access-request := {user: {}}
-      access-request := {ctx: void}
+      access-request := {ctx: ''}
 
-      user-permit := permit-for 'ex User',
+      user-permit := permit-for 'has User',
         match: (access) ->
-          @user-match access
+          @matching(access).has-user!
 
         rules: ->
           @ucan 'read', 'Book'
@@ -211,24 +212,27 @@ describe 'PermitMatcher' ->
       matching.permit-matcher       := new PermitMatcher user-permit, user-access-request
       none-matching.permit-matcher  := new PermitMatcher user-permit, access-request
 
-      specify 'does not match access without user' ->
-        none-matching.permit-matcher.match!.should.be.false
+    specify 'does not match access without user' ->
+      none-matching.permit-matcher.match!.should.be.false
 
-      specify 'matches access with user' ->
-        matching.permit-matcher.match!.should.be.true
+    specify 'matches access with user' ->
+      matching.permit-matcher.match!.should.be.true
 
   describe 'match access - complex' ->
-    var valid-access-request, invalid-access-request, access-request-alt
+    var valid-access-request, invalid-access-request, access-request-alt, book
     matching = {}
     none-matching = {}
 
-    before ->
+    before-each ->
+      book := new Book title: 'hello'
       valid-access-request := {user: {type: 'person', role: 'admin'}, subject: book}
-      invalid-access-request := {user: {type: 'person', role: 'admin'}, subject: 'book'}
+      invalid-access-request := {user: {type: 'person', role: 'admin'}, subject: 'blip'}
 
-      user-permit := permit-for 'ex User',
+      Permit.clean-all!
+
+      user-permit := permit-for 'complex User',
         match: (access) ->
-          @matching(acces).user(type: 'person').role('admin').subject-clazz('Book').result!
+          @matching(access).user(type: 'person').role('admin').subject-clazz('Book').result!
 
         rules: ->
           @ucan 'read', 'Book'
@@ -236,8 +240,26 @@ describe 'PermitMatcher' ->
       matching.permit-matcher       := new PermitMatcher user-permit, valid-access-request
       none-matching.permit-matcher  := new PermitMatcher user-permit, invalid-access-request
 
-      specify 'does not match access without user' ->
-        none-matching.permit-matcher.match!.should.be.false
+    specify 'does not match access without user' ->
+      none-matching.permit-matcher.match!.should.be.false
 
-      specify 'matches access with user' ->
-        matching.permit-matcher.match!.should.be.true
+    specify 'matches access with user' ->
+      matching.permit-matcher.match!.should.be.true
+
+  describe 'match access - complex invalid' ->
+    var valid-access-request, permit-matcher
+
+    before ->
+      valid-access-request := {user: {type: 'person', role: 'admin'}, subject: book}
+
+      user-permit := permit-for 'ex User',
+        match: (access) ->
+          @matching(access).user(type: 'person').role('admin').subject-clazz('Book')
+
+        rules: ->
+          @ucan 'read', 'Book'
+
+      permit-matcher       := new PermitMatcher user-permit, valid-access-request
+
+      specify 'AccessMatcher chaining in .match which returns AccessMatcher should throw with usage warning' ->
+        ( -> permit-matcher.match! ).should.throw
