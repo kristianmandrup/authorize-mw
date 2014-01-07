@@ -201,15 +201,40 @@ describe 'PermitMatcher' ->
       user-access-request := {user: {}}
       access-request := {ctx: void}
 
-      matching.permit-matcher := new PermitMatcher user-access-request
-      none-matching.permit-matcher := new PermitMatcher access-request
-
       user-permit := permit-for 'ex User',
         match: (access) ->
           @user-match access
 
         rules: ->
           @ucan 'read', 'Book'
+
+      matching.permit-matcher       := new PermitMatcher user-permit, user-access-request
+      none-matching.permit-matcher  := new PermitMatcher user-permit, access-request
+
+      specify 'does not match access without user' ->
+        none-matching.permit-matcher.match!.should.be.false
+
+      specify 'matches access with user' ->
+        matching.permit-matcher.match!.should.be.true
+
+  describe 'match access - complex' ->
+    var valid-access-request, invalid-access-request, access-request-alt
+    matching = {}
+    none-matching = {}
+
+    before ->
+      valid-access-request := {user: {type: 'person', role: 'admin'}, subject: book}
+      invalid-access-request := {user: {type: 'person', role: 'admin'}, subject: 'book'}
+
+      user-permit := permit-for 'ex User',
+        match: (access) ->
+          @matching(acces).user(type: 'person').role('admin').subject-clazz('Book').result!
+
+        rules: ->
+          @ucan 'read', 'Book'
+
+      matching.permit-matcher       := new PermitMatcher user-permit, valid-access-request
+      none-matching.permit-matcher  := new PermitMatcher user-permit, invalid-access-request
 
       specify 'does not match access without user' ->
         none-matching.permit-matcher.match!.should.be.false

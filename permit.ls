@@ -15,6 +15,7 @@ UserMatcher     = matchers.UserMatcher
 SubjectMatcher  = matchers.SubjectMatcher
 ActionMatcher   = matchers.ActionMatcher
 ContextMatcher  = matchers.ContextMatcher
+AccessMatcher   = matchers.AccessMatcher
 
 valid_rules = (rules)->
   _.is-type('Object', rules) or _.is-type('Function', rules)
@@ -78,23 +79,9 @@ module.exports = class Permit
   disallows: (access-request) ->
     @allower!.disallows access-request
 
-  user-match: (access, user) ->
-    new UserMatcher(access).match user
-
-  role-match: (access, role) ->
-    new UserMatcher(access).match {role: role}
-
-  subject-match: (access, subject) ->
-    new SubjectMatcher(access).match subject
-
-  subject-clazz-match: (access, clazz) ->
-    new SubjectMatcher(access).match-clazz clazz
-
-  action-match: (access, action) ->
-    new ActionMatcher(access).match action
-
-  context-match: (access, ctx) ->
-    new ContextMatcher(access).match ctx
+  # TODO: should do clever caching via md5 hash?
+  matching: (access) ->
+    new AccessMatcher access
 
   # See if this permit should apply (be used) for the given access request
   matches: (access-request) ->

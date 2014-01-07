@@ -18,7 +18,8 @@ describe 'permit-for' ->
     before ->
       guest-permit := permit-for 'Guest',
         match: (access) ->
-          @user-match access, role: 'guest'
+          @matching(access).role 'guest'
+
         rules: ->
       guest-permit.clear!
 

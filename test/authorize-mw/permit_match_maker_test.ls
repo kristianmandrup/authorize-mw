@@ -172,3 +172,53 @@ describe 'ContextMatcher' ->
 
     specify 'should match on no argument' ->
       ctx-matcher.match!.should.be.true
+
+AccessMatcher = match-makers.AccessMatcher
+
+describe 'AccessMatcher' ->
+  var access-matcher
+  var complex-access-request
+  var book
+
+  before ->
+    book := new Book 'a book'
+    complex-access-request :=
+      user:
+        role: 'admin'
+      action: 'read'
+      subject: book
+
+    access-matcher  := new AccessMatcher complex-access-request
+
+  describe 'create' ->
+    specify 'must have complex access request' ->
+      access-matcher.access-request.should.eql complex-access-request
+
+  describe 'chaining' ->
+    before-each ->
+      access-matcher  := new AccessMatcher complex-access-request
+
+    specify 'should match chaining: role(admin).action(read)' ->
+      access-matcher.role('admin').action('read').result!.should.be.true
+
+    describe 'has-action calls result!' ->
+      specify 'should match chaining: role(admin).action(read)' ->
+        access-matcher.role('admin').has-action('read').should.be.true
+
+
+  describe 'match' ->
+    before-each ->
+      access-matcher  := new AccessMatcher complex-access-request
+
+    specify 'should match action: read' ->
+      access-matcher.match(action: 'read').should.be.true
+
+    specify 'should match role: admin' ->
+      access-matcher.match(role: 'admin').should.be.true
+
+    specify 'should match role: admin and action: read' ->
+      access-matcher.match(role: 'admin', action: 'read').should.be.true
+
+    specify 'should NOT match role: admin and action: write' ->
+      access-matcher.match(role: 'admin', action: 'write').should.be.false
+

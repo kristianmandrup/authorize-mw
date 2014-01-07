@@ -20,7 +20,7 @@ module.exports = class PermitMatcher
 
   match: ->
     # includes and excludes can contain a partial (object) used to do intersection test on access-request
-    (@include! or @custom-match!) and not (@exclude! or @custom-exmatch!)
+    (@include! or @custom-match!) and not (@exclude! or @custom-ex-match!)
 
   include: ->
     @intersect-on @permit.includes
