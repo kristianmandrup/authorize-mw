@@ -23,17 +23,25 @@ describe 'MatchMaker' ->
     access-request := {}
 
   describe 'create' ->
-    before ->
-      matcher        := new MatchMaker access-request
+    context 'no access request' ->
+      before ->
+        matcher  := new MatchMaker
 
-    specify 'must be a user matcher' ->
-      matcher.should.be.an.instance-of MatchMaker
+      specify 'must have access request' ->
+        matcher.access-request.should.eql {}
 
-    specify 'must have access request' ->
-      matcher.access-request.should.eql access-request
+    context 'empty access request' ->
+      before ->
+        matcher        := new MatchMaker access-request
 
-    specify 'must have an intersect' ->
-      matcher.intersect.should.have.property 'on'
+      specify 'must be a user matcher' ->
+        matcher.should.be.an.instance-of MatchMaker
+
+      specify 'must have access request' ->
+        matcher.access-request.should.eql access-request
+
+      specify 'must have an intersect' ->
+        matcher.intersect.should.have.property 'on'
 
 UserMatcher   = match-makers.UserMatcher
 
@@ -67,6 +75,9 @@ describe 'UserMatcher' ->
     specify 'should NOT match guest role' ->
       user-matcher.match(role: 'guest').should.be.false
 
+    specify 'should match on no argument' ->
+      user-matcher.match!.should.be.true
+
 ActionMatcher = match-makers.ActionMatcher
 
 describe 'ActionMatcher' ->
@@ -94,6 +105,9 @@ describe 'ActionMatcher' ->
 
     specify 'should NOT match write action' ->
       action-matcher.match('write').should.be.false
+
+    specify 'should match on no argument' ->
+      action-matcher.match!.should.be.true
 
 SubjectMatcher = match-makers.SubjectMatcher
 
@@ -125,6 +139,9 @@ describe 'SubjectMatcher' ->
     specify 'should NOT match book: the return to oz' ->
       subject-matcher.match(title: 'the return to oz').should.be.false
 
+    specify 'should match on no argument' ->
+      subject-matcher.match!.should.be.true
+
 ContextMatcher = match-makers.ContextMatcher
 
 describe 'ContextMatcher' ->
@@ -152,3 +169,6 @@ describe 'ContextMatcher' ->
 
     specify 'should NOT match area: member' ->
       ctx-matcher.match(area: 'member').should.be.false
+
+    specify 'should match on no argument' ->
+      ctx-matcher.match!.should.be.true

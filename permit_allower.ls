@@ -12,12 +12,14 @@ module.exports = class PermitAllower
 
   # if permit disallows, then it doesn't matter if there is also a rule that allows
   # A cannot rule always wins!
-  allows: (access-request) ->
-    return false if @disallows access-request
-    console.log 'test-access.can', access-request
+  allows: (access-request, ignore-inverse) ->
+    unless ignore-inverse
+      return false if @disallows(access-request, true)
     @test-access 'can', access-request
 
+  # if permit allows, then it doesn't matter if there is also a rule that disallows
   # if no explicit cannot rule matches, we assume the user IS NOT disallowed
-  disallows: (access-request) ->
-    console.log 'test-access.can', access-request
+  disallows: (access-request, ignore-inverse) ->
+    unless ignore-inverse
+      return false if @allows(access-request, true)
     @test-access 'cannot', access-request

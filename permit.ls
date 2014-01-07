@@ -9,6 +9,13 @@ PermitAllower = require './permit_allower'
 RuleApplier   = require './rule_applier'
 RuleRepo      = require './rule_repo'
 
+matchers      = require './permit_match_maker'
+
+UserMatcher     = matchers.UserMatcher
+SubjectMatcher  = matchers.SubjectMatcher
+ActionMatcher   = matchers.ActionMatcher
+ContextMatcher  = matchers.ContextMatcher
+
 valid_rules = (rules)->
   _.is-type('Object', rules) or _.is-type('Function', rules)
 
@@ -46,8 +53,6 @@ module.exports = class Permit
   clear: ->
     @rule-repo.clear!
 
-
-
   # used by permit-for to extend specific permit from base class (prototype)
   use: (obj) ->
     obj = obj! if _.is-type 'Function', obj
@@ -74,6 +79,18 @@ module.exports = class Permit
   disallows: (access-request) ->
     @allower!.disallows access-request
 
+  user-match: (access, user) ->
+    console.log "user-match", access, user
+    new UserMatcher(access).match user
+
+  subject-match: (access, subject) ->
+    new UserMatcher(access).match subject
+
+  action-match: (access, action) ->
+    new ActionMatcher(access).match action
+
+  context-match: (access, ctx) ->
+    new ContextMatcher(access).match ctx
 
   # See if this permit should apply (be used) for the given access request
   matches: (access-request) ->

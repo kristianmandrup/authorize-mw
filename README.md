@@ -279,10 +279,18 @@ To execute individual test, do like this:
 
 The library [istanbul](http://ariya.ofilabs.com/2012/12/javascript-code-coverage-with-istanbul.html) is used for code coverage.
 
-`$ instanbul cover mocha`
+See [code-coverage-with-mocha](http://stackoverflow.com/questions/16633246/code-coverage-with-mocha) for use with mocha.
+
+```
+npm install -g istanbul
+istanbul cover _mocha -- -R spec
+open coverage/lcov-report/index.html
+```
+
+`$ instanbul cover _mocha`
 
  To measure coverage of individual test:
 
- `$ instanbul cover mocha test/authorize-mw/permit_test.js`
+ `$ instanbul cover _mocha test/authorize-mw/permit_test.js`
 
 Enjoy!

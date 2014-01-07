@@ -23,9 +23,8 @@ describe 'permit-filter' ->
       
       user-permit := permit-for 'User',
         match: (access) ->
-          user = if access? then access.user else void
-          _.is-type 'Object' user
-      
+          @user-match access
+
     specify 'return only permits that apply for a user' ->
       PermitFilter.filter(access-request).should.eql [user-permit]
 

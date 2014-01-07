@@ -130,9 +130,7 @@ describe 'Permit' ->
       publish-book-request  := make-request 'publish'
 
       permit.match = (access) ->
-        action = if access? then access.action else {}
-        action is 'read'
-
+        @action-match access, 'read'
 
     specify 'will match request to read a book' ->
       permit.matches(read-book-request).should.be.true

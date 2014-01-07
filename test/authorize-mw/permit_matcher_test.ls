@@ -22,16 +22,13 @@ describe 'PermitMatcher' ->
 
     user-permit := permit-for 'User',
       match: (access) ->
-        user = if access? then access.user else {}
-        _.is-type 'Object', user
+        @user-match access
 
       rules: ->
 
     guest-permit := permit-for 'Guest',
       match: (access) ->
-        user = if access? then access.user else {}
-        _.is-type 'Object', user
-        user.role is 'guest'
+        @user-match access, role: 'guest'
 
       rules: ->
         @ucan 'read', 'Book'
@@ -117,8 +114,7 @@ describe 'PermitMatcher' ->
       
       user-permit := permit-for 'User',
         match: (access) ->
-          user = if access? then access.user else void
-          _.is-type 'Object', user
+          @user-match access
 
         rules: ->
           @ucan 'read', 'Book'
@@ -152,8 +148,7 @@ describe 'PermitMatcher' ->
 
       user-permit := permit-for 'ex User',
         ex-match: (access) ->
-          user = if access? then access.user else void
-          _.is-type 'Object', user
+          @user-match access
 
         rules: ->
           @ucan 'read', 'Book'
@@ -188,8 +183,7 @@ describe 'PermitMatcher' ->
 
       user-permit := permit-for 'ex User',
         match: (access) ->
-          user = if access? then access.user else void
-          _.is-type 'Object', user
+          @user-match access
 
         rules: ->
           @ucan 'read', 'Book'
