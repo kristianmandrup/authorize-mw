@@ -1,3 +1,5 @@
+permit-for = require '../../permit_for'
+
 bar-permit = permit-for 'a man walking into the bar', ->
   # return true if this permit applies for this access obj
   match: (access) ->
@@ -6,9 +8,9 @@ bar-permit = permit-for 'a man walking into the bar', ->
   # we will execute all methods under rules :)
   rules:
     manage: ->
-      can 'manage' ['post', 'comment']
+      @ucan 'manage' ['post', 'comment']
     publish: ->
-      can 'publish' ['post']
+      @ucan 'publish' ['post']
 
 sexy-permit = permit-for 'a sexy woman',
   # return true if this permit does not apply (should be excluded!) this access obj
@@ -18,7 +20,7 @@ sexy-permit = permit-for 'a sexy woman',
 
   rules:
     manage: ->
-      can 'manipulate' ['person']
+      @ucan 'manipulate' ['person']
 
 
 # factory to create permit class (see below)
@@ -33,11 +35,10 @@ project-admin-permit = permit-for 'project admins' ->
     {context: 'dashboard'}
 
   rules: ->
-    can 'manage' @model
+    @ucan 'manage' @model
 
 # The permits visible to the outside (those that require this module!)
-module.exports = {
+module.exports =
   sexy-permit: sexy-permit
   bar-permit: bar-permit
   project-admin-permit: project-admin-permit
-}
