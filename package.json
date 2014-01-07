@@ -5,7 +5,8 @@
   "dependencies": {
     "lodash": "*",
     "prelude-ls": "*",
-    "sugar": "*"
+    "sugar": "*",
+    "deep-extend": "*"
   },
   "scripts": {
     "test": "make test",

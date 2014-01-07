@@ -36,6 +36,9 @@ class ActionMatcher extends MatchMaker
     @action ||= if @access-request? then @access-request.action else ''
 
   match: (action) ->
+    if _.is-type 'Function' action
+      return action.call @action
+
     return true if @death-match 'action', action
     @action is action
 
@@ -48,6 +51,9 @@ class UserMatcher extends MatchMaker
     @user ||= if @access-request? then @access-request.user else {}
 
   match: (user) ->
+    if _.is-type 'Function' user
+      return user.call @user
+
     return true if @death-match 'user', user
     @intersect.on user, @user
 
@@ -60,6 +66,8 @@ class SubjectMatcher extends MatchMaker
     @subject ||= if @access-request? then @access-request.subject else {}
 
   match: (subject) ->
+    if _.is-type 'Function' subject
+      return subject.call @subject
     return true if @death-match 'subject', subject
     @intersect.on subject, @subject
 
@@ -77,6 +85,9 @@ class ContextMatcher extends MatchMaker
     @ctx ||= if @access-request? then @access-request.ctx else {}
 
   match: (ctx) ->
+    if _.is-type 'Function' ctx
+      return ctx.call @ctx
+
     return true if @death-match 'ctx', ctx
     @intersect.on ctx, @ctx
 
@@ -152,8 +163,15 @@ class AccessMatcher
     @update @context-matcher!.match(ctx)
     @
 
+  ctx: (ctx) ->
+    @context ctx
+
   has-context: (context) ->
     @context(context).result!
+
+  has-ctx: (context) ->
+    @ctx(context).result!
+
 
   has: (name, value) ->
     @[name](value).result!

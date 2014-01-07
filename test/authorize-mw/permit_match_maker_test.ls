@@ -173,6 +173,17 @@ describe 'ContextMatcher' ->
     specify 'should match on no argument' ->
       ctx-matcher.match!.should.be.true
 
+  describe 'match function' ->
+    before-each ->
+      visitor-access-request :=
+        ctx:
+          auth: 'yes'
+
+      ctx-matcher  := new ContextMatcher visitor-access-request
+
+    specify 'should match -> auth is yes' ->
+      ctx-matcher.match( -> @auth is 'yes').should.be.true
+
 AccessMatcher = match-makers.AccessMatcher
 
 describe 'AccessMatcher' ->

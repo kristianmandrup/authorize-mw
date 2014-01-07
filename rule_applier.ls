@@ -107,6 +107,7 @@ module.exports = class RuleApplier
       @rules!
     when 'object'
       @apply-default-rules!
+
     else
       throw Error "rules must be a Function or an Object, was: #{@rules}"
 

@@ -21,11 +21,20 @@ valid_rules = (rules)->
   _.is-type('Object', rules) or _.is-type('Function', rules)
 
 module.exports = class Permit
+  (@name = 'unknown', @description = '') ->
+    unless _.is-type 'String', @name
+      throw Error "Name of permit must be a String, was: #{@name}"
+
+    @rule-repo = new RuleRepo @name
+
   # class methods/variables
   @permits = []
 
   @clear-permits = ->
     @@permits = []
+
+  @clear-all = ->
+    @@clear-permits!
 
   @clean-permits = ->
     for permit in @@permits
@@ -36,15 +45,10 @@ module.exports = class Permit
 
   permit-matcher-class: PermitMatcher
   rule-applier-class: RuleApplier
-  rule-repo: new RuleRepo
 
   # get a named permit
   @get = (name) ->
     @permits[name] || throw Error("No permit '#{name}' is registered")
-
-  (@name = 'unknown', @description = '') ->
-    unless _.is-type 'String', @name
-      throw Error "Name of permit must be a String, was: #{@name}"
 
   init: ->
     if valid_rules @rules
@@ -92,7 +96,9 @@ module.exports = class Permit
 
   # always called (can be overridden for custom behavior)
   apply-rules: (access-request) ->
-    @rule-applier(access-request).apply-rules!
+    unless @applied-rules
+      @rule-applier(access-request).apply-rules!
+    @applied-rules = true
 
   can-rules: ->
     @rule-repo.can-rules

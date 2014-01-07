@@ -30,11 +30,21 @@ class GuestPermit extends Permit
 describe 'Permit' ->
   var access, permit, guest-permit, admin-permit
 
+  setup-guest-permit = ->
+    guest-permit    := permit-for GuestPermit, 'books', ->
+      rules:
+        read: ->
+          @ucan 'read' 'Book'
+        write: ->
+          @ucan 'write' 'Book'
+        default: ->
+          @ucan 'read' 'any'
+
+
   before ->
     permit          := new Permit
     guest-permit    := new GuestPermit
     admin-permit    := new AdminPermit
-
 
   describe 'init creates a permit ' ->
     specify 'with the name unknown' ->
@@ -108,6 +118,15 @@ describe 'Permit' ->
     specify 'has a rule-repo' ->
       permit.rule-repo.constructor.should.eql RuleRepo
 
+    specify 'has same name as permit' ->
+      permit.rule-repo.name.should.eql permit.name
+
+    specify 'has empty can-rules' ->
+      permit.rule-repo.can-rules.should.eql {}
+
+    specify 'has empty cannot-rules' ->
+      permit.rule-repo.can-rules.should.eql {}
+
   describe 'allower' ->
     specify 'has an allower' ->
       permit.allower!.constructor.should.eql PermitAllower
@@ -153,16 +172,8 @@ describe 'Permit' ->
       permit.cannot-rules!.should.be.eql permit.rule-repo.cannot-rules
 
   describe 'Rules application' ->
-    var guest-permit
     before ->
-      guest-permit    := permit-for GuestPermit, 'books', ->
-        rules:
-          read: ->
-            @ucan 'read' 'Book'
-          write: ->
-            @ucan 'write' 'Book'
-          default: ->
-            @ucan 'read' 'any'
+      setup-guest-permit!
 
     # auto applies static rules by default (in init) as part of construction!
     describe 'static rules application' ->
@@ -174,7 +185,7 @@ describe 'Permit' ->
     describe 'dynamic rules application' ->
       var book, access-request
 
-      before ->
+      before-each ->
           book := new Book 'a book'
           access-request :=
             user:
@@ -182,7 +193,7 @@ describe 'Permit' ->
             action: 'read'
             subject: book
 
-          guest-permit.clear!
+          setup-guest-permit!
           # dynamic application when access-request passed
           guest-permit.apply-rules access-request
 
@@ -191,3 +202,29 @@ describe 'Permit' ->
 
       specify 'does NOT register a write-book rule' ->
         ( -> guest-permit.can-rules!['write'].should).should.throw
+
+
+    describe 'dynamic rules application - double!' ->
+      var book, access-request
+
+      before ->
+          book := new Book 'a book'
+          access-request :=
+            user:
+              role: 'admin'
+            action: 'read'
+            subject: book
+
+          setup-guest-permit!
+
+          # dynamic application when access-request passed
+          guest-permit.apply-rules access-request
+
+          console.log 'can-rules', guest-permit.can-rules!
+
+          guest-permit.apply-rules access-request
+
+          console.log 'can-rules', guest-permit.can-rules!
+
+      specify 'registers a SINGLE read-book rule' ->
+        guest-permit.can-rules!['read'].should.eql ['Book']

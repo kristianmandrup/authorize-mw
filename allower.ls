@@ -22,6 +22,8 @@ module.exports = class Allower
 
   test: (allow-type) ->
     for permit in @permits
+      console.log 'permit', permit
+
       # apply dynamic rules
       permit.apply-rules @access-request
       return true if permit[allow-type] @access-request

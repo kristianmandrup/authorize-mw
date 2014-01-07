@@ -1,3 +1,5 @@
+_ = require 'prelude-ls'
+
 flatten = (items, res) ->
   res = [] if not res
   return items if typeof! items == 'String'
@@ -20,6 +22,6 @@ normalize = (items, recursed) ->
     )
   else
     throw Error "#{items} #{typeof! items} can't be normalized, must be a Function, String or Array"
-  flatten normalized
+  _.unique flatten(normalized)
 
 module.exports = normalize

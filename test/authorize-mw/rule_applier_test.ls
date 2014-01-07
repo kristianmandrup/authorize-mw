@@ -179,3 +179,15 @@ describe 'Rule Applier (RuleApplier)' ->
         write: ['Book']
       }
 
+  # TODO: Create tests to ensure we don't end up with duplication of subjects for a given action
+  # See use of _.unique in rule_applier
+
+  # Example from permit_test
+          # dynamic application when access-request passed
+          # guest-permit.apply-rules access-request
+
+          # console.log 'can-rules', guest-permit.can-rules!
+
+          # guest-permit.apply-rules access-request
+
+          # console.log 'can-rules', guest-permit.can-rules!
