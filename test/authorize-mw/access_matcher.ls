@@ -54,7 +54,7 @@ describe 'AccessMatcher' ->
       specify 'should match chaining: role(admin).action(read).user().has-subject()' ->
         access-matcher.role('admin').action('read').user!.has-subject!.should.be.true
 
-  describe 'match' ->
+  describe 'match-on' ->
     before-each ->
       access-matcher  := new AccessMatcher complex-access-request
 
