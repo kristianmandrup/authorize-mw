@@ -88,15 +88,28 @@ module.exports = class RuleRepo implements Debugger
     rule-subjects = rule-subjects.concat subjects
 
     rule-subjects = rule-subjects.map (subject) ->
-      subject.camelize true
+      val = subject.camelize true
+      if val is 'Any' then '*' else val
 
     unique-subjects = _.unique rule-subjects
 
-    rule-container[action] = unique-subjects
+    action-subjects = rule-container[action]
+
+    unless _.is-type 'Array', action-subjects
+      action-subjects = []
+
+    rule-container[action] = @register-action-subjects action-subjects, unique-subjects
 
     if action is 'manage'
+      self = @
       ['create', 'edit', 'delete'].each (action) ->
-        rule-container[action] = unique-subjects
+        rule-container[action] = self.register-action-subjects action-subjects, unique-subjects
+
+    # console.log 'action subjects', rule-container[action]
+
+  register-action-subjects: (action-container, subjects) ->
+    # console.log "action-container", action-container, subjects
+    action-container.concat(subjects).unique!
 
   container-for: (act) ->
     act = act.to-lower-case!

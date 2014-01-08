@@ -33,7 +33,7 @@ describe 'Rule Applier (RuleApplier)' ->
     book          := new Book 'Far and away'
 
   # can create, edit and delete a Book
-  describe 'manage book' ->
+  describe 'manage paper' ->
     context 'applied default rule: manage Paper' ->
       before ->
         rules.manage-paper :=
@@ -119,7 +119,7 @@ describe 'Rule Applier (RuleApplier)' ->
         }
 
   # can create, edit and delete any subject
-  xdescribe 'ensure merge and not override of registered rules' ->
+  describe 'ensure merge and not override of registered rules' ->
     context 'applied default rule: manage any and edit Paper' ->
       var manage-rules
 
@@ -131,5 +131,5 @@ describe 'Rule Applier (RuleApplier)' ->
 
         exec-rule-applier rules.manage-any
 
-      specify 'should merge rules - edit: *, Paper' ->
-        rule-repo.can-rules.edit-should.eql edit: ['*', 'Paper']
+      specify 'should merge rules for edit: *, Paper' ->
+        rule-repo.can-rules.edit.should.eql ['*', 'Paper']
