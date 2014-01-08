@@ -9,7 +9,9 @@ require 'sugar'
 
 normalize = require './normalize'
 
-module.exports = class RuleRepo
+Debugger = require './debugger'
+
+module.exports = class RuleRepo implements Debugger
   (@name) ->
 
   can-rules: {}

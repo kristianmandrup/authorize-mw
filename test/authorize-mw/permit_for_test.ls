@@ -40,7 +40,7 @@ describe 'permit-for' ->
     specify 'only first guest permit registered' ->
       Permit.permits['Guest'].number.should.eql 1
 
-  describe 'guest permit' ->
+  context 'guest permit' ->
     var guest-permit
     before ->
       guest-permit := permit-for 'Guest',
@@ -62,7 +62,7 @@ describe 'permit-for' ->
     specify 'has empty cannotRules' ->
       guest-permit.cannot-rules!.should.eql {}
 
-  describe 'admin permit' ->
+  context 'admin permit' ->
     var admin-permit
     
     before ->

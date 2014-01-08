@@ -3,7 +3,7 @@ require 'sugar'
 _         = require 'prelude-ls'
 Util      = require './util'
 Intersect = require './intersect'
-AccessMatcher = require('./permit_match_maker').AccessMatcher
+AccessMatcher = require('./matchers').AccessMatcher
 
 # The matcher is used to determine if the Permit should apply at all in the given access context
 # Given an access-request, it should check the permit via:
@@ -14,7 +14,13 @@ AccessMatcher = require('./permit_match_maker').AccessMatcher
 # which may contain objects used to test intersection on the access-request
 # if any of all these gives a positive match, the permit should be used for the access-request
 # otherwise the permit will be ignored
-module.exports = class PermitMatcher
+
+# To enable debugging, simply do:
+#   PermitMatcher.debug-on!
+
+Debugger = require './debugger'
+
+module.exports = class PermitMatcher implements Debugger
   (@permit, @access-request) ->
     @intersect = Intersect()
     @validate!
@@ -36,7 +42,9 @@ module.exports = class PermitMatcher
         throw Error "Wrong use of AccessMatcher in permit.match for permit #{@permit.name}, use .result! or has-xxx method to fix it"
 
       return res
-    false
+    else
+      @debug "permit.ex-match function not found for permit: #{@permit}"
+      false
 
   custom-match: ->
     if _.is-type 'Function' @permit.match
@@ -45,7 +53,9 @@ module.exports = class PermitMatcher
         throw Error "Wrong use of AccessMatcher in permit.match for permit #{@permit.name}, use .result! or has-xxx method to fix it"
 
       return res
-    false
+    else
+      @debug "permit.match function not found for permit: #{@permit}"
+      false
 
   intersect-on: (partial) ->
     return false unless partial?
@@ -58,5 +68,5 @@ module.exports = class PermitMatcher
   validate: ->
     # use object intersection test if permit has includes or excludes
     throw Error "PermitMatcher missing permit" unless @permit
-    if @access-request? and _.is-type 'Unknown' @access-request
+    if @access-request? and @access-request is undefined
       throw Error "access-request is undefined"

@@ -4,12 +4,13 @@ require 'sugar'
 
 Util = require './util'
 
-PermitMatcher = require './permit_matcher'
-PermitAllower = require './permit_allower'
-RuleApplier   = require './rule_applier'
-RuleRepo      = require './rule_repo'
+PermitRegistry  = require './permit_registry'
+PermitMatcher   = require './permit_matcher'
+PermitAllower   = require './permit_allower'
+RuleApplier     = require './rule_applier'
+RuleRepo        = require './rule_repo'
 
-matchers      = require './permit_match_maker'
+matchers        = require './matchers'
 
 UserMatcher     = matchers.UserMatcher
 SubjectMatcher  = matchers.SubjectMatcher
@@ -17,59 +18,22 @@ ActionMatcher   = matchers.ActionMatcher
 ContextMatcher  = matchers.ContextMatcher
 AccessMatcher   = matchers.AccessMatcher
 
+Debugger = require './debugger'
+
 valid_rules = (rules)->
   _.is-type('Object', rules) or _.is-type('Function', rules)
 
-module.exports = class Permit
+module.exports = class Permit implements Debugger
   (@name, @description = '') ->
-    @@register-permit @
-
+    PermitRegistry.register-permit @
     @rule-repo = new RuleRepo @name
-
-
-
-  # class methods/variables
-  @permits = []
-  @permit-counter = 0
-
-  @calc-name = (name) ->
-    if name is undefined
-      name = "Permit-#{@@permit-counter}"
-
-    unless _.is-type 'String', name
-      throw Error "Name of permit must be a String, was: #{name}"
-    name
-
-  @register-permit = (permit) ->
-    permit.name = @calc-name permit.name
-    name = permit.name
-
-    if Permit.permits[name]
-      throw Error "A Permit named: #{name} is already registered, please use a different name!"
-
-    # register permit in Permit.permit
-    Permit.permits[name] = permit
-    @@permit-counter = @@permit-counter+1
-
-  @clear-permits = ->
-    @@permits = []
-
-  @clear-all = ->
-    @@clear-permits!
-
-  @clean-permits = ->
-    for permit in @@permits
-      permit.clear!
-
-  @clean-all = ->
-    @@clean-permits!
 
   permit-matcher-class: PermitMatcher
   rule-applier-class: RuleApplier
 
   # get a named permit
   @get = (name) ->
-    @permits[name] || throw Error("No permit '#{name}' is registered")
+    PermitRegistry.permits[name] || throw Error("No permit '#{name}' is registered")
 
   init: ->
     if valid_rules @rules
@@ -89,14 +53,11 @@ module.exports = class Permit
       lo.extend @, obj
     else throw Error "Can only extend permit with an Object, was: #{typeof obj}"
 
+  # default empty rules
   rules: ->
 
-  matcher: (access-request) ->
-    new @permit-matcher-class @, access-request
-
-  rule-applier: (access-request) ->
-    access-request = null unless _.is-type 'Object', access-request
-    new @rule-applier-class @rule-repo, @rules, access-request
+  # Access allowance
+  # ----------------
 
   allower: ->
     new PermitAllower @rule-repo
@@ -107,13 +68,26 @@ module.exports = class Permit
   disallows: (access-request) ->
     @allower!.disallows access-request
 
+  # Permit matching
+  # ----------------
+
   # TODO: should do clever caching via md5 hash?
   matching: (access) ->
     new AccessMatcher access
 
+  matcher: (access-request) ->
+    new @permit-matcher-class @, access-request
+
   # See if this permit should apply (be used) for the given access request
   matches: (access-request) ->
     @matcher(access-request).match!
+
+  # Rule Application
+  # ----------------
+
+  rule-applier: (access-request) ->
+    access-request = null unless _.is-type 'Object', access-request
+    new @rule-applier-class @rule-repo, @rules, access-request
 
   # always called (can be overridden for custom behavior)
   apply-rules: (access-request) ->

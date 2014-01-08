@@ -7,8 +7,10 @@ AccessRequest = require './access_request'
 
 deep-extend = require 'deep-extend'
 
+Debugger = require './debugger'
+
 # Always one Ability per User
-module.exports = class Ability
+module.exports = class Ability implements Debugger
   (@user) ->
 
   # adds the user of the ability to the access-request object

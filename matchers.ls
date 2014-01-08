@@ -9,7 +9,9 @@ Intersect = require './intersect'
 _ = require 'prelude-ls'
 require 'sugar'
 
-class MatchMaker
+Debugger = require './debugger'
+
+class BaseMatcher implements Debugger
   (access-request) ->
     @set-access-request access-request
     @set-intersect!
@@ -27,7 +29,7 @@ class MatchMaker
   set-intersect: ->
     @intersect ||= Intersect()
 
-class ActionMatcher extends MatchMaker
+class ActionMatcher extends BaseMatcher
   (@access-request) ->
     super ...
     @set-action!
@@ -42,7 +44,7 @@ class ActionMatcher extends MatchMaker
     return true if @death-match 'action', action
     @action is action
 
-class UserMatcher extends MatchMaker
+class UserMatcher extends BaseMatcher
   (@access-request) ->
     super ...
     @set-user!
@@ -57,7 +59,7 @@ class UserMatcher extends MatchMaker
     return true if @death-match 'user', user
     @intersect.on user, @user
 
-class SubjectMatcher extends MatchMaker
+class SubjectMatcher extends BaseMatcher
   (@access-request) ->
     super ...
     @set-subject!
@@ -76,7 +78,7 @@ class SubjectMatcher extends MatchMaker
     return false unless @subject and @subject.constructor
     @subject.constructor.display-name is clazz
 
-class ContextMatcher extends MatchMaker
+class ContextMatcher extends BaseMatcher
   (@access-request) ->
     super ...
     @set-ctx!
@@ -178,7 +180,7 @@ class AccessMatcher
 
 
 module.exports =
-  MatchMaker      : MatchMaker
+  BaseMatcher     : BaseMatcher
   UserMatcher     : UserMatcher
   ActionMatcher   : ActionMatcher
   SubjectMatcher  : SubjectMatcher

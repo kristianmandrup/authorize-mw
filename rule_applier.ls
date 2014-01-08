@@ -6,6 +6,8 @@
 _ = require 'prelude-ls'
 require 'sugar'
 
+Debugger = require './debugger'
+
 recurse = (key, val, ctx) ->
   switch typeof! val
   when 'Function'
@@ -18,7 +20,7 @@ valid_rules = (rules)->
 
 # To apply a rule, means to execute the .can or .cannot statement in order to add one or more entries
 # to the corresponding can-rules or cannot-rules object in the rule-rep
-module.exports = class RuleApplier
+module.exports = class RuleApplier implements Debugger
   (@repo, @rules, @access-request) ->
     unless _.is-type('Object', @repo)
       throw Error "RuleApplier must be passed a RuleRepo, was: #{@repo}"

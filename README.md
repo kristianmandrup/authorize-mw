@@ -49,6 +49,21 @@ class AccessRequest
   normalize: ->  
 ```
 
+## PermitRegistry
+
+Each time a permit is created, it is registered in the PermitRegistry by name. If the permit is not named explicitly,
+it will be named `Permit-0`, `Permit-1` etc. Only the first permit of a given name is registered.
+Any attempt to later store another permit of the same name will cause an error.
+
+TODO: allow `force` flag parameter to override old permit?
+
+You can clear all permits using `PermitRegistry.clear-all!` and you can clean all permits of rules using `PermitRegistry.clean-all!`
+
+Currently the `PermitRegistry` is implemented as a singleton, but in the future it will be a class to allow for multiple permit registries and
+ then selecting one to be used for a given environment. Ideas are welcome...
+
+Note: Code + Tests need some refactoring to support this new design!
+
 ## Permit
 
 The Permit class holds a list of all the registered permits in `Permit.permits`. You can get a named permit using `Permit.get(name)`. The `matches` method is used to see if the permit should be used for a given access-request.
