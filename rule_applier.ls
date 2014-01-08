@@ -66,13 +66,15 @@ module.exports = class RuleApplier implements Debugger
     named-rules = rules[name]
     if _.is-type 'Function', named-rules
       named-rules.call @, @access-request
-    else
+    @
+    # else
       # just ignore it ;)
       # throw Error "rules key for #{name} should be a function that resolves one or more rules"
 
   # for more advances cases, also pass context 'action' as 2nd param
   apply-action-rules: ->
     @apply-rules-for @action!
+    @
 
   # typically used for role specific rules:
   # rules:
@@ -85,6 +87,7 @@ module.exports = class RuleApplier implements Debugger
   # such as on user name, email or whatever, even age (minor < 18y old!?)
   #
   apply-user-rules: ->
+    @
 
   # such as where on the site is the user?
   # guest area, member area? admin area?
@@ -96,6 +99,7 @@ module.exports = class RuleApplier implements Debugger
   #
   #
   apply-ctx-rules: ->
+    @
 
   apply-default-rules: ->
     if _.is-type 'Object', @access-request
@@ -112,11 +116,13 @@ module.exports = class RuleApplier implements Debugger
 
     else
       throw Error "rules must be a Function or an Object, was: #{@rules}"
+    @
 
   apply-access-rules: ->
     @apply-action-rules!
     @apply-user-rules!
     @apply-ctx-rules!
+    @
 
   # should iterate through rules object recursively and execute any function found
   # using sugar .each: http://sugarjs.com/api
@@ -129,6 +135,7 @@ module.exports = class RuleApplier implements Debugger
         recurse key, rules[key], ctx
     else
       throw Error "rules must be an Object was: #{typeof @rules}"
+    @
 
   # so as not to be same name as can method used "from the outside, ie. via Ability"
   # for the functions within rules object, they are executed with the rule applier as this (@) - ie. the context

@@ -11,31 +11,109 @@ Book      = requires.fix 'book'
 RuleApplier   = requires.file 'rule_applier'
 RuleRepo      = requires.file 'rule_repo'
 
+# Note: Use rule-repo.display! for debugging internals of RuleRepo instances after rule application
+
 describe 'Rule Applier (RuleApplier)' ->
   var book
+  var rule-repo
+  var rule-applier
 
-  debug-repo = (txt, repo) ->
-    console.log txt, repo
-    console.log repo.can-rules
-    console.log repo.cannot-rules
+  rules = {}
+
+  create-repo = ->
+    new RuleRepo('static repo').clear!
+
+  create-rule-applier = (rules) ->
+    rule-repo := create-repo!
+    rule-applier := new RuleApplier(rule-repo, rules)
+
+  exec-rule-applier = (rules) ->
+    rule-applier := create-rule-applier(rules).apply-rules!
 
   before ->
     book          := new Book 'Far and away'
 
-  describe 'create' ->
-
   # can create, edit and delete a Book
-  xdescribe 'manage book' ->
+  describe 'manage book' ->
+    context 'applied default rule: manage Paper' ->
+      before ->
+        rules.manage-paper :=
+          default: ->
+            @ucan    'manage',   'Paper'
+
+        exec-rule-applier rules.manage-paper
+
+      specify 'should add create, edit and delete can-rules' ->
+        rule-repo.can-rules.should.eql {
+          create: ['Paper']
+          edit:   ['Paper']
+          delete: ['Paper']
+        }
+
+    xcontext 'applied action rule: manage Book' ->
+      before ->
+        rules.manage-book :=
+          manage: ->
+            @ucan    'manage',   'Book'
+
+        create-rule-applier(rules.manage-book).apply-action-rule 'manage'
+
+      specify 'should add create, edit and delete can-rules' ->
+        rule-repo.can-rules.should.eql {
+          create: ['Book']
+          edit:   ['Book']
+          delete: ['Book']
+        }
+
 
   # can read any subject
   xdescribe 'read any' ->
+    context 'applied default rule: read any' ->
+      before ->
+        rules.read-any :=
+          default: ->
+            @ucan    'read',   'any'
+
+        exec-rule-applier rules.read-any
+
+      specify 'should add can-rule: read *' ->
+        rule-repo.can-rules.should.eql {
+          read: ['*']
+        }
 
   # can read any subject
   xdescribe 'read *' ->
+    context 'applied default rule: read any' ->
+      var read-rules
+
+      before ->
+        rules.read-star :=
+          default: ->
+            @ucan    'read',   '*'
+
+        exec-rule-applier rules.read-star
+
+      specify 'should add can-rule: read *' ->
+        rule-repo.can-rules.should.eql {
+          read: ['*']
+        }
 
   # can create, edit and delete any subject
   xdescribe 'manage any' ->
+    context 'applied default rule: manage any' ->
+      var manage-rules
 
-  # can create, edit and delete a Book
-  xdescribe 'manage *' ->
+      before ->
+        rules.manage-any :=
+          default: ->
+            @ucan    'manage',   'any'
+
+        exec-rule-applier rules.manage-any
+
+      specify 'should add can-rule: read *' ->
+        rule-repo.can-rules.should.eql {
+          create: ['Book']
+          edit:   ['Book']
+          delete: ['Book']
+        }
 

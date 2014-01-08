@@ -17,6 +17,11 @@ module.exports = class RuleRepo implements Debugger
   can-rules: {}
   cannot-rules: {}
 
+  display: ->
+    console.log "name:", @name
+    console.log "can-rules:", @can-rules
+    console.log "cannot-rules:", @cannot-rules
+
   clear: ->
     @can-rules = {}
     @cannot-rules = {}
