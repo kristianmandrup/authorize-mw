@@ -22,6 +22,6 @@ normalize = (items, recursed) ->
     )
   else
     throw Error "#{items} #{typeof! items} can't be normalized, must be a Function, String or Array"
-  _.unique flatten(normalized)
+  flatten(normalized)
 
 module.exports = normalize

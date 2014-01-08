@@ -55,7 +55,10 @@ module.exports = class RuleRepo
     subjects = normalize subjects
     rule-subjects = rule-subjects.concat subjects
 
-    rule-container[action] = _.unique rule-subjects # do we need this step?
+    rule-subjects = rule-subjects.map (subject) ->
+      subject.camelize!
+
+    rule-container[action] = _.unique rule-subjects
 
   container-for: (act) ->
     act = act.to-lower-case!

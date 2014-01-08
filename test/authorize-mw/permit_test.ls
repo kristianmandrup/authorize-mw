@@ -199,6 +199,9 @@ describe 'Permit' ->
           subject: book
 
         setup-guest-permit!
+
+        console.log 'guest can-rules', guest-permit.can-rules!
+
         # dynamic application when access-request passed
         guest-permit.apply-rules access-request
 
