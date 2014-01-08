@@ -1,10 +1,9 @@
-/**
- * User: kmandrup
- * Date: 20/12/13
- */
-require '../test_setup'
+rek      = require 'rekuire'
+requires = rek 'requires'
 
-matchers      = require '../../matchers'
+requires.test 'test_setup'
+
+matchers      = requires.file 'matchers'
 BaseMatcher   = matchers.BaseMatcher
 
 describe 'BaseMatcher' ->

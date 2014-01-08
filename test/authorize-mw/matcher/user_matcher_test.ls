@@ -1,7 +1,11 @@
-require '../test_setup'
+rek      = require 'rekuire'
+requires = rek 'requires'
 
-User          = require '../fixtures/user'
-matchers      = require '../../matchers'
+requires.test 'test_setup'
+
+User            = requires.fix 'user'
+matchers        = requires.file 'matchers'
+
 UserMatcher   = matchers.UserMatcher
 
 describe 'UserMatcher' ->

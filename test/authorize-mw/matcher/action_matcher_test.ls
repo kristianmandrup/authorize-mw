@@ -1,6 +1,9 @@
-require '../test_setup'
+rek      = require 'rekuire'
+requires = rek 'requires'
 
-matchers      = require '../../matchers'
+requires.test 'test_setup'
+
+matchers      = requires.file 'matchers'
 ActionMatcher = matchers.ActionMatcher
 
 describe 'ActionMatcher' ->

@@ -1,13 +1,17 @@
-require '../test_setup'
+rek      = require 'rekuire'
+requires = rek 'requires'
+
+requires.test 'test_setup'
 
 _             = require 'prelude-ls'
 
-Book          = require '../fixtures/book'
-User          = require '../fixtures/user'
-permit-for    = require '../../permit_for'
-PermitMatcher = require '../../permit_matcher'
-Permit        = require '../../permit'
-setup         = require('./permits').setup
+Book          = requires.fix 'book'
+User          = requires.fix 'user'
+
+permit-for    = requires.file 'permit_for'
+PermitMatcher = requires.file 'permit_matcher'
+Permit        = requires.file 'permit'
+setup         = require('permit_matcher/permits').setup
 
 describe 'PermitMatcher' ->
   var user-kris, user-emily

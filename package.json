@@ -3,23 +3,24 @@
   "version": "0.0.1",
   "main": "index.js",
   "dependencies": {
-    "lodash": "*",
-    "prelude-ls": "*",
-    "sugar": "*",
-    "deep-extend": "*"
+    "lodash":       "*",
+    "prelude-ls":   "*",
+    "sugar":        "*",
+    "deep-extend":  "*",
+    "rekuire":      "*"
   },
   "scripts": {
-    "test": "make test",
+    "test":     "make test",
     "coverage": "./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- --ui bdd -R test -t 5000"
   },
   "devDependencies": {
-    "LiveScript": "*",
-    "mocha": "*",
-    "istanbul": "*",
-    "should": "*",
-    "grunt": "~0.4.2",
-    "grunt-mocha-test": "~0.8.1",
-    "grunt-istanbul": "*",
-    "grunt-istanbul-coverage": "0.0.2"
+    "LiveScript":               "*",
+    "mocha":                    "*",
+    "istanbul":                 "*",
+    "should":                   "*",
+    "grunt":                    "~0.4.2",
+    "grunt-mocha-test":         "~0.8.1",
+    "grunt-istanbul":           "*",
+    "grunt-istanbul-coverage":  "0.0.2"
   }
 }

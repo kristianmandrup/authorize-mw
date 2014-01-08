@@ -1,4 +1,5 @@
-requires = require './requires'
+rek      = require 'rekuire'
+requires = rek 'requires'
 
 permit-for = requires.file 'permit_for'
 

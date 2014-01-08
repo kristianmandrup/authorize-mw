@@ -1,11 +1,16 @@
-require '../test_setup'
+rek      = require 'rekuire'
+requires = rek 'requires'
+
+requires.test 'test_setup'
 
 _             = require 'prelude-ls'
-User          = require '../fixtures/user'
-Book          = require '../fixtures/book'
-Allower       = require '../../allower'
-Permit        = require '../../permit'
-permit-for    = require '../../permit_for'
+
+User          = requires.fix 'user'
+Book          = requires.fix 'book'
+
+Allower       = requires.file 'allower'
+Permit        = requires.file 'permit'
+permit-for    = requires.file 'permit_for'
 
 describe 'Allower', ->
   var user, guest-user, admin-user, editor-user

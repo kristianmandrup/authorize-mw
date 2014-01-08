@@ -1,7 +1,10 @@
-require '../test_setup'
+rek      = require 'rekuire'
+requires = rek 'requires'
 
-Permit    = require '../../permit'
-RuleRepo  = require '../../rule_repo'
+requires.test 'test_setup'
+
+Permit    = requires.file 'permit'
+RuleRepo  = requires.file 'rule_repo'
 
 describe 'Permit' ->
   var permit

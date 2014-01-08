@@ -1,3 +1,4 @@
+rek = require 'rekuire'
 require 'sugar'
 _ = require 'prelude-ls'
 
@@ -6,18 +7,20 @@ underscore = (items) ->
     String(item)
   _.map (.underscore!), strings
 
-test-level = 2
-file-level = 1
+test-level = 1
+file-level = 0
 
-base-path = ->
-  @bp ||= (['..'] * test-level).join '/'
+test-base-path = ->
+  "test"
+  # @bp ||= (['..'] * test-level).join '/'
 
 file-base-path = ->
-  @fbp ||= (['..'] * file-level).join '/'
+  "."
+  # @fbp ||= (['..'] * file-level).join '/'
 
 test-path = (...paths) ->
   upaths = underscore(...paths)
-  [base-path!, upaths].flatten!.join '/'
+  [test-base-path!, upaths].flatten!.join '/'
 
 module.exports =
   file-lv: (lvs) ->
@@ -27,7 +30,7 @@ module.exports =
     test-level := lvs
 
   test: (...paths) ->
-    require test-path(paths)
+    rek test-path(paths)
 
   fixture: (path) ->
     @test 'fixtures', path
@@ -37,8 +40,20 @@ module.exports =
     @fixture path
 
   file: (path) ->
-    @test file-base-path!, path
+    rek [file-base-path!, path.underscore!].join '/'
 
   # m - alias for module
   m: (path) ->
     @file path
+
+  files: (...paths) ->
+    paths.map (path) ->
+      @file(path)
+
+  fixtures: (...paths) ->
+    paths.map (path) ->
+      @fixture(path)
+
+  tests: (...paths) ->
+    paths.map (path) ->
+      @test(path)

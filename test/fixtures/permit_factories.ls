@@ -1,4 +1,7 @@
-permit-for = require '../../permit_for'
+rek      = require 'rekuire'
+requires = rek 'requires'
+
+permit-for = requires.file 'permit_for'
 
 bar-permit = permit-for 'a man walking into the bar', ->
   # return true if this permit applies for this access obj

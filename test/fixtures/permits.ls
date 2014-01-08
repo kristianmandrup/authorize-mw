@@ -1,4 +1,7 @@
-Permit    = require '../../permit'
+rek      = require 'rekuire'
+requires = rek 'requires'
+
+Permit    = requires.file 'permit'
 
 class AdminPermit extends Permit
   includes: ->

@@ -1,7 +1,10 @@
-require '../test_setup'
+rek      = require 'rekuire'
+requires = rek 'requires'
 
-matchers       = require '../../matchers'
-ContextMatcher = matchers.ContextMatcher
+requires.test 'test_setup'
+
+matchers        = requires.file 'matchers'
+ContextMatcher  = matchers.ContextMatcher
 
 describe 'ContextMatcher' ->
   var ctx-matcher

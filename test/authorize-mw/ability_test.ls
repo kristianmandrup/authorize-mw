@@ -1,15 +1,18 @@
-require '../test_setup'
+rek      = require 'rekuire'
+requires = rek 'requires'
+
+requires.test 'test_setup'
 
 _             = require 'prelude-ls'
 lo            = require 'lodash'
-User          = require '../fixtures/user'
-Book          = require '../fixtures/book'
+User          = requires.fix 'user'
+Book          = requires.fix 'book'
 
-Allower       = require '../../allower'
-Ability       = require '../../ability'
-Permit        = require '../../permit'
-permit-for    = require '../../permit_for'
-PermitMatcher = require '../../permit_matcher'
+Allower       = requires.file 'allower'
+Ability       = requires.file 'ability'
+Permit        = requires.file 'permit'
+permit-for    = requires.file 'permit_for'
+PermitMatcher = requires.file 'permit_matcher'
 
 deep-extend = require 'deep-extend'
 

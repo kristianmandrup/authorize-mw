@@ -1,8 +1,12 @@
-require '../test_setup'
+rek      = require 'rekuire'
+requires = rek 'requires'
+
+requires.test 'test_setup'
 
 _         = require 'prelude-ls'
-User      = require '../fixtures/user'
-intersect = require('../../intersect')!
+
+User      = requires.fix 'user'
+intersect = requires.file 'intersect'
 
 describe 'Intersect' ->
   var kris-user, guest-user, admin-user, kris-admin-user

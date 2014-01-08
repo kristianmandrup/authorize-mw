@@ -1,9 +1,12 @@
-require '../test_setup'
+rek      = require 'rekuire'
+requires = rek 'requires'
 
-Book            = require '../fixtures/book'
-match-makers    = require '../../permit_match_maker'
+requires.test 'test_setup'
 
-AccessMatcher = match-makers.AccessMatcher
+Book          = requires.fix 'book'
+matchers      = requires.file 'matchers'
+
+AccessMatcher = matchers.AccessMatcher
 
 describe 'AccessMatcher' ->
   var access-matcher, userless-access-matcher

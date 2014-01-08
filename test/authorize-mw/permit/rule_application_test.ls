@@ -1,10 +1,12 @@
-require '../test_setup'
+rek      = require 'rekuire'
+requires = rek 'requires'
 
-Permit    = require '../../permit'
+requires.test 'test_setup'
 
-Book            = require '../fixtures/book'
+Permit          = requires.file 'permit'
 
-permits         = require '../fixtures/permits'
+Book            = requires.fix 'book'
+permits         = requires.fix 'permits'
 
 setup           = permits.setup
 AdminPermit     = permits.AdminPermit

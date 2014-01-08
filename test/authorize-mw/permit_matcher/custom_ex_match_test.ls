@@ -1,13 +1,9 @@
-requires = require '../../../requires'
-
+rek      = require 'rekuire'
+requires = rek 'requires'
 requires.test 'test_setup'
 
-Book            = requires.fixture 'book'
-User            = requires.fixture 'user'
-permit-for      = requires.file 'permit-for'
-PermitMatcher   = requires.file 'permit_matcher'
-Permit          = requires.file 'permit'
-PermitRegistry  = requires.file 'permit-registry'
+[Book, User] = requires.fixtures 'book', 'user'
+[permit-for, PermitMatcher, Permit, PermitRegistry] = require.files 'permit-for', 'permit_matcher', 'permit', 'permit-registry'
 
 setup           = require('./permits').setup
 

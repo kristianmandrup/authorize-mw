@@ -1,7 +1,11 @@
-require '../test_setup'
+rek      = require 'rekuire'
+requires = rek 'requires'
 
-Book            = require '../fixtures/book'
-matchers        = require '../../matchers'
+requires.test 'test_setup'
+
+Book            = requires.fix 'book'
+matchers        = requires.file 'matchers'
+
 SubjectMatcher  = matchers.SubjectMatcher
 
 describe 'SubjectMatcher' ->

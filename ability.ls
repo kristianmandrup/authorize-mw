@@ -1,11 +1,11 @@
 _   = require 'prelude-ls'
 lo  = require 'lodash'
 
+deep-extend   = require 'deep-extend'
+
 permit-filter = require './permit_filter'
 Allower       = require './allower'
 AccessRequest = require './access_request'
-
-deep-extend = require 'deep-extend'
 
 Debugger = require './debugger'
 

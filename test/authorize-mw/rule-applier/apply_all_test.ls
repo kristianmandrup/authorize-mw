@@ -1,14 +1,15 @@
-require '../test_setup'
+rek      = require 'rekuire'
+requires = rek 'requires'
 
-requires      = require '../permit_matcher/requires'
+requires.test 'test_setup'
 
 _             = require 'prelude-ls'
 
+User          = requires.fixture 'user'
+Book          = requires.fixture 'book'
+
 RuleApplier   = requires.file 'rule_applier'
 RuleRepo      = requires.file 'rule_repo'
-
-User      = requires.fixture 'user'
-Book      = requires.fixture 'book'
 
 describe 'Rule Applier (RuleApplier)' ->
   var book

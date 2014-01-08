@@ -1,9 +1,14 @@
-require '../test_setup'
+rek      = require 'rekuire'
+requires = rek 'requires'
+
+requires.test 'test_setup'
 
 _           = require 'prelude-ls'
-RuleRepo    = require '../../rule_repo'
-User        = require '../fixtures/user'
-Book        = require '../fixtures/book'
+
+User        = requires.fix 'user'
+Book        = requires.fix 'book'
+
+RuleRepo    = requires.file 'rule_repo'
 
 describe 'Rule Repository (RuleRepo)' ->
   var access-request, rule, rule-repo

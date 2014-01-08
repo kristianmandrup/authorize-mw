@@ -1,16 +1,20 @@
-require '../test_setup'
+rek      = require 'rekuire'
+requires = rek 'requires'
+
+requires.test 'test_setup'
 
 _         = require 'prelude-ls'
-Permit    = require '../../permit'
 
-RuleRepo        = require '../../rule_repo'
-RuleApplier     = require '../../rule_applier'
-PermitMatcher   = require '../../permit_matcher'
-PermitAllower   = require '../../permit_allower'
-permit-for      = require '../../permit_for'
-Book            = require '../fixtures/book'
+Permit          = requires.file 'permit'
+RuleRepo        = requires.file 'rule_repo'
+RuleApplier     = requires.file 'rule_applier'
+PermitMatcher   = requires.file 'permit_matcher'
+PermitAllower   = requires.file 'permit_allower'
+permit-for      = requires.file 'permit_for'
 
-permits         = require '../fixtures/permits'
+Book            = requires.fix  'book'
+
+permits         = requires.fix 'permits'
 
 setup           = permits.setup
 AdminPermit     = permits.AdminPermit
