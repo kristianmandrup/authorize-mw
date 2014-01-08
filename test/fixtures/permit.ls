@@ -1,24 +1,10 @@
 rek      = require 'rekuire'
 requires = rek 'requires'
 
-Permit        = requires.file 'permit'
+permit-class  = requires.fix  'permit-class'
 permit-for    = requires.file 'permit-for'
 
-class AdminPermit extends Permit
-  includes: ->
-    'user':
-      'role': 'admin'
-
-  # and must NOT include the following
-  excludes: ->
-    'context': 'dashboard'
-
-class GuestPermit extends Permit
-  (name, desc) ->
-    super ...
-
-  match: (access) ->
-    true
+GuestPermit = permit-class.GuestPermit
 
 setup =
   guest-permit: ->
@@ -67,6 +53,4 @@ setup =
             @ucan 'manage', '*'
 
 module.exports =
-  AdminPermit : AdminPermit
-  GuestPermit : GuestPermit
   setup       : setup
