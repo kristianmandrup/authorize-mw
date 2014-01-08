@@ -10,6 +10,8 @@ Book          = requires.fix 'book'
 RuleApplier   = requires.file 'rule_applier'
 RuleRepo      = requires.file 'rule_repo'
 
+rules         = require './rules'
+
 describe 'Rule Applier (RuleApplier)' ->
   var book
 

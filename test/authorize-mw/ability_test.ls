@@ -8,6 +8,9 @@ lo            = require 'lodash'
 User          = requires.fix 'user'
 Book          = requires.fix 'book'
 
+access-req    = requires.fix 'access_requests'
+users         = requires.fix 'users'
+
 Allower       = requires.file 'allower'
 Ability       = requires.file 'ability'
 Permit        = requires.file 'permit'
@@ -21,78 +24,51 @@ describe 'Ability' ->
   var kris-ability, guest-ability, admin-ability
   var empty-access, user-access, guest-access, admin-access, kris-access, read-book-access
   var user-permit, guest-permit, admin-permit, auth-permit
-  var book
+  var abook
+
+  ability = (user) ->
+    new Ability user
+
+  book = (title) ->
+    new Book title: title
 
   setup-permits = ->
     Permit.clear-all!
 
-    user-permit   := permit-for 'User',
-      match: (access) ->
-        @matching(access).has-user!
-      rules: ->
-        console.log 'User permit Repo', @repo
-        console.log 'can-rules', @repo.can-rules
-        console.log 'cannot-rules', @repo.cannot-rules
-        @ucan ['read', 'edit'], 'book'
+    user-permit   := setup.matching.user-permit
+    guest-permit  := setup.matching.guest-permit
+    admin-permit  := setup.matching.admin-permit
+    auth-permit   := setup.matching.auth-permit
 
-    guest-permit  := permit-for 'Guest',
-      match: (access) ->
-        @matching(access).has-role 'guest'
-
-      rules: ->
-        @ucan 'read', 'book'
-
-    admin-permit  := permit-for 'admin',
-      match: (access) ->
-        @matching(access).has-role 'admin'
-
-      rules: ->
-        @ucan 'write', 'book'
-        @ucan 'manage', '*'
-
-    auth-permit   := permit-for 'auth',
-      match: (access) ->
-        @matching(access).has-ctx!
-
-      rules: ->
-        @ucan 'manage', 'book'
-
+  # TODO: avoid too much complex setup in one place!!
   before ->
-    user-kris       := new User name: 'kris'
-    guest-user      := new User role: 'guest'
-    admin-user      := new User name: 'kris', role: 'admin'
+    user-kris       := users.kris!
+    guest-user      := users.guest!
+    admin-user      := users.name-role 'kris', 'admin'
 
-    kris-ability    := new Ability user-kris
-    guest-ability   := new Ability guest-user
-    admin-ability   := new Ability admin-user
+    kris-ability    := ability user-kris
+    guest-ability   := ability guest-user
+    admin-ability   := ability admin-user
 
     empty-access  := {}
 
-    book          := new Book 'Far and away'
-    
-    # TODO: Some or all of these access object should have an action as well!!
-    role-access = (role) ->
-      user:
-        role: role
-    
-    user-access   := 
-      user: user-kris
+    abook          := book 'Far and away'
 
-    guest-access  := role-access 'guest'
-
-    admin-access  := role-access 'admin'
+    user-access   := request.user-access user-kris
+    guest-access  := request.role-access 'guest'
+    admin-access  := request.role-access 'admin'
 
     kris-access   := deep-extend {}, admin-access, {
       user:
         name: 'kris'
+      action: 'read'
       ctx:
         auth: true
     }
 
     read-book-access :=
       action: 'read'
-      subject: book
-
+      subject: abook
 
   specify 'creates an Ability' ->
     kris-ability.constructor.should.eql Ability
