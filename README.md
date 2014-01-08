@@ -251,15 +251,18 @@ Access `user` method:
 ```LiveScript
 sexy-permit = permit-for 'a sexy woman',
   match: (access) ->
-    @matching(access).user type: 'sexy' # matches if access intersects with {user: {type: 'sexy'}}
+    @matching(access).has-user type: 'sexy' # matches if access intersects with {user: {type: 'sexy'}}
 ```
+
+The above is simply short hand for: `@matching(access).role('sexy').result!`
+
 
 Access `action` method:
 
 ```LiveScript
 read-permit = permit-for 'a sexy woman',
   match: (access) ->
-    @matching(access).action 'read' # matches if access intersects with {action: 'read'}
+    @matching(access).has-action 'read' # matches if access intersects with {action: 'read'}
 ```
 
 Access  `subject` method:
@@ -267,7 +270,7 @@ Access  `subject` method:
 ```LiveScript
 read-permit = permit-for 'a sexy woman',
   match: (access) ->
-    @matching(access).subject 'Book' # matches if access intersects with {subject: 'Book'}
+    @matching(access).has-subject 'Book' # matches if access intersects with {subject: 'Book'}
 ```
 
 Access  `context` method:
@@ -275,7 +278,8 @@ Access  `context` method:
 ```LiveScript
 read-permit = permit-for 'a sexy woman',
   match: (access) ->
-    @matching(access).context area: 'members' # matches if access intersects with {area: 'members'}
+    # matches if access intersects with {area: 'members'}
+    @matching(access).has-context area: 'members'
 ```
 
 Access `role` method:
@@ -283,10 +287,8 @@ Access `role` method:
 ```LiveScript
 sexy-permit = permit-for 'a sexy woman',
   match: (access) ->
-    @matching(access).has-role 'sexy' # matches if access intersects with {user: {role: 'sexy'}}
-
-    # same as
-    @matching(access).role('sexy').result!
+    # matches if access intersects with {user: {role: 'sexy'}}
+    @matching(access).has-role 'sexy'
 ```
 
 Access `subject-clazz` method (chaining):
@@ -302,7 +304,7 @@ The `match-on` method takes a hash and executes chaining as above:
 
 `@matching(access).match-on(subject-clazz: 'Man', user: {type: 'sexy'}, action: 'read')`
 
-Using `@matching(access).match-on` is the recommended way as it's the most elegant, easy to use DSL.
+Using `@matching(access).match-on` is the recommended as it's the most elegant and flexible DSL.
 
 ## Rules
 

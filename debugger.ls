@@ -1,12 +1,22 @@
 class Debugger
+  debug: (msg) ->
+    console.log msg if @debugging
+
+  debug-on: ->
+    @debugging = true
+
+  debug-off: ->
+    @debugging = false
+
+  # class-lv debugging
+
   @debug = (msg) ->
-    if @@debuging
-      console.log msg
+    console.log msg if @@debugging
 
   @debug-on = ->
-    @@debuging = true
+    @@debugging = true
 
   @debug-off = ->
-    @@debuging = false
+    @@debugging = false
 
 module.exports = Debugger

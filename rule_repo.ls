@@ -37,9 +37,14 @@ module.exports = class RuleRepo implements Debugger
       subject-clazz = subject
 
   find-matching-subject: (subjects, subject) ->
-    clazzes = [subject, subject?.to-lower-case!, subject?.to-lower-case!.camelize!]
-    clazzes.any (item) ->
-      subjects.index-of(item) != -1
+    # first try wild-card 'any' or '*'
+    return true if subjects.index-of('*') != -1 or subjects.index-of('any')
+
+    unless _.is-type 'String' subject
+      throw Error "find-matching-subject: Subject must be a String to be matched, was #{subject}"
+
+    camelized = subject?.camelize true
+    camelized.index-of(item) != -1
 
   # TODO: simplify, extract methods?
   match-rule: (act, access-request) ->
@@ -50,9 +55,29 @@ module.exports = class RuleRepo implements Debugger
     subj-clazz = @subject-clazz subject
     rule-container = @container-for act
 
+    match-manage-rule(rule-container, subj-clazz) if action is 'manage'
+
     action-subjects = rule-container[action]
+    match-subject-clazz action-subjects, subj-clazz
+
+  match-subject-clazz: (action-subjects, subj-clazz) ->
     return false unless _.is-type 'Array', action-subjects
     @find-matching-subject action-subjects, subj-clazz
+
+  match-manage-rule: (rule-container, subj-clazz) ->
+    manage-subjects = rule-container['manage']
+
+    found = match-subject-clazz manage-subjects, subj-clazz
+
+    return found if found
+
+    # see if we are allowed to create, edit and delete for this subject class!
+    manage-action-subjects(rule-container).all (action-subjects) ->
+      match-subject-clazz action-subjects, subj-clazz
+
+  manage-action-subjects: (rule-container) ->
+    ['create', 'edit', 'delete'].map (action) ->
+      rule-container[action]
 
   # for now, lets forget about ctx
   add-rule: (rule-container, action, subjects) ->
@@ -63,9 +88,15 @@ module.exports = class RuleRepo implements Debugger
     rule-subjects = rule-subjects.concat subjects
 
     rule-subjects = rule-subjects.map (subject) ->
-      subject.camelize!
+      subject.camelize true
 
-    rule-container[action] = _.unique rule-subjects
+    unique-subjects = _.unique rule-subjects
+
+    rule-container[action] = unique-subjects
+
+    if action is 'manage'
+      ['create', 'edit', 'delete'].each (action) ->
+        rule-container[action] = unique-subjects
 
   container-for: (act) ->
     act = act.to-lower-case!

@@ -45,21 +45,23 @@ describe 'Rule Applier (RuleApplier)' ->
 
       specify 'should add create, edit and delete can-rules' ->
         rule-repo.can-rules.should.eql {
+          manage: ['Paper']
           create: ['Paper']
           edit:   ['Paper']
           delete: ['Paper']
         }
 
-    xcontext 'applied action rule: manage Book' ->
+    context 'applied action rule: manage Book' ->
       before ->
         rules.manage-book :=
           manage: ->
             @ucan    'manage',   'Book'
 
-        create-rule-applier(rules.manage-book).apply-action-rule 'manage'
+        create-rule-applier(rules.manage-book).apply-action-rules 'manage'
 
       specify 'should add create, edit and delete can-rules' ->
         rule-repo.can-rules.should.eql {
+          manage: ['Book']
           create: ['Book']
           edit:   ['Book']
           delete: ['Book']

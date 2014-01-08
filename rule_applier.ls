@@ -43,9 +43,12 @@ module.exports = class RuleApplier implements Debugger
   cannot-rules: ->
     @repo.cannot-rules
 
-  # execute all rules of a particular name (optionally within specific context, such as area, action or role)
+  # Execute all rules of a particular name (optionally within specific context, such as area, action or role)
   #
-  # context:
+  # apply-rules-for 'read', 'action' - will execute the rules in... rules.action.read
+  # apply-rules-for 'read' - will execute the rules in rules.read
+  #
+  #
   # rules:
   #   action:
   #     read: ->
@@ -59,21 +62,28 @@ module.exports = class RuleApplier implements Debugger
   #     member: ->
   #
   apply-rules-for: (name, context) ->
-    rules = @rules
-    if _.is-type 'String', context
-      rules = rules[context] if _.is-type 'Object' rules[context]
+    rules = @context-rules(context)
 
     named-rules = rules[name]
     if _.is-type 'Function', named-rules
       named-rules.call @, @access-request
+    else
+      @debug "rules key for #{name} should be a function that resolves one or more rules"
     @
-    # else
-      # just ignore it ;)
-      # throw Error "rules key for #{name} should be a function that resolves one or more rules"
+
+  context-rules: (context)->
+    return @rules unless _.is-type 'String', context
+    if _.is-type 'Object' @rules[context]
+      @rules[context]
+    else
+      @debug "no such rules context: #{context}"
+      @rules
+
 
   # for more advances cases, also pass context 'action' as 2nd param
   apply-action-rules: ->
     @apply-rules-for @action!
+    @apply-rules-for @action!, 'action'
     @
 
   # typically used for role specific rules:
@@ -87,6 +97,8 @@ module.exports = class RuleApplier implements Debugger
   # such as on user name, email or whatever, even age (minor < 18y old!?)
   #
   apply-user-rules: ->
+    @apply-rules-for @user!
+    @apply-rules-for @user!, 'user'
     @
 
   # such as where on the site is the user?
@@ -99,6 +111,9 @@ module.exports = class RuleApplier implements Debugger
   #
   #
   apply-ctx-rules: ->
+    @apply-rules-for @ctx!
+    @apply-rules-for @ctx!, 'ctx'
+    @apply-rules-for @ctx!, 'context'
     @
 
   apply-default-rules: ->
