@@ -8,6 +8,9 @@ _         = require 'prelude-ls'
 User      = requires.fix 'user'
 Book      = requires.fix 'book'
 
+request   = requires.fix 'request'
+users     = requires.fix 'users'
+
 Permit        = requires.file 'permit'
 permit-for    = requires.file 'permit_for'
 PermitFilter  = requires.file 'permit_filter'
@@ -21,11 +24,12 @@ describe 'permit-filter' ->
     
     before ->
       user  := new User name: 'Javier'
-      access-request := {user: user}
+      access-request :=
+        user: user
 
       Permit.clear-permits!
       
-      user-permit := permit-for 'User',
+      user-permit := permits.matching.userpermit-for 'User',
         match: (access) ->
           @matching(access).has-user
 
@@ -36,7 +40,8 @@ describe 'permit-filter' ->
     var guest-user, guest-permit, admin-permit, access-request
     before ->
       guest-user  := new User role: 'guest'
-      access-request := {user: guest-user}
+      access-request :=
+        user: guest-user
 
       Permit.clear-permits!
 
@@ -55,7 +60,8 @@ describe 'permit-filter' ->
     var admin-user, guest-permit, admin-permit, access-request
     before ->
       admin-user  := new User role: 'admin'
-      access-request := {user: admin-user}
+      access-request :=
+        user: admin-user
 
       Permit.clear-permits!
 

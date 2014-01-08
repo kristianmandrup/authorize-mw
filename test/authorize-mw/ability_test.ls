@@ -10,6 +10,7 @@ Book          = requires.fix 'book'
 
 access-req    = requires.fix 'access_requests'
 users         = requires.fix 'users'
+permits       = requires.fix 'permits'
 
 Allower       = requires.file 'allower'
 Ability       = requires.file 'ability'
@@ -35,10 +36,10 @@ describe 'Ability' ->
   setup-permits = ->
     Permit.clear-all!
 
-    user-permit   := setup.matching.user-permit
-    guest-permit  := setup.matching.guest-permit
-    admin-permit  := setup.matching.admin-permit
-    auth-permit   := setup.matching.auth-permit
+    user-permit   := permits.matching.user
+    guest-permit  := permits.matching.role.guest
+    admin-permit  := permits.matching.role.admin
+    auth-permit   := permits.matching.ctx.auth
 
   # TODO: avoid too much complex setup in one place!!
   before ->

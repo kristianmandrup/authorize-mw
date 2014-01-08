@@ -32,37 +32,39 @@ setup =
           @ucan 'read' 'any'
 
   matching:
-    user-permit: ->
+    user: ->
       permit-for 'User',
         match: (access) ->
           @matching(access).has-user!
         rules: ->
           @ucan ['read', 'edit'], 'book'
 
-    guest-permit: ->
-      permit-for 'Guest',
-        match: (access) ->
-          @matching(access).has-role 'guest'
+    ctx:
+      auth: ->
+        permit-for 'auth',
+          match: (access) ->
+            @matching(access).has-ctx auth: 'yes'
 
-        rules: ->
-          @ucan 'read', 'book'
+          rules: ->
+            @ucan 'manage', 'book'
 
-    admin-permit: ->
-      permit-for 'admin',
-        match: (access) ->
-          @matching(access).has-role 'admin'
+    role:
+      guest: ->
+        permit-for 'Guest',
+          match: (access) ->
+            @matching(access).has-role 'guest'
 
-        rules: ->
-          @ucan 'write', 'book'
-          @ucan 'manage', '*'
+          rules: ->
+            @ucan 'read', 'book'
 
-    auth-permit: ->
-      permit-for 'auth',
-        match: (access) ->
-          @matching(access).has-ctx!
+      admin: ->
+        permit-for 'admin',
+          match: (access) ->
+            @matching(access).has-role 'admin'
 
-        rules: ->
-          @ucan 'manage', 'book'
+          rules: ->
+            @ucan 'write', 'book'
+            @ucan 'manage', '*'
 
 module.exports =
   AdminPermit : AdminPermit
