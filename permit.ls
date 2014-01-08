@@ -21,14 +21,35 @@ valid_rules = (rules)->
   _.is-type('Object', rules) or _.is-type('Function', rules)
 
 module.exports = class Permit
-  (@name = 'unknown', @description = '') ->
-    unless _.is-type 'String', @name
-      throw Error "Name of permit must be a String, was: #{@name}"
+  (@name, @description = '') ->
+    @@register-permit @
 
     @rule-repo = new RuleRepo @name
 
+
+
   # class methods/variables
   @permits = []
+  @permit-counter = 0
+
+  @calc-name = (name) ->
+    if name is undefined
+      name = "Permit-#{@@permit-counter}"
+
+    unless _.is-type 'String', name
+      throw Error "Name of permit must be a String, was: #{name}"
+    name
+
+  @register-permit = (permit) ->
+    permit.name = @calc-name permit.name
+    name = permit.name
+
+    if Permit.permits[name]
+      throw Error "A Permit named: #{name} is already registered, please use a different name!"
+
+    # register permit in Permit.permit
+    Permit.permits[name] = permit
+    @@permit-counter = @@permit-counter+1
 
   @clear-permits = ->
     @@permits = []

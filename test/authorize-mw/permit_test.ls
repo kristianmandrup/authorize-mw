@@ -47,11 +47,14 @@ describe 'Permit' ->
     admin-permit    := new AdminPermit
 
   describe 'init creates a permit ' ->
-    specify 'with the name unknown' ->
-      permit.name.should.eql 'unknown'
+    specify 'first unnamed permit is named Permit-0' ->
+      permit.name.should.eql 'Permit-0'
 
     specify 'and no description' ->
       permit.description.should.eql ''
+
+    specify 'second unnamed is named Permit-1' ->
+      guest-permit.name.should.eql 'Permit-1'
 
   describe 'use' ->
     var permit
@@ -72,6 +75,7 @@ describe 'Permit' ->
     var permit
 
     before ->
+      Permit.clear-all!
       permit := new Permit 'hello'
       permit.clear!
 
@@ -186,16 +190,17 @@ describe 'Permit' ->
       var book, access-request
 
       before-each ->
-          book := new Book 'a book'
-          access-request :=
-            user:
-              role: 'admin'
-            action: 'read'
-            subject: book
+        Permit.clear-all!
+        book := new Book 'a book'
+        access-request :=
+          user:
+            role: 'admin'
+          action: 'read'
+          subject: book
 
-          setup-guest-permit!
-          # dynamic application when access-request passed
-          guest-permit.apply-rules access-request
+        setup-guest-permit!
+        # dynamic application when access-request passed
+        guest-permit.apply-rules access-request
 
       specify 'registers a read-book rule' ->
         guest-permit.can-rules!['read'].should.eql ['Book']
@@ -207,24 +212,25 @@ describe 'Permit' ->
     describe 'dynamic rules application - double!' ->
       var book, access-request
 
-      before ->
-          book := new Book 'a book'
-          access-request :=
-            user:
-              role: 'admin'
-            action: 'read'
-            subject: book
+      before-each ->
+        Permit.clear-all!
+        book := new Book 'a book'
+        access-request :=
+          user:
+            role: 'admin'
+          action: 'read'
+          subject: book
 
-          setup-guest-permit!
+        setup-guest-permit!
 
-          # dynamic application when access-request passed
-          guest-permit.apply-rules access-request
+        # dynamic application when access-request passed
+        guest-permit.apply-rules access-request
 
-          console.log 'can-rules', guest-permit.can-rules!
+        console.log 'can-rules', guest-permit.can-rules!
 
-          guest-permit.apply-rules access-request
+        guest-permit.apply-rules access-request
 
-          console.log 'can-rules', guest-permit.can-rules!
+        console.log 'can-rules', guest-permit.can-rules!
 
       specify 'registers a SINGLE read-book rule' ->
         guest-permit.can-rules!['read'].should.eql ['Book']
