@@ -1,5 +1,4 @@
-rek      = require 'rekuire'
-requires = rek 'requires'
+requires = require('rekuire') 'requires'
 requires.test 'test_setup'
 
 [Book, User] = requires.fixtures 'book', 'user'

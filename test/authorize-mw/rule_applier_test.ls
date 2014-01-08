@@ -1,5 +1,4 @@
-rek      = require 'rekuire'
-requires = rek 'requires'
+requires = require('rekuire') 'requires'
 
 requires.test 'test_setup'
 
@@ -114,8 +113,23 @@ describe 'Rule Applier (RuleApplier)' ->
 
       specify 'should add can-rule: read *' ->
         rule-repo.can-rules.should.eql {
-          create: ['Book']
-          edit:   ['Book']
-          delete: ['Book']
+          create: ['*']
+          edit:   ['*']
+          delete: ['*']
         }
 
+  # can create, edit and delete any subject
+  xdescribe 'ensure merge and not override of registered rules' ->
+    context 'applied default rule: manage any and edit Paper' ->
+      var manage-rules
+
+      before ->
+        rules.manage-any :=
+          default: ->
+            @ucan    'manage',   'any'
+            @ucan    'edit',     'Paper'
+
+        exec-rule-applier rules.manage-any
+
+      specify 'should merge rules - edit: *, Paper' ->
+        rule-repo.can-rules.edit-should.eql edit: ['*', 'Paper']

@@ -28,14 +28,17 @@ module.exports = class RuleApplier implements Debugger
     unless valid_rules @rules
       throw Error "RuleApplier must be passed the rules to be applied, was: #{@rules}"
 
+    # unless _.is-type 'Object', @access-request
+      # throw Error "RuleApplier must be passed an AccessRequest Object, was: #{@access-request}"
+
   action: ->
-    @access-request.action
+    @access-request?.action
 
   user: ->
-    @access-request.user
+    @access-request?.user
 
   ctx: ->
-    @access-request.ctx
+    @access-request?.ctx
 
   can-rules: ->
     @repo.can-rules
@@ -63,6 +66,10 @@ module.exports = class RuleApplier implements Debugger
   #
   apply-rules-for: (name, context) ->
     rules = @context-rules(context)
+
+    unless _.is-type 'String' name
+      return @
+      # throw Error "Name to appl rules for must be a String, was: #{name}"
 
     named-rules = rules[name]
     if _.is-type 'Function', named-rules
