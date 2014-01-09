@@ -22,13 +22,26 @@ module.exports = class RuleRepo implements Debugger
     console.log "can-rules:", @can-rules
     console.log "cannot-rules:", @cannot-rules
 
-  clean: ->
-    @can-rules = {}
-    @cannot-rules = {}
+  clean-all: ->
+    @clean 'can'
+    @clean 'cannot'
     @
 
-  clear: ->
-    @clean!
+  # allow clean only can or cannot rules
+  # if no argument, clean both
+  clean: (act)->
+    return @clean-all! if act is undefined
+    unless act is 'can' or act is 'cannot'
+      throw Error "Repo can only clear 'can' or 'cannot' rules, was: #{act}"
+
+    @["#{act}Rules"] = {}
+    @
+
+  clear-all: ->
+    @clean-all!
+
+  clear: (act)->
+    @clean act
 
   subject-clazz: (subject)->
     if _.is-type 'Object', subject
