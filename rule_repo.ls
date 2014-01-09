@@ -22,13 +22,10 @@ module.exports = class RuleRepo implements Debugger
     console.log "can-rules:", @can-rules
     console.log "cannot-rules:", @cannot-rules
 
-  clear: ->
+  clean: ->
     @can-rules = {}
     @cannot-rules = {}
     @
-
-  clean: ->
-    @clear!
 
   subject-clazz: (subject)->
     if _.is-type 'Object', subject
@@ -41,16 +38,13 @@ module.exports = class RuleRepo implements Debugger
     return true if ['*', 'any'].any (wildcard) ->
       subjects.index-of(wildcard) != -1
 
-
-    console.log 'not *'
-
     unless _.is-type 'String' subject
       throw Error "find-matching-subject: Subject must be a String to be matched, was #{subject}"
 
     camelized = subject?.camelize true
     subjects.index-of(camelized) != -1
 
-  # TODO: simplify, extract methods?
+  # TODO: simplify, extract methods and one or more classes!!!
   match-rule: (act, access-request) ->
     act = act.camelize(true)
     action = access-request.action

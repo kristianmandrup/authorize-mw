@@ -7,8 +7,8 @@ permit-for    = requires.file 'permit-for'
 GuestPermit = permit-class.GuestPermit
 
 setup =
-  guest-permit: ->
-    permit-for GuestPermit, 'books', ->
+  guest: ->
+    permit-for GuestPermit, 'guest books', ->
       rules:
         read: ->
           @ucan 'read' 'Book'

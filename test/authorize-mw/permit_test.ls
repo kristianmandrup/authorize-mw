@@ -14,31 +14,25 @@ permit-for      = requires.file 'permit_for'
 
 Book            = requires.fix  'book'
 
-permits         = requires.fix 'permits'
-
-setup           = permits.setup
-AdminPermit     = permits.AdminPermit
-GuestPermit     = permits.GuestPermit
-
 describe 'Permit' ->
-  var permit
+  permits = {}
+
+  before ->
+    permits.hello := new Permit 'hello'
 
   describe 'use' ->
-    var permit
-
-    before ->
-      Permit.clear-all!
-      permit := new Permit 'hello'
-
     context 'single permit named hello' ->
       specify 'using Object adds object to permit' ->
-        permit.use {state: 'on'}
-        permit.state.should.eql 'on'
+        permits.hello.use {state: 'on'}
+        permits.hello.state.should.eql 'on'
 
       specify 'using Function adds object received from calling function to permit' ->
-        permit.use ->
+        permits.hello.use ->
           {state: 'off'}
-        permit.state.should.eql 'off'
+        permits.hello.state.should.eql 'off'
+
+  xdescribe 'clean' ->
+    # TODO
 
   describe 'matcher' ->
     var access-request
@@ -47,27 +41,27 @@ describe 'Permit' ->
       access-request := {}
 
     specify 'can NOT create matcher without access request' ->
-      ( -> permit.matcher!).should.throw
+      ( -> permits.hello.matcher!).should.throw
 
     specify 'create matcher with access request' ->
-      permit.matcher(access-request).constructor.should.eql PermitMatcher
+      permits.hello.matcher(access-request).constructor.should.eql PermitMatcher
 
   describe 'rule-applier' ->
     var access-request
 
     before ->
       access-request := {}
-      permit.rules = ->
+      permits.hello.rules = ->
 
     specify 'has a rule-applier' ->
-      permit.rule-applier!.constructor.should.eql RuleApplier
+      permits.hello.rule-applier!.constructor.should.eql RuleApplier
 
     describe 'constructed with access request' ->
       specify 'has a rule-applier ' ->
-        permit.rule-applier(access-request).constructor.should.eql RuleApplier
+        permits.hello.rule-applier(access-request).constructor.should.eql RuleApplier
 
       specify 'and rule-applier has access request' ->
-        permit.rule-applier(access-request).access-request.should.eql access-request
+        permits.hello.rule-applier(access-request).access-request.should.eql access-request
 
   describe 'matches' ->
     var book, read-book-request, publish-book-request
@@ -82,12 +76,12 @@ describe 'Permit' ->
       read-book-request     := make-request 'read'
       publish-book-request  := make-request 'publish'
 
-      permit.match = (access) ->
+      permits.hello.match = (access) ->
         @matching(access).has-action 'read'
 
     specify 'will match request to read a book' ->
-      permit.matches(read-book-request).should.be.true
+      permits.hello.matches(read-book-request).should.be.true
 
     specify 'will NOT match request to publish a book' ->
-      permit.matches(publish-book-request).should.be.false
+      permits.hello.matches(publish-book-request).should.be.false
 

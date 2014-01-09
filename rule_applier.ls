@@ -32,7 +32,6 @@ module.exports = class RuleApplier implements Debugger
       throw Error "AccessRequest must be an Object, was: #{@access-request}"
 
   action: ->
-    console.log "@access-request", @access-request
     @access-request?.action
 
   user: ->
@@ -91,7 +90,6 @@ module.exports = class RuleApplier implements Debugger
 
   # for more advances cases, also pass context 'action' as 2nd param
   apply-action-rules: ->
-    console.log 'apply-action-rules', @action!
     @apply-rules-for @action!
     @apply-rules-for @action!, 'action'
     @

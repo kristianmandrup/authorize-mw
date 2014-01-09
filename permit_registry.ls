@@ -2,18 +2,17 @@ _   = require 'prelude-ls'
 lo  = require 'lodash'
 require 'sugar'
 
-Permit    = require './permit'
 Debugger  = require './debugger'
 
 todo = "allow creation of multiple registries and select one to use per environment"
 
-class PermitRegistry implements Debugger
+module.exports = class PermitRegistry implements Debugger
   # constructor
   ->
     throw Error "PermitRegistry is currently a singleton (TODO: #{todo})"
 
   # class methods/variables (singleton)
-  @permits = []
+  @permits = {}
   @permit-counter = 0
 
   @calc-name = (name) ->
@@ -28,6 +27,9 @@ class PermitRegistry implements Debugger
     permit.name = @calc-name permit.name
     name = permit.name
 
+    unless _.is-type 'Object', @@permits
+      throw Error "permits registry container must be an Object in order to store permits by name, was: #{@@permits}"
+
     if @@permits[name]
       throw Error "A Permit named: #{name} is already registered, please use a different name!"
 
@@ -36,16 +38,15 @@ class PermitRegistry implements Debugger
     @@permit-counter = @@permit-counter+1
 
   @clear-permits = ->
-    @@permits = []
+    @@permits = {}
+    @@permit-counter = 0
 
   @clear-all = ->
     @@clear-permits!
 
   @clean-permits = ->
     for permit in @@permits
-      permit.clear!
+      permit.clean!
 
   @clean-all = ->
     @@clean-permits!
-
-module.exports = PermitRegistry

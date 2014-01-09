@@ -6,6 +6,7 @@
     "lodash":       "*",
     "prelude-ls":   "*",
     "sugar":        "*",
+    "rubyjs":       "*",
     "deep-extend":  "*",
     "rekuire":      "*"
   },

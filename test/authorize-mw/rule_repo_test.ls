@@ -36,7 +36,7 @@ describe 'Rule Repository (RuleRepo)' ->
 
     describe 'register-rule' ->
       before ->
-        rule-repo.clear!
+        rule-repo.clean!
 
       specify 'can register a valid rule' ->
         rule-repo.register-rule('can', 'read', 'Book')
@@ -50,7 +50,7 @@ describe 'Rule Repository (RuleRepo)' ->
     describe 'add-rule' ->
       context 'valid' ->
         before ->
-          rule-repo.clear!
+          rule-repo.clean!
           container = rule-repo.can-rules
           rule-repo.add-rule(container, 'read', 'Book')
 
@@ -68,7 +68,7 @@ describe 'Rule Repository (RuleRepo)' ->
       var books
 
       before ->
-        rule-repo.clear!
+        rule-repo.clean!
         book := new Book title: 'hi molly'
         books := ['Book', void]
 

@@ -2,9 +2,8 @@ _   = require 'prelude-ls'
 lo  = require 'lodash'
 require 'sugar'
 
-Util = require './util'
-
 PermitRegistry  = require './permit_registry'
+
 PermitMatcher   = require './permit_matcher'
 PermitAllower   = require './permit_allower'
 RuleApplier     = require './rule_applier'
@@ -18,7 +17,9 @@ ActionMatcher   = matchers.ActionMatcher
 ContextMatcher  = matchers.ContextMatcher
 AccessMatcher   = matchers.AccessMatcher
 
-Debugger = require './debugger'
+Util            = require './util'
+
+Debugger        = require './debugger'
 
 valid_rules = (rules)->
   _.is-type('Object', rules) or _.is-type('Function', rules)
@@ -43,8 +44,8 @@ module.exports = class Permit implements Debugger
       throw Error "No rules defined for permit: #{@name}"
     @
 
-  clear: ->
-    @rule-repo.clear!
+  clean: ->
+    @rule-repo.clean!
 
   # used by permit-for to extend specific permit from base class (prototype)
   use: (obj) ->
@@ -86,7 +87,7 @@ module.exports = class Permit implements Debugger
   # ----------------
 
   rule-applier: (access-request) ->
-    access-request = null unless _.is-type 'Object', access-request
+    access-request = {} unless _.is-type 'Object', access-request
     new @rule-applier-class @rule-repo, @rules, access-request
 
   # always called (can be overridden for custom behavior)
@@ -97,5 +98,6 @@ module.exports = class Permit implements Debugger
 
   can-rules: ->
     @rule-repo.can-rules
+
   cannot-rules: ->
     @rule-repo.cannot-rules

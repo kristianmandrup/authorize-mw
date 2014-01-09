@@ -8,68 +8,38 @@ _         = require 'prelude-ls'
 User      = requires.fix 'user'
 Book      = requires.fix 'book'
 
-Permit        = requires.file 'permit'
-permit-for    = requires.file 'permit_for'
+Permit          = requires.file 'permit'
+PermitRegistry  = requires.file 'permit_registry'
+permit-for      = requires.file 'permit_for'
 
 class AdminPermit extends Permit
   type: 'admin'
 
 describe 'permit-for' ->
+  permits = {}
 
   context 'multiple guest permits' ->
-    var guest-permit, other-guest-permit
+
     before ->
-      guest-permit := permit-for 'Guest',
+      permits.guest := permit-for 'Guest',
         number: 1
         match: (access) ->
           @matching(access).role 'guest'
 
-      other-guest-permit := permit-for 'Guest',
-        number: 2
-        match: (access) ->
-          @matching(access).role 'guest'
-
     specify 'guest permit is a Permit' ->
-      guest-permit.constuctor.should.eql Permit
+      permits.guest.constructor.should.eql Permit
 
     specify 'guest permit name is Guest' ->
-      guest-permit.name.should.eql 'Guest'
+      permits.guest.name.should.eql 'Guest'
 
-    specify 'other guest permit is void' ->
-      assert other-guest-permit, void
+    specify 'creating other Guest permit throws error' ->
+      ( -> permit-for 'Guest' ).should.throw
 
-    specify 'only one guest permit registered' ->
-      Permit.permits.size.should.eql 1
-
-    specify 'only first guest permit registered' ->
-      Permit.permits['Guest'].number.should.eql 1
-
-  context 'guest permit' ->
-    var guest-permit
-    before ->
-      guest-permit := permit-for 'Guest',
-        match: (access) ->
-          @matching(access).role 'guest'
-
-        rules: ->
-      guest-permit.clear!
-
-    specify 'creates a permit made from Permit' ->
-      guest-permit.constructor.should.eql Permit
-
-    specify 'permit has the name Guest' ->
-      guest-permit.name.should.eql 'Guest'
-
-    specify 'has empty canRules' ->
-      guest-permit.can-rules!.should.eql {}
-
-    specify 'has empty cannotRules' ->
-      guest-permit.cannot-rules!.should.eql {}
-
-  context 'admin permit' ->
+  context 'one admin permit' ->
     var admin-permit
     
     before ->
+      PermitRegistry.clear-all!
       admin-permit := permit-for AdminPermit, 'Admin',
         rules:
           admin: ->
