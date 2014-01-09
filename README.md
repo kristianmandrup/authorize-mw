@@ -246,6 +246,11 @@ The `Permit.matching(access)` method returns an `AccessMatcher` instance with co
   * subject-clazz
   * context
 
+Important Fix: For the following methods, they should be made to work without the `has-xxx` hack!
+ Just ensure that if match(access) returns an `AccessMatcher` object and not a boolean, it should resolve the
+ `AccessMatcher` by calling `result!` on it to get the current boolean result.
+Code and tests need to be fixed for this!
+
 Access `user` method:
 
 ```LiveScript

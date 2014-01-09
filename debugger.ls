@@ -1,5 +1,5 @@
 class Debugger
-  debug: (msg) ->
+  debug: (...msg) ->
     console.log msg if @debugging
 
   debug-on: ->
@@ -10,7 +10,7 @@ class Debugger
 
   # class-lv debugging
 
-  @debug = (msg) ->
+  @debug = (...msg) ->
     console.log msg if @@debugging
 
   @debug-on = ->
