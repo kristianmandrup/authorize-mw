@@ -5,7 +5,7 @@ requires.test 'test_setup'
 
 PermitRegistry  = requires.file 'permit_registry'
 RuleRepo        = requires.file 'rule_repo'
-permit          = requires.fix  'permit'
+create-permit   = requires.fix  'create-permit'
 
 permits = {}
 
@@ -41,7 +41,7 @@ describe 'PermitRegistry' ->
     describe 'create a permit' ->
       before ->
         PermitRegistry.clear-all!
-        permits.guest = permit.setup.guest!
+        permits.guest = create-permit.guest!
 
       describe 'permits' ->
         specify 'should have guest permit' ->
@@ -55,7 +55,7 @@ describe 'PermitRegistry' ->
     context 'guest permit' ->
       before ->
         PermitRegistry.clear-all!
-        permits.guest = permit.setup.guest!
+        permits.guest = create-permit.guest!
 
       describe 'clear-all' ->
         context 'cleared permits' ->
@@ -76,7 +76,7 @@ describe 'PermitRegistry' ->
 
           before ->
             PermitRegistry.clear-all!
-            permits.guest = permit.setup.guest!
+            permits.guest = create-permit.guest!
 
             old-counter := PermitRegistry.permit-counter
             old-permits := PermitRegistry.permits

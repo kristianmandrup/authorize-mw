@@ -39,6 +39,13 @@ module.exports =
   fix: (path) ->
     @fixture path
 
+  factory: (path) ->
+    @test 'factory', path
+
+  # alias
+  fac: (path) ->
+    @factory path
+
   file: (path) ->
     rek [file-base-path!, path.underscore!].join '/'
 

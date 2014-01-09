@@ -6,7 +6,7 @@ permit-for    = requires.file 'permit-for'
 
 GuestPermit = permit-class.GuestPermit
 
-setup =
+module.exports =
   guest: ->
     permit-for GuestPermit, 'guest books', ->
       rules:
@@ -51,6 +51,3 @@ setup =
           rules: ->
             @ucan 'write', 'book'
             @ucan 'manage', '*'
-
-module.exports =
-  setup       : setup

@@ -27,6 +27,9 @@ module.exports = class RuleRepo implements Debugger
     @cannot-rules = {}
     @
 
+  clear: ->
+    @clean!
+
   subject-clazz: (subject)->
     if _.is-type 'Object', subject
       subject-clazz = subject.constructor.display-name
@@ -53,10 +56,10 @@ module.exports = class RuleRepo implements Debugger
     subj-clazz = @subject-clazz subject
     rule-container = @container-for act
 
-    match-manage-rule(rule-container, subj-clazz) if action is 'manage'
+    @match-manage-rule(rule-container, subj-clazz) if action is 'manage'
 
     action-subjects = rule-container[action]
-    match-subject-clazz action-subjects, subj-clazz
+    @match-subject-clazz action-subjects, subj-clazz
 
   match-subject-clazz: (action-subjects, subj-clazz) ->
     return false unless _.is-type 'Array', action-subjects

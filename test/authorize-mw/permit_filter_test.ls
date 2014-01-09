@@ -8,50 +8,43 @@ _         = require 'prelude-ls'
 User      = requires.fix 'user'
 Book      = requires.fix 'book'
 
-request   = requires.fix 'request'
-users     = requires.fix 'users'
+create-request  = requires.fac 'request'
+create-user     = requires.fac 'create-user'
+create-permit   = requires.fac 'permit'
 
-Permit        = requires.file 'permit'
-permit-for    = requires.file 'permit_for'
-PermitFilter  = requires.file 'permit_filter'
+PermitRegistry  = requires.file 'permit_registry'
+Permit          = requires.file 'permit'
+permit-for      = requires.file 'permit_for'
+PermitFilter    = requires.file 'permit_filter'
 
 describe 'permit-filter' ->
-  before ->
-    #
+  permits = {}
+  users   = {}
 
   describe 'user filter' ->
-    var user, user-permit, access-request
+    var access-request
     
     before ->
-      user  := new User name: 'Javier'
+      users.javier  := create-user.javier
       access-request :=
         user: user
 
-      Permit.clear-permits!
-      
-      user-permit := permits.matching.userpermit-for 'User',
-        match: (access) ->
-          @matching(access).has-user
+      PermitRegistry.clear-all!
+      permits.user := create-permit.matching.user!
 
     specify 'return only permits that apply for a user' ->
       PermitFilter.filter(access-request).should.eql [user-permit]
 
   describe 'guest user filter' ->
-    var guest-user, guest-permit, admin-permit, access-request
+    var access-request
     before ->
-      guest-user  := new User role: 'guest'
+      users.guest  := create-user.guest
       access-request :=
         user: guest-user
 
-      Permit.clear-permits!
-
-      guest-permit := permit-for 'Guest',
-        match: (access) ->
-          @matching(access).has-role 'guest'
-
-      admin-permit := permit-for 'Admin',
-        match: (access) ->
-          @matching(access).has-role 'admin'
+      PermitRegistry.clear-all!
+      permits.guest := create-permit.matching.guest!
+      permits.admin := create-permit.matching.admin!
 
     specify 'return only permits that apply for a guest user' ->
       PermitFilter.filter(access-request).should.eql [guest-permit]
@@ -59,19 +52,14 @@ describe 'permit-filter' ->
   xdescribe 'admin user filter' ->
     var admin-user, guest-permit, admin-permit, access-request
     before ->
-      admin-user  := new User role: 'admin'
+      users.admin  := create-user.admin
       access-request :=
-        user: admin-user
+        user: users.admin
 
-      Permit.clear-permits!
+      PermitRegistry.clear-all!
 
-      guest-permit := permit-for 'Guest',
-        match: (access) ->
-          @matching(access).has-role: 'guest'
-
-      admin-permit := permit-for 'Admin',
-        match: (access) ->
-          @matching(access).has-role: 'admin'
+      permits.guest := create-permit.matching.guest!
+      permits.admin := create-permit.matching.admin!
 
     specify 'return only permits that apply for an admin user' ->
       PermitFilter.filter(access-request).should.eql [admin-permit]

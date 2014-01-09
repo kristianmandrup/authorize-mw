@@ -11,7 +11,7 @@ User          = requires.fix 'user'
 permit-for    = requires.file 'permit_for'
 PermitMatcher = requires.file 'permit_matcher'
 Permit        = requires.file 'permit'
-setup         = require('permit_matcher/permits').setup
+setup         = require('./permit_matcher/permits').setup
 
 describe 'PermitMatcher' ->
   var user-kris, user-emily
