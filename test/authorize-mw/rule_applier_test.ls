@@ -22,12 +22,12 @@ describe 'Rule Applier (RuleApplier)' ->
   create-repo = ->
     new RuleRepo('static repo').clear!
 
-  create-rule-applier = (rules) ->
+  create-rule-applier = (rules, action-request) ->
     rule-repo := create-repo!
-    rule-applier := new RuleApplier(rule-repo, rules)
+    rule-applier := new RuleApplier(rule-repo, rules, action-request)
 
-  exec-rule-applier = (rules) ->
-    rule-applier := create-rule-applier(rules).apply-rules!
+  exec-rule-applier = (rules, action-request) ->
+    rule-applier := create-rule-applier(rules, action-request).apply-rules!
 
   before ->
     book          := new Book 'Far and away'
@@ -51,12 +51,17 @@ describe 'Rule Applier (RuleApplier)' ->
         }
 
     context 'applied action rule: manage Book' ->
+      var manage-book-request
+
       before ->
+        manage-book-request :=
+          action: 'manage'
+
         rules.manage-book :=
           manage: ->
             @ucan    'manage',   'Book'
 
-        create-rule-applier(rules.manage-book).apply-action-rules 'manage'
+        create-rule-applier(rules.manage-book, manage-book-request).apply-action-rules 'manage'
 
       specify 'should add create, edit and delete can-rules' ->
         rule-repo.can-rules.should.eql {
@@ -68,7 +73,7 @@ describe 'Rule Applier (RuleApplier)' ->
 
 
   # can read any subject
-  xdescribe 'read any' ->
+  describe 'read any' ->
     context 'applied default rule: read any' ->
       before ->
         rules.read-any :=
@@ -83,7 +88,7 @@ describe 'Rule Applier (RuleApplier)' ->
         }
 
   # can read any subject
-  xdescribe 'read *' ->
+  describe 'read *' ->
     context 'applied default rule: read any' ->
       var read-rules
 
@@ -100,7 +105,7 @@ describe 'Rule Applier (RuleApplier)' ->
         }
 
   # can create, edit and delete any subject
-  xdescribe 'manage any' ->
+  describe 'manage any' ->
     context 'applied default rule: manage any' ->
       var manage-rules
 
@@ -113,6 +118,7 @@ describe 'Rule Applier (RuleApplier)' ->
 
       specify 'should add can-rule: read *' ->
         rule-repo.can-rules.should.eql {
+          manage: ['*']
           create: ['*']
           edit:   ['*']
           delete: ['*']

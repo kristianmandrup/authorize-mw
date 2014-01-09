@@ -28,10 +28,11 @@ module.exports = class RuleApplier implements Debugger
     unless valid_rules @rules
       throw Error "RuleApplier must be passed the rules to be applied, was: #{@rules}"
 
-    # unless _.is-type 'Object', @access-request
-      # throw Error "RuleApplier must be passed an AccessRequest Object, was: #{@access-request}"
+    unless @access-request is undefined or _.is-type 'Object', @access-request
+      throw Error "AccessRequest must be an Object, was: #{@access-request}"
 
   action: ->
+    console.log "@access-request", @access-request
     @access-request?.action
 
   user: ->
@@ -68,6 +69,7 @@ module.exports = class RuleApplier implements Debugger
     rules = @context-rules(context)
 
     unless _.is-type 'String' name
+      @debug "Name to apply rules for must be a String, was: #{typeof name} : #{name}"
       return @
       # throw Error "Name to appl rules for must be a String, was: #{name}"
 
@@ -89,6 +91,7 @@ module.exports = class RuleApplier implements Debugger
 
   # for more advances cases, also pass context 'action' as 2nd param
   apply-action-rules: ->
+    console.log 'apply-action-rules', @action!
     @apply-rules-for @action!
     @apply-rules-for @action!, 'action'
     @
