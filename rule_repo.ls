@@ -38,13 +38,17 @@ module.exports = class RuleRepo implements Debugger
 
   find-matching-subject: (subjects, subject) ->
     # first try wild-card 'any' or '*'
-    return true if subjects.index-of('*') != -1 or subjects.index-of('any')
+    return true if ['*', 'any'].any (wildcard) ->
+      subjects.index-of(wildcard) != -1
+
+
+    console.log 'not *'
 
     unless _.is-type 'String' subject
       throw Error "find-matching-subject: Subject must be a String to be matched, was #{subject}"
 
     camelized = subject?.camelize true
-    camelized.index-of(item) != -1
+    subjects.index-of(camelized) != -1
 
   # TODO: simplify, extract methods?
   match-rule: (act, access-request) ->
