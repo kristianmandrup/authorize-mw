@@ -85,7 +85,7 @@ describe 'Permit' ->
       specify 'registers a read-book rule' ->
         permits.guest.can-rules!['publish'].should.include 'Paper'
 
-    describe 'dynamic rules application - subject rules' ->
+    describe 'dynamic rules application - subject rules - class' ->
       before ->
         permits := {}
         PermitRegistry.clear-all!
@@ -95,6 +95,29 @@ describe 'Permit' ->
         rule-applier = permits.admin.rule-applier requests.admin.read-paper
 
         rule-applier.apply-subject-rules 'Paper'
+
+      after ->
+        PermitRegistry.clear-all!
+
+      specify 'registers a read-book rule' ->
+        permits.admin.can-rules!['approve'].should.include 'Paper'
+
+    describe 'dynamic rules application - subject rules - instance to class' ->
+      before ->
+        class Paper
+          (@name) ->
+
+        paper = new Paper title: 'a paper'
+
+        permits := {}
+        PermitRegistry.clear-all!
+        permits.admin := create-permit.admin!
+
+        # dynamic application when access-request passed
+        rule-applier = permits.admin.rule-applier requests.admin.read-paper
+        # rule-applier.debug-on!
+
+        rule-applier.apply-subject-rules paper
 
       after ->
         PermitRegistry.clear-all!
