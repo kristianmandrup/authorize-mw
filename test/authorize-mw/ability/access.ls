@@ -3,13 +3,23 @@ requires = rek 'requires'
 
 deep-extend = require 'deep-extend'
 
-permit        = requires.fix 'permit'
+create-user = requires.fac 'create-permit'
+
+create-request  = requires.fac 'create-request'
 
 module.exports =
     empty  : {}
-    user   : request.user-access user-kris
-    guest  : request.role-access 'guest'
-    admin  : request.role-access 'admin'
+
+    user   : (user) ->
+      create-request.user-access user
+
+    role   : (role) ->
+      create-request.role-access 'admin'
+
+    guest  : ->
+      @role 'guest'
+    admin  : ->
+      @role 'admin'
 
     kris   :
       user:

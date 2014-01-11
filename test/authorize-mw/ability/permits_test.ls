@@ -3,24 +3,28 @@ requires = rek 'requires'
 
 requires.test 'test_setup'
 
-User          = requires.fix 'user'
-Book          = requires.fix 'book'
+User            = requires.fix 'user'
+Book            = requires.fix 'book'
 
-request       = requires.fix 'request'
-users         = requires.fix 'users'
+create-request  = requires.fac 'create-request'
+create-user     = requires.fac 'create-user'
 
-permits       = require './permits'
-access        = require './access'
-ability       = require './abilities'
+permits         = require './permits'
+access          = require './access'
+ability         = require './abilities'
 
-Ability       = requires.file 'ability'
+Ability         = requires.file 'ability'
+Permit          = requires.file 'permit'
+PermitRegistry  = requires.file 'permit_registry'
 
 describe 'Ability' ->
   var abook
 
+  permits = {}
+
   describe 'permits' ->
     before ->
-      Permit.clear-all!
+      PermitRegistry.clear-all!
 
     context 'kris-ability' ->
       specify 'user permit always present, since ability always has non-empty user' ->
@@ -34,4 +38,4 @@ describe 'Ability' ->
 
     context 'guest-ability' ->
       specify 'no permits allow read book' ->
-        ability.guest.permits(access.read-book).should.eql [permit.user, permit.guest]
+        ability.guest.permits(access.read-book).should.eql []

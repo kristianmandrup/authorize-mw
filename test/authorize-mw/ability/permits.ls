@@ -1,10 +1,10 @@
 rek      = require 'rekuire'
 requires = rek 'requires'
 
-permit        = requires.fix 'permit'
+create-permit  = requires.fac 'create-permit'
 
 module.exports =
-  user   : permit.matching.user!
-  guest  : permit.matching.role.guest!
-  admin  : permit.matching.role.admin!
-  auth   : permit.matching.ctx.auth!
+  user   : create-permit.matching.user!
+  guest  : create-permit.matching.role.guest!
+  admin  : create-permit.matching.role.admin!
+  auth   : create-permit.matching.ctx.auth!
