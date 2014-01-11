@@ -40,7 +40,7 @@ module.exports =
     @fixture path
 
   factory: (path) ->
-    @test 'factory', path
+    @test 'factories', path
 
   # alias
   fac: (path) ->

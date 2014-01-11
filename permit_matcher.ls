@@ -1,6 +1,7 @@
 require 'sugar'
 
 _         = require 'prelude-ls'
+lo        = require 'lodash'
 Util      = require './util'
 Intersect = require './intersect'
 AccessMatcher = require('./matchers').AccessMatcher
@@ -70,3 +71,5 @@ module.exports = class PermitMatcher implements Debugger
     throw Error "PermitMatcher missing permit" unless @permit
     if @access-request? and @access-request is undefined
       throw Error "access-request is undefined"
+
+lo.extend PermitMatcher, Debugger

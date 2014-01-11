@@ -4,7 +4,8 @@
 # Then you can match an access-request (action, subject)
 # Simple!
 
-_ = require 'prelude-ls'
+_   = require 'prelude-ls'
+lo  = require 'lodash'
 require 'sugar'
 
 normalize = require './normalize'
@@ -143,4 +144,4 @@ module.exports = class RuleRepo implements Debugger
       # http://preludels.com/#find to see if subject that we try to act on is in this rule subject array
       @add-rule rule-container, action, subjects
 
-
+lo.extend RuleRepo, Debugger

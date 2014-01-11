@@ -101,3 +101,5 @@ module.exports = class Permit implements Debugger
 
   cannot-rules: ->
     @rule-repo.cannot-rules
+
+lo.extend Permit, Debugger

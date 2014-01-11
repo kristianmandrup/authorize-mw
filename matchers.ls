@@ -6,7 +6,8 @@
 
 Intersect = require './intersect'
 
-_ = require 'prelude-ls'
+_   = require 'prelude-ls'
+lo  = require 'lodash'
 require 'sugar'
 
 Debugger = require './debugger'
@@ -29,6 +30,8 @@ class BaseMatcher implements Debugger
   set-intersect: ->
     @intersect ||= Intersect()
 
+lo.extend BaseMatcher, Debugger
+
 class ActionMatcher extends BaseMatcher
   (@access-request) ->
     super ...
@@ -44,6 +47,8 @@ class ActionMatcher extends BaseMatcher
     return true if @death-match 'action', action
     @action is action
 
+lo.extend ActionMatcher, Debugger
+
 class UserMatcher extends BaseMatcher
   (@access-request) ->
     super ...
@@ -58,6 +63,8 @@ class UserMatcher extends BaseMatcher
 
     return true if @death-match 'user', user
     @intersect.on user, @user
+
+lo.extend UserMatcher, Debugger
 
 class SubjectMatcher extends BaseMatcher
   (@access-request) ->
@@ -78,6 +85,8 @@ class SubjectMatcher extends BaseMatcher
     return false unless @subject and @subject.constructor
     @subject.constructor.display-name is clazz
 
+lo.extend SubjectMatcher, Debugger
+
 class ContextMatcher extends BaseMatcher
   (@access-request) ->
     super ...
@@ -92,6 +101,8 @@ class ContextMatcher extends BaseMatcher
 
     return true if @death-match 'ctx', ctx
     @intersect.on ctx, @ctx
+
+lo.extend ContextMatcher, Debugger
 
 class AccessMatcher
   (@access-request) ->
@@ -178,6 +189,7 @@ class AccessMatcher
   has: (name, value) ->
     @[name](value).result!
 
+lo.extend AccessMatcher, Debugger
 
 module.exports =
   BaseMatcher     : BaseMatcher

@@ -11,34 +11,44 @@ Permit          = requires.file 'permit'
 PermitRegistry  = requires.file 'permit-registry'
 setup           = require('./permits').setup
 
+create-user     = requires.fac 'create-user'
+create-request  = requires.fac 'create-request'
+create-permit   = requires.fac 'create-permit'
+
 describe 'PermitMatcher' ->
-  var user-kris
-  var user-permit
-  var permit-matcher
+  var permit-matcher, book
+
+  users     = {}
+  permits   = {}
+  requests  = {}
+
+  matching = {}
+  none-matching = {}
 
   before ->
-    user-kris       := new User name: 'kris'
-    user-permit     := setup.user-permit!
-    permit-matcher  := new PermitMatcher user-permit, user-access
+    users.kris        := create-user.kris
+    permits.user      := setup.user-permit!
+    permit-matcher    := new PermitMatcher permits.user, user-access
 
   describe 'include' ->
     describe 'includes user.name: kris' ->
       before ->
-        user-permit.includes = {user: user-kris}
+        permits.user.includes =
+          user: users.kris
 
       specify 'matches access-request on includes intersect' ->
         permit-matcher.include!.should.be.true
 
     describe 'includes empty {}' ->
       before ->
-        user-permit.includes = {}
+        permits.user.includes = {}
 
       specify 'matches access-request since empty includes always intersect' ->
         permit-matcher.include!.should.be.true
 
     describe 'includes is nil' ->
       before ->
-        user-permit.includes = void
+        permits.user.includes = void
 
       specify 'does NOT match access-request since NO includes intersect' ->
         permit-matcher.include!.should.be.false

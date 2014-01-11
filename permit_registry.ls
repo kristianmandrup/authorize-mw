@@ -50,3 +50,6 @@ module.exports = class PermitRegistry implements Debugger
 
   @clean-all = ->
     @@clean-permits!
+
+
+lo.extend PermitRegistry, Debugger

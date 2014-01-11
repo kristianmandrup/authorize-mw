@@ -11,56 +11,64 @@ Permit          = requires.file 'permit'
 PermitRegistry  = requires.file 'permit-registry'
 setup           = require('./permits').setup
 
+create-user     = requires.fac 'create-user'
+create-request  = requires.fac 'create-request'
+create-permit   = requires.fac 'create-permit'
+
 describe 'PermitMatcher' ->
-  var user-kris, user-emily
-  var user-permit, book-permit
-  var permit-matcher
+  var subject
+  var permit-matcher, book
+
+  users     = {}
+  permits   = {}
+  requests  = {}
 
   matching = {}
   none-matching = {}
 
   before ->
-    user-kris   := new User name: 'kris'
-    user-emily  := new User name: 'emily'
+    users.kris      := create-user.kris
+    users.emily     := create-user.emily
+    requests.user :=
+      user: {}
 
-    user-permit     := setup.user-permit!
-    permit-matcher  := new PermitMatcher user-permit, user-access
+    permits.user    := setup.user-permit!
+    permit-matcher  := new PermitMatcher permits.user, requests.user
 
   describe 'custom-match' ->
-    var subj
-    var access-request, subj-access-request, access-request-alt, book, book-permit
-    matching = {}
-    none-matching = {}
-
     before ->
       book                := new Book title: 'far and away'
-      subj-access-request := {user: {}, subject: book}
+      requests.subject :=
+        user: {}
+        subject: book
 
-      access-request := {ctx: void}
-      book-permit    := setup.book-permit!
+      requests.ctx    :=
+        ctx: void
 
-      matching.permit-matcher       := new PermitMatcher book-permit, subj-access-request
-      none-matching.permit-matcher  := new PermitMatcher book-permit, access-request
+      permits.book    := setup.book-permit!
+
+      matching.permit-matcher       := new PermitMatcher permits.book, requests.subject
+      none-matching.permit-matcher  := new PermitMatcher permits.book, requests.ctx
 
     context 'matching permit-matcher' ->
       before ->
-        subj := matching.permit-matcher
+        subject := matching.permit-matcher
 
       specify 'has permit' ->
-        subj.permit.should.eql book-permit
+        subject.permit.should.eql permits.book
 
       specify 'has subject access-request' ->
-        subj.access-request.should.eql subj-access-request
+        subject.access-request.should.eql requests.subject
 
     context 'matching permit-matcher' ->
       before ->
-        subj := none-matching.permit-matcher
+        subject := none-matching.permit-matcher
 
       specify 'has permit' ->
-        subj.permit.should.eql book-permit
+        subject.permit.should.eql permits.book
 
       specify 'has access-request' ->
-        subj.access-request.should.eql access-request
+        subject.access-request.should.eql requests.ctx
 
     specify 'matches access-request using permit.match' ->
       matching.permit-matcher.custom-match!.should.be.true
@@ -70,7 +78,7 @@ describe 'PermitMatcher' ->
 
     describe 'invalid match method' ->
       before ->
-        user-permit := setup.invalid-user!
+        permits.user := setup.invalid-user!
 
       specify 'should throw error' ->
         ( -> none-matching.permit-matcher.custom-match ).should.throw

@@ -6,28 +6,37 @@ requires.test 'test_setup'
 
 setup           = require('./permits').setup
 
+create-user     = requires.fac 'create-user'
+create-request  = requires.fac 'create-request'
+create-permit   = requires.fac 'create-permit'
+
 describe 'PermitMatcher' ->
+  var subject
+  var permit-matcher, book
+
+  users     = {}
+  permits   = {}
+  requests  = {}
+
+  matching = {}
+  none-matching = {}
+
   describe 'custom-ex-match' ->
-    var ex-user-permit
-    var access-request, user-access-request, access-request-alt
-
-    matching = {}
-    none-matching = {}
-
     before ->
-      user-access-request :=
+      PermitRegistry.clear-all!
+
+      requests.admin :=
         user: {role: 'admin'}
 
-      access-request :=
+      requests.ctx :=
         ctx: void
 
-      PermitRegistry.clear-all!
-      ex-user-permit := setup.ex-user-permit!
+      permits.ex-user := setup.ex-user-permit!
 
       # should match since the ex-user-permit has an ex-match method that matches on has-role 'admin'
-      matching.permit-matcher       := new PermitMatcher ex-user-permit, user-access-request
+      matching.permit-matcher       := new PermitMatcher permits.ex-user, requests.admin
 
-      none-matching.permit-matcher  := new PermitMatcher ex-user-permit, access-request
+      none-matching.permit-matcher  := new PermitMatcher permits.ex-user, requests.ctx
 
     specify 'matches access-request using permit.ex-match' ->
       matching.permit-matcher.custom-ex-match!.should.be.true
@@ -37,7 +46,7 @@ describe 'PermitMatcher' ->
 
     describe 'invalid ex-match method' ->
       before ->
-        ex-user-permit := setup.invalid-ex-user!
+        permits.invalid-ex-user := setup.invalid-ex-user!
 
       specify 'should throw error' ->
         ( -> none-matching.permit-matcher.custom-ex-match ).should.throw

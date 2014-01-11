@@ -1,7 +1,10 @@
 _       = require 'prelude-ls'
-Permit  = require './permit'
+lo      = require 'lodash'
 
-class PermitFilter
+Permit    = require './permit'
+Debugger  = require './debugger'
+
+module.exports = class PermitFilter implements Debugger
   # go through all permits
   # and match on access being requested by user
   # if the permit matches, then we will later check to see
@@ -14,4 +17,4 @@ class PermitFilter
       throw Error "Permit.permits which contain all registered permits, must be an Array, was: #{typeof Permit.permits}"
     _.filter matching-fun, Permit.permits
 
-module.exports = PermitFilter
+lo.extend PermitFilter, Debugger

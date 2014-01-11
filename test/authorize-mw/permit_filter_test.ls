@@ -8,9 +8,9 @@ _         = require 'prelude-ls'
 User      = requires.fix 'user'
 Book      = requires.fix 'book'
 
-create-request  = requires.fac 'request'
 create-user     = requires.fac 'create-user'
-create-permit   = requires.fac 'permit'
+create-request  = requires.fac 'create-request'
+create-permit   = requires.fac 'create-permit'
 
 PermitRegistry  = requires.file 'permit_registry'
 Permit          = requires.file 'permit'

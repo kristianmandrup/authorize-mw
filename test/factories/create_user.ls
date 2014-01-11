@@ -8,6 +8,9 @@ create-user =
   javier: ->
     @name 'javier'
 
+  emily: ->
+    @name 'emily'
+
   role: (role) ->
     new User name: 'kris', role: role
 

@@ -1,6 +1,9 @@
-_ = require 'prelude-ls'
+_   = require 'prelude-ls'
+lo  = require 'lodash'
 
-module.exports = class PermitAllower
+Debugger  = require './debugger'
+
+module.exports = class PermitAllower implements Debugger
   (@rule-repo) ->
     unless _.is-type 'Object', @rule-repo
       throw Error "PermitAllower must take a RuleRepo in constructor, was: #{@rule-repo}"
@@ -23,3 +26,5 @@ module.exports = class PermitAllower
     unless ignore-inverse
       return false if @allows(access-request, true)
     @test-access 'cannot', access-request
+
+lo.extend PermitAllower, Debugger

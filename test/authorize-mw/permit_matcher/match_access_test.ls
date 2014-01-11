@@ -5,41 +5,51 @@ requires.test 'test_setup'
 
 Book            = requires.fixture 'book'
 User            = requires.fixture 'user'
-permit-for      = requires.file 'permit-for'
+permit-for      = requires.file 'permit_for'
 PermitMatcher   = requires.file 'permit_matcher'
 Permit          = requires.file 'permit'
 PermitRegistry  = requires.file 'permit-registry'
+
 setup           = require('./permits').setup
 
+create-user     = requires.fac 'create-user'
+create-request  = requires.fac 'create-request'
+create-permit   = requires.fac 'create-permit'
+
 describe 'PermitMatcher' ->
-  var user-kris, user-emily
-  var user-permit
-  var permit-matcher
+  var permit-matcher, book
+
+  users     = {}
+  permits   = {}
+  requests  = {}
 
   matching = {}
   none-matching = {}
 
   before ->
-    user-kris   := new User name: 'kris'
-    user-emily  := new User name: 'emily'
+    users.kris    := create-user.kris
+    users.emily   := create-user.name 'emily'
 
-    user-permit := setup.user-permit!
+    requests.user  := create-request
 
-    permit-matcher := new PermitMatcher user-permit, user-access
+    permits.user  := setup.user-permit!
+
+    permit-matcher := new PermitMatcher permits.user, access.user
 
   describe 'match access' ->
-    var access-request, user-access-request, access-request-alt
     matching = {}
     none-matching = {}
 
     before ->
-      user-access-request := {user: {}}
-      access-request := {ctx: ''}
+      requests.user :=
+        user: {}
+      requests.ctx :=
+        ctx: ''
 
-      user-permit := setup.user-permit!
+      permits.user := setup.matching.user-permit!
 
-      matching.permit-matcher       := new PermitMatcher user-permit, user-access-request
-      none-matching.permit-matcher  := new PermitMatcher user-permit, access-request
+      matching.permit-matcher       := new PermitMatcher permits.user, requests.user
+      none-matching.permit-matcher  := new PermitMatcher permit.user, requests.ctx
 
     specify 'does not match access without user' ->
       none-matching.permit-matcher.match!.should.be.false
@@ -48,21 +58,24 @@ describe 'PermitMatcher' ->
       matching.permit-matcher.match!.should.be.true
 
   describe 'match access - complex' ->
-    var valid-access-request, invalid-access-request, access-request-alt, book
-    matching = {}
-    none-matching = {}
-
     before-each ->
       book := new Book title: 'hello'
-      valid-access-request    := {user: {type: 'person', role: 'admin'}, subject: book}
-      invalid-access-request  := {user: {type: 'person', role: 'admin'}, subject: 'blip'}
+      requests.valid :=
+        user: {type: 'person', role: 'admin'}
+        subject: book
+
+      requests.invalid :=
+        user    : {type: 'person', role: 'admin'}
+        subject : 'blip'
+
+      requests.alt := {}
 
       Permit.clean-all!
 
-      user-permit := setup.complex-user!
+      permits.user := setup.complex-user!
 
-      matching.permit-matcher       := new PermitMatcher user-permit, valid-access-request
-      none-matching.permit-matcher  := new PermitMatcher user-permit, invalid-access-request
+      matching.permit-matcher       := new PermitMatcher permits.user, requests.valid
+      none-matching.permit-matcher  := new PermitMatcher permits.user, requests.invalid
 
     specify 'does not match access without user' ->
       none-matching.permit-matcher.match!.should.be.false
@@ -71,13 +84,13 @@ describe 'PermitMatcher' ->
       matching.permit-matcher.match!.should.be.true
 
   describe 'match access - complex invalid' ->
-    var valid-access-request, permit-matcher
-
     before ->
-      valid-access-request := {user: {type: 'person', role: 'admin'}, subject: book}
+      requests.valid :=
+        user    : {type: 'person', role: 'admin'}
+        subject : book
 
-      user-permit       := setup.complex-invalid-user!
-      permit-matcher    := new PermitMatcher user-permit, valid-access-request
+      permits.user      := setup.complex-user-returns-matcher!
+      permit-matcher    := new PermitMatcher permits.user, requests.valid
 
-      specify 'AccessMatcher chaining in .match which returns AccessMatcher should throw with usage warning' ->
-        ( -> permit-matcher.match! ).should.throw
+      specify 'AccessMatcher chaining in .match which returns AccessMatcher should call result!' ->
+        permit-matcher.match!.should.be.true

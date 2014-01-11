@@ -5,7 +5,8 @@ requires.test 'test_setup'
 
 PermitRegistry  = requires.file 'permit_registry'
 RuleRepo        = requires.file 'rule_repo'
-create-permit   = requires.fix  'create-permit'
+
+create-permit   = requires.fac  'create-permit'
 
 permits = {}
 

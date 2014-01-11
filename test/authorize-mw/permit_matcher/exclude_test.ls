@@ -11,36 +11,49 @@ Permit          = requires.file 'permit'
 PermitRegistry  = requires.file 'permit-registry'
 setup           = require('./permits').setup
 
+create-user     = requires.fac 'create-user'
+create-request  = requires.fac 'create-request'
+create-permit   = requires.fac 'create-permit'
+
 describe 'PermitMatcher' ->
-  var user-kris, user-emily
-  var user-permit
-  var permit-matcher
+  var permit-matcher, book
+
+  users     = {}
+  permits   = {}
+  requests  = {}
+
+  matching = {}
+  none-matching = {}
 
   before ->
-    user-kris   := new User name: 'kris'
-    user-emily  := new User name: 'emily'
+    users.kris    := create-user.kris
+    users.emily   := create-user.emily
+    requests.user :=
+      user: {}
 
-    user-permit     := setup.user-permit!
-    permit-matcher := new PermitMatcher user-permit, user-access
+    permits.user   := setup.user-permit!
+    permit-matcher := new PermitMatcher permits.user, requests.user
 
   describe 'exclude' ->
     describe 'excludes user.name: kris' ->
       before ->
-        user-permit.excludes = {user: user-kris}
+        user-permit.excludes =
+          user: users.kris
 
       specify 'matches access-request on excludes intersect' ->
         permit-matcher.exclude!.should.be.true
 
     describe 'excludes empty {}' ->
       before ->
-        user-permit.excludes = {}
+        permits.user.excludes = {}
 
       specify 'matches access-request since empty excludes always intersect' ->
           permit-matcher.exclude!.should.be.true
 
     describe 'excludes other user' ->
       before ->
-        user-permit.excludes = {user: user-emily}
+        permits.user.excludes =
+          user: user-emily
 
       specify 'does NOT match access-request since NO excludes intersect' ->
         permit-matcher.exclude!.should.be.false

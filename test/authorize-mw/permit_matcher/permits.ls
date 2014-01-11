@@ -64,7 +64,7 @@ module.exports =
         rules: ->
           @ucan 'read', 'Book'
 
-    complex-invalid-user: ->
+    complex-user-returns-matcher: ->
       permit-for 'ex User',
         match: (access) ->
           @matching(access).user(type: 'person').role('admin').subject-clazz('Book')

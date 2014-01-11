@@ -1,5 +1,7 @@
-_ = require 'prelude-ls'
-Permit = require './permit'
+_         = require 'prelude-ls'
+lo        = require 'lodash'
+
+Permit    = require './permit'
 
 # makes an instance of a Permit class, adds specific functionality (such as rules) and registers the permit globally
 

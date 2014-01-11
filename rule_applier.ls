@@ -3,7 +3,8 @@
 # The permit can be setup to either apply all rules, (iterating through the rules object)
 # or just apply a subset depending on the context (fx the action of the incoming access-request)
 
-_ = require 'prelude-ls'
+_   = require 'prelude-ls'
+lo  = require 'lodash'
 require 'sugar'
 
 Debugger = require './debugger'
@@ -172,3 +173,4 @@ module.exports = class RuleApplier implements Debugger
     @repo.register-rule 'cannot', actions, subjects, ctx
 
 
+lo.extend RuleApplier, Debugger
