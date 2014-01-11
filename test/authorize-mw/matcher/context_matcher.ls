@@ -8,23 +8,25 @@ ContextMatcher  = matchers.ContextMatcher
 
 describe 'ContextMatcher' ->
   var ctx-matcher
-  var visitor-access-request
   var area-ctx
+
+  requests = {}
 
   before ->
     area-ctx := {area: 'visitor' }
-    visitor-access-request := {ctx: area-ctx }
+    requests.visitor :=
+      ctx: area-ctx
 
   describe 'create' ->
     before-each ->
-      ctx-matcher  := new ContextMatcher visitor-access-request
+      ctx-matcher  := new ContextMatcher requests.visitor
 
     specify 'must have admin access request' ->
-      ctx-matcher.access-request.should.eql visitor-access-request
+      ctx-matcher.access-request.should.eql requests.visitor
 
   describe 'match' ->
     before-each ->
-      ctx-matcher  := new ContextMatcher visitor-access-request
+      ctx-matcher  := new ContextMatcher requests.visitor
 
     specify 'should match area: visitor' ->
       ctx-matcher.match(area-ctx).should.be.true
@@ -37,11 +39,11 @@ describe 'ContextMatcher' ->
 
   describe 'match function' ->
     before-each ->
-      visitor-access-request :=
+      requests.visitor :=
         ctx:
           auth: 'yes'
 
-      ctx-matcher  := new ContextMatcher visitor-access-request
+      ctx-matcher  := new ContextMatcher requests.visitor
 
     specify 'should match -> auth is yes' ->
       ctx-matcher.match( -> @auth is 'yes').should.be.true

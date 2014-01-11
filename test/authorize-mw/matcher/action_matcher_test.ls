@@ -9,22 +9,22 @@ ActionMatcher = matchers.ActionMatcher
 describe 'ActionMatcher' ->
   var action-matcher
 
-  var read-access-request
+  requests = {}
 
   before ->
-    read-access-request :=
+    requests.read :=
       action: 'read'
 
   describe 'create' ->
     before-each ->
-      action-matcher  := new ActionMatcher read-access-request
+      action-matcher  := new ActionMatcher requests.read
 
     specify 'must have admin access request' ->
-      action-matcher.access-request.should.eql read-access-request
+      action-matcher.access-request.should.eql requests.read
 
   describe 'match' ->
     before-each ->
-      action-matcher  := new ActionMatcher read-access-request
+      action-matcher  := new ActionMatcher requests.read
 
     specify 'should match read action' ->
       action-matcher.match('read').should.be.true
