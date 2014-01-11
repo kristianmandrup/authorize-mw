@@ -18,7 +18,7 @@ module.exports = class Ability implements Debugger
     deep-extend access-request, {user : @user}
 
   permits: (access-request) ->
-    permits = permit-filter.filter access-request
+    permit-filter.filter access-request
 
   allower: (access-request) ->
     new Allower(@access-obj access-request)
