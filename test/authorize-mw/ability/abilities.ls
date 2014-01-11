@@ -3,12 +3,12 @@ requires = rek 'requires'
 
 Ability  = requires.file 'ability'
 
-users    = requires.fix 'users'
+create-user    = requires.fac 'create-user'
 
 ability = (user) ->
   new Ability user
 
 module.exports =
-  kris  : ability users.kris!
-  guest : ability users.guest!
-  admin : ability users.admin!
+  kris  : ability create-user.kris!
+  guest : ability create-user.guest!
+  admin : ability create-user.admin!

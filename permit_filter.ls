@@ -1,7 +1,9 @@
 _       = require 'prelude-ls'
 lo      = require 'lodash'
 
-Permit    = require './permit'
+Permit          = require './permit'
+PermitRegistry  = require './permit_registry'
+
 Debugger  = require './debugger'
 
 module.exports = class PermitFilter implements Debugger
@@ -13,8 +15,11 @@ module.exports = class PermitFilter implements Debugger
     matching-fun = (permit) ->
       permit.matches access-request
 
-    unless _.is-type 'Array', Permit.permits
-      throw Error "Permit.permits which contain all registered permits, must be an Array, was: #{typeof Permit.permits}"
-    _.filter matching-fun, Permit.permits
+    unless _.is-type 'Object', @permits!
+      throw Error "Permit.permits which contain all registered permits, must be an Object, was: #{typeof @permits!}"
+    _.filter matching-fun, @permits!
+
+  @permits = ->
+    PermitRegistry.permits
 
 lo.extend PermitFilter, Debugger

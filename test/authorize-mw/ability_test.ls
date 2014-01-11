@@ -3,28 +3,37 @@ requires = rek 'requires'
 
 requires.test 'test_setup'
 
-_             = require 'prelude-ls'
-lo            = require 'lodash'
-User          = requires.fix 'user'
-Book          = requires.fix 'book'
+_               = require 'prelude-ls'
+lo              = require 'lodash'
+User            = requires.fix 'user'
+Book            = requires.fix 'book'
 
-request       = requires.fix 'request'
-users         = requires.fix 'users'
-permits       = requires.fix 'permits'
+create-request  = requires.fac 'create-request'
+create-user     = requires.fac 'create-user'
+create-permit   = requires.fac 'create-permit'
 
-ability       = require './ability/abilities'
+ability         = require './ability/abilities'
 
-Allower       = requires.file 'allower'
-Ability       = requires.file 'ability'
-Permit        = requires.file 'permit'
-permit-for    = requires.file 'permit_for'
-PermitMatcher = requires.file 'permit_matcher'
+Allower         = requires.file 'allower'
+Ability         = requires.file 'ability'
+Permit          = requires.file 'permit'
+permit-for      = requires.file 'permit_for'
+PermitMatcher   = requires.file 'permit_matcher'
 
 describe 'Ability' ->
   var abook
 
   book = (title) ->
     new Book title: title
+
+  abilities = {}
+  requests  = {}
+  users     = {}
+
+  before ->
+    requests.user   = create-request.user-access!
+    requests.empty  = create-request.empty!
+    users.kris      = create-user.kris!
 
   describe 'create' ->
     context 'Ability for kris' ->
@@ -37,10 +46,10 @@ describe 'Ability' ->
 
   describe 'allower' ->
     specify 'return Allower instance' ->
-      ability.kris.allower(access.empty).constructor.should.eql Allower
+      ability.kris.allower(requests.empty).constructor.should.eql Allower
 
     specify 'Allower sets own access-request obj' ->
-      ability.kris.allower(access.user).access-request.should.eql access.user
+      ability.kris.allower(requests.user).access-request.should.eql requests.user
 
   describe 'allowed-for' ->
     context 'guest ability' ->

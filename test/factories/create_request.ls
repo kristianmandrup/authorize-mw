@@ -4,34 +4,37 @@ requires = rek 'requires'
 User = requires.fix 'user'
 
 module.exports =
-    default-action: ->
-      'read'
+  empty: ->
+    {}
 
-    default-user: ->
-      new User name: 'kris'
+  default-action: ->
+    'read'
 
-    role-access: (role) ->
-      user:
-        role: role
-      action: @default-action!
+  default-user: ->
+    new User name: 'kris'
 
-    user-access: (user) ->
-      user: user
-      action: @default-action!
+  role-access: (role) ->
+    user:
+      role: role
+    action: @default-action!
 
-    action-access: (action) ->
-      user: @default-user!
-      action: action
+  user-access: (user) ->
+    user: user
+    action: @default-action!
 
-    subject-access: (subject) ->
-      user: @default-user!
-      subject: subject
-      action: @default-action!
+  action-access: (action) ->
+    user: @default-user!
+    action: action
 
-    ctx-access: (ctx) ->
-      user: @default-user!
-      action: @default-action!
-      ctx: ctx
+  subject-access: (subject) ->
+    user: @default-user!
+    subject: subject
+    action: @default-action!
 
-    context-access: (ctx) ->
-      @ctx-access ctx
+  ctx-access: (ctx) ->
+    user: @default-user!
+    action: @default-action!
+    ctx: ctx
+
+  context-access: (ctx) ->
+    @ctx-access ctx
