@@ -10,6 +10,7 @@ Book            = requires.fix 'book'
 permit-clazz    = requires.fix 'permit-class'
 
 create-permit   = requires.fac 'create-permit'
+create-user     = requires.fac 'create-user'
 
 AdminPermit     = permit-clazz.AdminPermit
 GuestPermit     = permit-clazz.GuestPermit
@@ -18,6 +19,7 @@ describe 'Permit' ->
   var book
   requests  =
     admin: {}
+    kris:  {}
   permits   = {}
   users     = {}
 
@@ -31,9 +33,10 @@ describe 'Permit' ->
       ctx:
         area: 'visitor'
 
-    requests.admin.read-paper :=
-      user:
-        role: 'admin'
+    users.kris = create-user.kris!
+
+    requests.kris.read-paper :=
+      user: users.kris
       action: 'read'
       subject: 'paper'
       ctx:
@@ -53,6 +56,24 @@ describe 'Permit' ->
       specify 'registers a read-any rule (using default)' ->
         permits.guest.can-rules!['read'].should.eql ['*']
 
+    describe 'dynamic rules application - user rules' ->
+      before ->
+        PermitRegistry.clear-all!
+        permits.guest := create-permit.admin!
+
+        # dynamic application when access-request passed
+        rule-applier = permits.guest.rule-applier requests.kris.read-paper
+        # rule-applier.debug-on!
+        # console.log 'Kris', users.kris
+
+        rule-applier.apply-user-rules users.kris
+
+      after ->
+        PermitRegistry.clear-all!
+
+      specify 'registers a manage User rule' ->
+        permits.guest.can-rules!['manage'].should.include 'User'
+
     describe 'dynamic rules application - action rules' ->
       before ->
         PermitRegistry.clear-all!
@@ -66,7 +87,7 @@ describe 'Permit' ->
       after ->
         PermitRegistry.clear-all!
 
-      specify 'registers a read-book rule' ->
+      specify 'registers a read Book rule' ->
         permits.guest.can-rules!['read'].should.include 'Book'
 
     describe 'dynamic rules application - ctx rules' ->
@@ -82,7 +103,7 @@ describe 'Permit' ->
       after ->
         PermitRegistry.clear-all!
 
-      specify 'registers a read-book rule' ->
+      specify 'registers a publish Paper rule' ->
         permits.guest.can-rules!['publish'].should.include 'Paper'
 
     describe 'dynamic rules application - subject rules - class' ->
@@ -92,14 +113,14 @@ describe 'Permit' ->
         permits.admin := create-permit.admin!
 
         # dynamic application when access-request passed
-        rule-applier = permits.admin.rule-applier requests.admin.read-paper
+        rule-applier = permits.admin.rule-applier requests.kris.read-paper
 
         rule-applier.apply-subject-rules 'Paper'
 
       after ->
         PermitRegistry.clear-all!
 
-      specify 'registers a read-book rule' ->
+      specify 'registers an approve Paper rule' ->
         permits.admin.can-rules!['approve'].should.include 'Paper'
 
     describe 'dynamic rules application - subject rules - instance to class' ->
@@ -114,7 +135,7 @@ describe 'Permit' ->
         permits.admin := create-permit.admin!
 
         # dynamic application when access-request passed
-        rule-applier = permits.admin.rule-applier requests.admin.read-paper
+        rule-applier = permits.admin.rule-applier requests.kris.read-paper
         # rule-applier.debug-on!
 
         rule-applier.apply-subject-rules paper
@@ -122,7 +143,7 @@ describe 'Permit' ->
       after ->
         PermitRegistry.clear-all!
 
-      specify 'registers a read-book rule' ->
+      specify 'registers an approve Paper rule' ->
         permits.admin.can-rules!['approve'].should.include 'Paper'
 
 

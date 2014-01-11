@@ -92,9 +92,19 @@ module.exports = class RuleApplier implements Debugger
   apply-obj-rules-for: (obj, context) ->
     rules = @context-rules(context)
 
+    @debug 'apply-obj-rules-for', obj, context, rules
+
+    obj-keys = _.keys(obj)
+
+    if obj.clazz is 'User'
+      obj-keys = ['name', 'role']
+
     self = @
-    _.keys(obj).each (key) ->
+    obj-keys.each (key) ->
       val = obj[key]
+
+      if obj.clazz is 'User'
+        self.apply-rules-for val, context
 
       key-rules = rules[key]
       self.apply-rules-for val, key-rules

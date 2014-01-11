@@ -1,6 +1,11 @@
+rek      = require 'rekuire'
+requires = rek 'requires'
+
+User = requires.fix 'user'
+
 create-user =
-  name: ->
-    new User name: name
+  name: (name)->
+    new User name: name, clazz: 'User'
 
   kris: ->
     @name 'kris'

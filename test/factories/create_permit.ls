@@ -26,6 +26,9 @@ module.exports =
   admin: (debug) ->
     permit-for Permit, 'admin books', (->
       rules:
+        user:
+          kris: ->
+            @ucan 'manage', 'User'
         ctx:
           area:
             admin: ->
