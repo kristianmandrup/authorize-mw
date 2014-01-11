@@ -23,30 +23,39 @@ permit-filter   = requires.file 'permit-filter'
 describe 'Ability' ->
   var abook
 
-  permits = {}
+  permits   = {}
+  requests  = {}
 
   describe 'permits' ->
     before ->
+      abook := new Book title: 'book'
+
       PermitRegistry.clear-all!
-      permits.user    = create-permit.user!
-      permits.guest   = create-permit.guest!
-      permits.admin   = create-permit.admin!
+      permits.user    = create-permit.matching.user!
+      permits.guest   = create-permit.matching.role.guest!
+      permits.admin   = create-permit.matching.role.admin!
+
+      requests.empty      = create-request.empty!
+      requests.admin      = create-request.role-access 'admin'
+      requests.guest      = create-request.role-access 'guest'
+      requests.read-book  =
+        action: 'read'
+        subject: abook
 
     context 'kris-ability' ->
       describe 'permit-filter' ->
         specify 'user permit never filtered out' ->
-          permit-filter.filter(access.empty).should.eql [permits.user]
+          permit-filter.filter(requests.empty).should.eql [permits.user]
 
-
-      specify 'user permit always present, since ability always has non-empty user' ->
-        ability.kris.permits(access.empty).should.eql [permits.user]
+      xspecify 'user permit always present, since ability always has non-empty user' ->
+        ability.kris.permits(requests.empty).should.eql [permits.user]
 
       xspecify 'find 1 extra permit matching admin user access' ->
-        ability.kris.permits(access.admin).should.eql [permits.user, permits.admin]
+        ability.kris.permits(requests.admin).should.eql [permits.user, permits.admin]
 
       xspecify 'find 1 extra permit matching guest user access' ->
-        ability.kris.permits(access.guest).should.eql [permits.user, permits.guest]
+        ability.kris.permits(requests.guest).should.eql [permits.user, permits.guest]
 
     context 'guest-ability' ->
       xspecify 'no permits allow read book' ->
-        ability.guest.permits(access.read-book).should.eql []
+        ability.guest.permits(requests.read-book).should.eql []
