@@ -1,22 +1,13 @@
-class Debugger
-  debug: (...msg) ->
-    console.log msg if @debugging
+lo = require 'lodash'
+
+module.exports =
+  debugging: false
+
+  debug: (msg) ->
+    console.log ...if @debugging
 
   debug-on: ->
     @debugging = true
 
   debug-off: ->
     @debugging = false
-
-  # class-lv debugging
-
-  @debug = (...msg) ->
-    console.log msg if @@debugging
-
-  @debug-on = ->
-    @@debugging = true
-
-  @debug-off = ->
-    @@debugging = false
-
-module.exports = Debugger
