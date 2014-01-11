@@ -39,6 +39,9 @@ module.exports = class RuleApplier implements Debugger
   user: ->
     @access-request?.user
 
+  subject: ->
+    @access-request?.subject
+
   ctx: ->
     @access-request?.ctx
 
@@ -68,12 +71,16 @@ module.exports = class RuleApplier implements Debugger
   #
   apply-rules-for: (name, context) ->
     @debug "apply rules for #{name} in context: #{context}"
-    rules = @context-rules(context)
+
+    if _.is-type 'Object' name
+      @apply-obj-rules-for name, context
 
     unless _.is-type 'String' name
       @debug "Name to apply rules for must be a String, was: #{typeof name} : #{name}"
       return @
       # throw Error "Name to appl rules for must be a String, was: #{name}"
+
+    rules = @context-rules(context)
 
     named-rules = rules[name]
     if _.is-type 'Function', named-rules
@@ -82,12 +89,26 @@ module.exports = class RuleApplier implements Debugger
       @debug "rules key for #{name} should be a function that resolves one or more rules"
     @
 
+  apply-obj-rules-for: (obj, context) ->
+    rules = @context-rules(context)
+
+    self = @
+    _.keys(obj).each (key) ->
+      val = obj[key]
+
+      key-rules = rules[key]
+      self.apply-rules-for val, key-rules
+
+
   context-rules: (context)->
+    if _.is-type 'Object', context
+      return context
+
     return @rules unless _.is-type 'String', context
     if _.is-type 'Object' @rules[context]
       @rules[context]
     else
-      @debug "no such rules context: #{context}"
+      @debug "no such rules context: #{context}", @rules
       @rules
 
 
@@ -112,6 +133,11 @@ module.exports = class RuleApplier implements Debugger
     @apply-rules-for @user!, 'user'
     @
 
+  apply-subject-rules: ->
+    @apply-rules-for @subject!
+    @apply-rules-for @subject!, 'subject'
+    @
+
   # such as where on the site is the user?
   # guest area, member area? admin area?
   # which rules should apply?
@@ -126,6 +152,9 @@ module.exports = class RuleApplier implements Debugger
     @apply-rules-for @ctx!, 'ctx'
     @apply-rules-for @ctx!, 'context'
     @
+
+  apply-context-rules: ->
+    @apply-ctx-rules!
 
   valid-request: ->
     not lo.is-empty @access-request

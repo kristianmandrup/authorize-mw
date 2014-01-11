@@ -1,6 +1,7 @@
 rek      = require 'rekuire'
 requires = rek 'requires'
 
+Permit        = requires.file 'permit'
 permit-class  = requires.fix  'permit-class'
 permit-for    = requires.file 'permit-for'
 
@@ -10,6 +11,10 @@ module.exports =
   guest: (debug) ->
     permit-for GuestPermit, 'guest books', (->
       rules:
+        ctx:
+          area:
+            visitor: ->
+              @ucan 'publish', 'Paper'
         read: ->
           @ucan 'read' 'Book'
         write: ->
@@ -17,6 +22,18 @@ module.exports =
         default: ->
           @ucan 'read' 'any'
       ), debug
+
+  admin: (debug) ->
+    permit-for Permit, 'admin books', (->
+      rules:
+        ctx:
+          area:
+            admin: ->
+              @ucan 'review', 'Paper'
+        subject:
+          paper: ->
+            @ucan 'approve', 'Paper'
+    ), debug
 
   matching:
     user: ->

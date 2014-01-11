@@ -28,6 +28,17 @@ describe 'Permit' ->
         role: 'admin'
       action: 'read'
       subject: book
+      ctx:
+        area: 'visitor'
+
+    requests.admin.read-paper :=
+      user:
+        role: 'admin'
+      action: 'read'
+      subject: 'paper'
+      ctx:
+        area: 'visitor'
+
 
   describe 'Rules application' ->
     # auto applies static rules by default (in init) as part of construction!
@@ -57,6 +68,40 @@ describe 'Permit' ->
 
       specify 'registers a read-book rule' ->
         permits.guest.can-rules!['read'].should.include 'Book'
+
+    describe 'dynamic rules application - ctx rules' ->
+      before ->
+        PermitRegistry.clear-all!
+        permits.guest := create-permit.guest!
+
+        # dynamic application when access-request passed
+        rule-applier = permits.guest.rule-applier requests.admin.read-book
+
+        rule-applier.apply-context-rules area: 'visitor'
+
+      after ->
+        PermitRegistry.clear-all!
+
+      specify 'registers a read-book rule' ->
+        permits.guest.can-rules!['publish'].should.include 'Paper'
+
+    describe 'dynamic rules application - subject rules' ->
+      before ->
+        permits := {}
+        PermitRegistry.clear-all!
+        permits.admin := create-permit.admin!
+
+        # dynamic application when access-request passed
+        rule-applier = permits.admin.rule-applier requests.admin.read-paper
+
+        rule-applier.apply-subject-rules 'Paper'
+
+      after ->
+        PermitRegistry.clear-all!
+
+      specify 'registers a read-book rule' ->
+        permits.admin.can-rules!['approve'].should.include 'Paper'
+
 
     describe 'dynamic rules application' ->
       before ->
