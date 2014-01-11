@@ -21,13 +21,11 @@ Util            = require './util'
 
 Debugger        = require './debugger'
 
-valid_rules = (rules)->
-  _.is-type('Object', rules) or _.is-type('Function', rules)
-
 module.exports = class Permit implements Debugger
   (@name, @description = '') ->
     PermitRegistry.register-permit @
     @rule-repo = new RuleRepo @name
+    @applied-rules = false
 
   permit-matcher-class: PermitMatcher
   rule-applier-class: RuleApplier
@@ -37,15 +35,13 @@ module.exports = class Permit implements Debugger
     PermitRegistry.permits[name] || throw Error("No permit '#{name}' is registered")
 
   init: ->
-    if valid_rules @rules
-      # apply static rules
-      @apply-rules!
-    else
-      throw Error "No rules defined for permit: #{@name}"
+    @apply-rules!
     @
 
   clean: ->
+    @debug 'clean'
     @rule-repo.clean!
+    @applied-rules = false
 
   # used by permit-for to extend specific permit from base class (prototype)
   use: (obj) ->
@@ -88,13 +84,18 @@ module.exports = class Permit implements Debugger
 
   rule-applier: (access-request) ->
     access-request = {} unless _.is-type 'Object', access-request
-    new @rule-applier-class @rule-repo, @rules, access-request
+    new @rule-applier-class @rule-repo, @rules, access-request, @debugging
 
   # always called (can be overridden for custom behavior)
-  apply-rules: (access-request) ->
-    unless @applied-rules
+  apply-rules: (access-request, force) ->
+    unless access-request is undefined or _.is-type 'Object', access-request
+      force = Boolean access-request
+    unless @applied-rules and not force
+      @debug 'permit apply rules', access-request
       @rule-applier(access-request).apply-rules!
-    @applied-rules = true
+      @applied-rules = true
+    else
+      @debug 'rules already applied before', @applied-rules
 
   can-rules: ->
     @rule-repo.can-rules

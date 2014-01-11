@@ -13,36 +13,44 @@ PermitMatcher = requires.file 'permit_matcher'
 Permit        = requires.file 'permit'
 setup         = require('./permit_matcher/permits').setup
 
+create-user     = requires.fac 'create-user'
+create-request  = requires.fac 'create-request'
+create-permit   = requires.fac 'create-permit'
+
 describe 'PermitMatcher' ->
-  var user-kris, user-emily
-  var user-permit, guest-permit, admin-permit
-  
+  var permit-matcher, book
+
+  users     = {}
+  permits   = {}
+  requests  = {}
+
   matching = {}
   none-matching = {}
-  
-  var permit-matcher
-  var userless-access, user-access
 
   before ->
-    user-kris   := new User name: 'kris'
-    user-emily  := new User name: 'emily'
+    users.kris   := create-user.kris
+    users.emily  := create-user.emily
 
-    userless-access := {ctx: {area: 'guest'}}
-    user-access     := {user: user-kris}
+    requests.ctx :=
+      ctx:
+        area: 'guest'
 
-    user-permit     := setup.user-permit
-    permit-matcher  := new PermitMatcher user-permit, user-access
+    requests.user     :=
+      user: users.kris
+
+    permits.user     := setup.user-permit
+    permit-matcher    := new PermitMatcher permits.user, requests.user
 
   describe 'init' ->
     specify 'has user-permit' ->
-      permit-matcher.permit.should.eql user-permit
+      permit-matcher.permit.should.eql permits.user
 
     specify 'has own intersect object' ->
       permit-matcher.intersect.should.have.property 'on'
 
   describe 'intersect-on partial, access-request' ->
     specify 'intersects when same object' ->
-      permit-matcher.intersect-on(user-access).should.be.true
+      permit-matcher.intersect-on(requests.user).should.be.true
 
 
 

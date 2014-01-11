@@ -7,7 +7,7 @@ Permit    = require './permit'
 
 # we should take class to use as base class an optional first argument
 # use Permit class as default if first arg is a String (ie. name)
-module.exports = (base-clazz, name, base-obj) ->
+module.exports = (base-clazz, name, base-obj, debug) ->
   # tweak args if no base class as first arg
   if _.is-type 'String', base-clazz
     base-obj = name
@@ -15,6 +15,7 @@ module.exports = (base-clazz, name, base-obj) ->
     base-clazz = Permit
 
   permit = new base-clazz name
+  permit.debug-on! if debug is true
 
   if base-obj? and _.is-type 'Function', base-obj
     base-obj = base-obj!

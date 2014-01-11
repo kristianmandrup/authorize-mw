@@ -27,8 +27,11 @@ describe 'PermitMatcher' ->
 
   before ->
     users.kris        := create-user.kris
+    requests.user     :=
+      user: users.kris
+
     permits.user      := setup.user-permit!
-    permit-matcher    := new PermitMatcher permits.user, user-access
+    permit-matcher    := new PermitMatcher permits.user, requests.user
 
   describe 'include' ->
     describe 'includes user.name: kris' ->

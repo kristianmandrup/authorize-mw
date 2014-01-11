@@ -30,7 +30,7 @@ describe 'PermitMatcher' ->
     users.kris      := create-user.kris
     users.emily     := create-user.emily
     requests.user :=
-      user: {}
+      user: users.kris
 
     permits.user    := setup.user-permit!
     permit-matcher  := new PermitMatcher permits.user, requests.user

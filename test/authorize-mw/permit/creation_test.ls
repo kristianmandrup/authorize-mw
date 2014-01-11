@@ -6,6 +6,7 @@ requires.test 'test_setup'
 _               = require 'prelude-ls'
 
 Permit          = requires.file 'permit'
+PermitRegistry  = requires.file 'permit-registry'
 
 RuleRepo        = requires.file 'rule_repo'
 RuleApplier     = requires.file 'rule_applier'
@@ -14,60 +15,64 @@ PermitAllower   = requires.file 'permit_allower'
 permit-for      = requires.file 'permit_for'
 
 Book            = requires.fix 'book'
+permit-clazz    = requires.fix 'permit-class'
 
-permits         = requires.fix 'permits'
+create-permit   = requires.fac 'create-permit'
 
-setup           = permits.setup
-AdminPermit     = permits.AdminPermit
-GuestPermit     = permits.GuestPermit
+AdminPermit     = permit-clazz.AdminPermit
+GuestPermit     = permit-clazz.GuestPermit
 
 describe 'Permit' ->
-  var access, permit, guest-permit, admin-permit
+  requests = {}
+  permits  = {}
 
   before ->
-    permit          := new Permit
+    permits.empty   := new Permit
+
+  after ->
+    PermitRegistry.clear-all!
 
   describe 'init creates a permit ' ->
     specify 'first unnamed permit is named Permit-0' ->
-      permit.name.should.eql 'Permit-0'
+      permits.empty.name.should.eql 'Permit-0'
 
     specify 'with no description' ->
-      permit.description.should.eql ''
+      permits.empty.description.should.eql ''
 
   context 'extra Guest permit' ->
     before ->
-      guest-permit    := new GuestPermit
+      permits.guest    := new GuestPermit
 
     specify 'second unnamed is named Permit-1' ->
-      guest-permit.name.should.eql 'Permit-1'
+      permits.guest.name.should.eql 'Permit-1'
 
 
-  context 'a single empty permit named hello' ->
-    var permit
-
+  context 'a single permit named hello' ->
     before ->
-      Permit.clear-all!
-      permit := new Permit 'hello'
+      permits.hello := new Permit 'hello'
 
     # clean up
     after ->
-      Permit.clear-all!
+      PermitRegistry.clear-all!
+
+    specify 'first unnamed permit is named Permit-0' ->
+      permits.hello.name.should.eql 'hello'
 
     describe 'rules' ->
       specify 'has an empty canRules list' ->
-        permit.can-rules!.should.be.empty
+        permits.hello.can-rules!.should.be.empty
 
       specify 'has an empty cannotRules list' ->
-        permit.cannot-rules!.should.be.empty
+        permits.hello.cannot-rules!.should.be.empty
 
     describe 'rule-applier-class' ->
       specify 'by default has rule-applier-class = RuleApplier' ->
-        permit.rule-applier-class.should.eql RuleApplier
+        permits.hello.rule-applier-class.should.eql RuleApplier
 
     describe 'allower' ->
       specify 'has an allower' ->
-        permit.allower!.constructor.should.eql PermitAllower
+        permits.hello.allower!.constructor.should.eql PermitAllower
 
     describe 'permit-matcher-class' ->
       specify 'permit by default has permit-matcher-class = PermitMatcher' ->
-        permit.permit-matcher-class.should.eql PermitMatcher
+        permits.hello.permit-matcher-class.should.eql PermitMatcher

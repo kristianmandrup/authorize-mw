@@ -8,9 +8,9 @@ RuleRepo        = requires.file 'rule_repo'
 
 create-permit   = requires.fac  'create-permit'
 
-permits = {}
-
 describe 'PermitRegistry' ->
+  permits = {}
+
   describe 'create instance' ->
     specify 'should throw error' ->
       ( -> new PermitRegistry ).should.throw
@@ -73,15 +73,16 @@ describe 'PermitRegistry' ->
 
       describe 'clean-all' ->
         context 'cleaned permits' ->
-          var old-counter, old-permits, old-repo
+          counters = {}
+          repos = {}
 
           before ->
             PermitRegistry.clear-all!
             permits.guest = create-permit.guest!
 
-            old-counter := PermitRegistry.permit-counter
-            old-permits := PermitRegistry.permits
-            old-repo    := permits.guest.rule-repo
+            counters.old  := PermitRegistry.permit-counter
+            permits.old   := PermitRegistry.permits
+            repos.old     := permits.guest.rule-repo
 
             PermitRegistry.clean-all!
 
@@ -90,11 +91,11 @@ describe 'PermitRegistry' ->
 
           describe 'permit-counter' ->
             specify 'should not change' ->
-              PermitRegistry.permit-counter.should.eql old-counter
+              PermitRegistry.permit-counter.should.eql counters.old
 
           describe 'permits' ->
             specify 'should not change' ->
-              PermitRegistry.permits.should.eql old-permits
+              PermitRegistry.permits.should.eql permits.old
 
           describe 'repo' ->
             describe 'should be cleaned' ->
@@ -104,7 +105,7 @@ describe 'PermitRegistry' ->
                 cleaned-permit := PermitRegistry.permits['guest books']
 
               specify 'repo is same instance' ->
-                cleaned-permit.rule-repo.should.eql old-repo
+                cleaned-permit.rule-repo.should.eql repos.old
 
               specify 'repo can-rules are empty' ->
                 cleaned-permit.rule-repo.can-rules.should.eql {}

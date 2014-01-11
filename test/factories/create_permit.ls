@@ -7,8 +7,8 @@ permit-for    = requires.file 'permit-for'
 GuestPermit = permit-class.GuestPermit
 
 module.exports =
-  guest: ->
-    permit-for GuestPermit, 'guest books', ->
+  guest: (debug) ->
+    permit-for GuestPermit, 'guest books', (->
       rules:
         read: ->
           @ucan 'read' 'Book'
@@ -16,6 +16,7 @@ module.exports =
           @ucan 'write' 'Book'
         default: ->
           @ucan 'read' 'any'
+      ), debug
 
   matching:
     user: ->

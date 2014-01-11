@@ -29,7 +29,7 @@ describe 'PermitMatcher' ->
     users.kris    := create-user.kris
     users.emily   := create-user.emily
     requests.user :=
-      user: {}
+      user: users.kris
 
     permits.user   := setup.user-permit!
     permit-matcher := new PermitMatcher permits.user, requests.user
@@ -37,7 +37,7 @@ describe 'PermitMatcher' ->
   describe 'exclude' ->
     describe 'excludes user.name: kris' ->
       before ->
-        user-permit.excludes =
+        permits.user.excludes =
           user: users.kris
 
       specify 'matches access-request on excludes intersect' ->
@@ -48,12 +48,12 @@ describe 'PermitMatcher' ->
         permits.user.excludes = {}
 
       specify 'matches access-request since empty excludes always intersect' ->
-          permit-matcher.exclude!.should.be.true
+        permit-matcher.exclude!.should.be.true
 
     describe 'excludes other user' ->
       before ->
         permits.user.excludes =
-          user: user-emily
+          user: users.emily
 
       specify 'does NOT match access-request since NO excludes intersect' ->
         permit-matcher.exclude!.should.be.false

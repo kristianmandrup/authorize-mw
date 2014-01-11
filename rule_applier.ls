@@ -22,7 +22,7 @@ valid_rules = (rules)->
 # To apply a rule, means to execute the .can or .cannot statement in order to add one or more entries
 # to the corresponding can-rules or cannot-rules object in the rule-rep
 module.exports = class RuleApplier implements Debugger
-  (@repo, @rules, @access-request) ->
+  (@repo, @rules, @access-request, @debugging) ->
     unless _.is-type('Object', @repo)
       throw Error "RuleApplier must be passed a RuleRepo, was: #{@repo}"
 
@@ -31,6 +31,7 @@ module.exports = class RuleApplier implements Debugger
 
     unless @access-request is undefined or _.is-type 'Object', @access-request
       throw Error "AccessRequest must be an Object, was: #{@access-request}"
+    @debugging = @debugging
 
   action: ->
     @access-request?.action
@@ -66,6 +67,7 @@ module.exports = class RuleApplier implements Debugger
   #     member: ->
   #
   apply-rules-for: (name, context) ->
+    @debug "apply rules for #{name} in context: #{context}"
     rules = @context-rules(context)
 
     unless _.is-type 'String' name
@@ -125,13 +127,26 @@ module.exports = class RuleApplier implements Debugger
     @apply-rules-for @ctx!, 'context'
     @
 
+  valid-request: ->
+    not lo.is-empty @access-request
+
   apply-default-rules: ->
-    if _.is-type 'Object', @access-request
+    @debug 'apply-default-rules', @access-request, @valid-request!
+    if _.is-type('Object', @access-request) and @valid-request!
       @apply-access-rules!
     else
       @apply-rules-for 'default'
+    @
+
 
   apply-rules: ->
+    unless valid_rules @rules
+      # throw Error "No rules defined for permit: #{@name}"
+      @debug 'invalid permit rules could not be applied'
+      return
+
+    @debug 'applying rules', @rules, 'for', @access-request
+
     switch typeof @rules
     when 'function'
       @rules!
@@ -143,6 +158,7 @@ module.exports = class RuleApplier implements Debugger
     @
 
   apply-access-rules: ->
+    @debug 'apply access rules on', @access-request
     @apply-action-rules!
     @apply-user-rules!
     @apply-ctx-rules!
