@@ -42,6 +42,11 @@ module.exports = class PermitMatcher implements Debugger
       if res.constructor is AccessMatcher
         return res.result!
 
+      return true if res is undefined
+
+      unless _.is-type 'Boolean', res
+        throw Error ".match method of permit #{@permit.name} must return a Boolean value, was: #{typeof res}"
+
       return res
     else
       @debug "permit.ex-match function not found for permit: #{@permit}"
@@ -53,6 +58,11 @@ module.exports = class PermitMatcher implements Debugger
       @debug 'custom-match', @permit.match, res
       if res.constructor is AccessMatcher
         return res.result!
+
+      return true if res is undefined
+
+      unless _.is-type 'Boolean', res
+        throw Error ".match method of permit #{@permit.name} must return a Boolean value, was: #{typeof res}"
 
       return res
     else

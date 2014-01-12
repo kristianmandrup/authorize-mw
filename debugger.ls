@@ -4,7 +4,9 @@ module.exports =
   debugging: false
 
   debug: (msg) ->
-    console.log ...if @debugging
+    if @debugging
+      console.log @.constructor.display-name + ':'
+      console.log ...
 
   debug-on: ->
     @debugging = true

@@ -21,16 +21,40 @@ permit-for      = requires.file 'permit_for'
 PermitMatcher   = requires.file 'permit_matcher'
 
 describe 'Ability' ->
-  var abook
+  var book
 
-  book = (title) ->
+  create-book = (title) ->
     new Book title: title
 
-  abilities = {}
-  requests  = {}
-  users     = {}
+  abilities   = {}
+  requests    = {}
+  users       = {}
+  permits     = {}
 
   before ->
+    book := create-book 'hello'
+
+    # setup permits here !!
+    permits.user := permit-for 'User',
+      match: (access) ->
+        @matching(access).user!
+      rules: ->
+        @ucan 'view', 'book'
+
+    permits.guest := permit-for 'Guest',
+      match: (access) ->
+        @matching(access).role 'guest'
+      rules: ->
+        @ucan 'read', 'book'
+        @ucannot 'write', 'book'
+
+    permits.editor := permit-for 'Editor',
+      match: (access) ->
+        @matching(access).role 'editor'
+      rules: ->
+        @ucan ['read', 'write'], 'book'
+
+
     requests.user   = create-request.user-access!
     requests.empty  = create-request.empty!
     users.kris      = create-user.kris!
@@ -52,26 +76,30 @@ describe 'Ability' ->
       ability.kris.allower(requests.user).access-request.should.eql requests.user
 
   describe 'allowed-for' ->
+    before ->
+    
     context 'guest ability' ->
-      xspecify 'read a book access should be allowed for admin user' ->
+      specify 'read a book access should be allowed for guest user' ->
         ability.guest.allowed-for(action: 'read', subject: book).should.be.true
 
       specify 'write a book access should NOT be allowed for guest user' ->
         ability.guest.allowed-for(action: 'write', subject: book).should.be.false
 
     context 'admin ability' ->
-      xspecify 'write a book access should be allowed for admin user' ->
-        admin-ability.allowed-for(action: 'write', subject: book).should.be.true
+      specify 'write a book access should NOT be allowed for admin user' ->
+        ability.admin.allowed-for(action: 'write', subject: book).should.be.false
 
-  xdescribe 'not-allowed-for' ->
+  describe 'not-allowed-for' ->
     before ->
       # init local vars
 
-    specify 'read a book access should be allowed for admin user' ->
-      ability.guest.not-allowed-for(action: 'read', subject: book).should.be.false
+    context 'guest ability' ->
+      specify 'read a book access should be allowed for admin user' ->
+        ability.guest.not-allowed-for(action: 'read', subject: book).should.be.false
 
-    xspecify 'write a book access should NOT be allowed for guest user' ->
-      ability.guest.not-allowed-for(action: 'write', subject: book).should.be.true
+      specify 'write a book access should NOT be allowed for guest user' ->
+        ability.guest.not-allowed-for(action: 'write', subject: book).should.be.true
 
-    xspecify 'write a book access should be allowed for admin user' ->
-      ability.admin.not-allowed-for(action: 'write', subject: book).should.be.false
+    context 'admin ability' ->
+      specify 'write a book access should NOT be allowed for admin user' ->
+        ability.admin.not-allowed-for(action: 'write', subject: book).should.be.true

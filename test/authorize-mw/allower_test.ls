@@ -28,6 +28,9 @@ describe 'Allower', ->
   book-access = (action, user) ->
     {user: user, action: action, subject: book}
 
+  allower = (request) ->
+    new Allower request
+
   before ->
     users.kris      := create-user.kris!
     users.guest     := create-user.guest!
@@ -80,9 +83,14 @@ describe 'Allower', ->
       requests.write-book       := book-access 'write', users.editor
       requests.not-write-book   := book-access 'write', users.guest
 
-      allowers.read-book        := new Allower requests.read-book
-      allowers.write-book       := new Allower requests.write-book
-      allowers.not-write-book   := new Allower requests.not-write-book
+      allowers.read-book        := allower requests.read-book
+      allowers.write-book       := allower requests.write-book
+      allowers.not-write-book   := allower requests.not-write-book
+
+      # permits.user.debug-on!
+      # permits.guest.debug-on!
+      # permits.editor.debug-on!
+      # allowers.write-book.debug-on!
 
     describe 'allows!' ->
       before-each ->
@@ -91,11 +99,11 @@ describe 'Allower', ->
       specify 'read a book access should be allowed' ->
         allowers.read-book.allows!.should.be.true
 
-      specify 'write a book access should be allowed' ->
-        allowers.write-book.allows!.should.be.true
+      specify 'write a book access should not be allowed' ->
+        allowers.write-book.allows!.should.be.false
 
       specify 'write a book should NOT be allowed for ' ->
-        allowers.not-write-book-allower.allows!.should.be.false
+        allowers.not-write-book.allows!.should.be.false
 
     describe 'disallows!' ->
       before-each ->

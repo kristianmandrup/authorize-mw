@@ -57,12 +57,14 @@ module.exports = class Permit implements Debugger
   # ----------------
 
   allower: ->
-    new PermitAllower @rule-repo
+    new PermitAllower @rule-repo, @debugging
 
   allows: (access-request) ->
+    @debug 'permit allows?', access-request
     @allower!.allows access-request
 
   disallows: (access-request) ->
+    @debug 'permit disallows?', access-request
     @allower!.disallows access-request
 
   # Permit matching

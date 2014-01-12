@@ -1,7 +1,13 @@
+_   = require 'prelude-ls'
+lo  = require 'lodash'
+require 'sugar'
+
 Permit        = require './permit'
 PermitFilter  = require './permit_filter'
 
-module.exports = class Allower
+Debugger      = require './debugger'
+
+module.exports = class Allower implements Debugger
   # access rule
   # example
   # { user: user, action: 'read', subject: book, ctx: {} }
@@ -13,18 +19,24 @@ module.exports = class Allower
   # go through all permits that apply
   # if any of them allows, then yes
   allows: ->
+    @debug 'allows', @access-request
     @test 'allows'
 
   # go through all permits that apply
   # if any of them disallows, then yes
   disallows: ->
+    @debug 'disallows', @access-request
     @test 'disallows'
 
   test: (allow-type) ->
     for permit in @permits
-      console.log 'permit', permit
+      @debug 'test permit', allow-type, permit
 
       # apply dynamic rules
       permit.apply-rules @access-request
+
+      @debug 'permit rules'
       return true if permit[allow-type] @access-request
     false
+
+lo.extend Allower, Debugger
