@@ -55,18 +55,16 @@ Each time a permit is created, it is registered in the PermitRegistry by name. I
 it will be named `Permit-0`, `Permit-1` etc. Only the first permit of a given name is registered.
 Any attempt to later store another permit of the same name will cause an error.
 
-TODO: allow `force` flag parameter to override old permit?
-
 You can clear all permits using `PermitRegistry.clear-all!` and you can clean all permits of rules using `PermitRegistry.clean-all!`
 
 Currently the `PermitRegistry` is implemented as a singleton, but in the future it will be a class to allow for multiple permit registries and
  then selecting one to be used for a given environment. Ideas are welcome...
 
-Note: Code + Tests need some refactoring to support this new design!
+Note: Code + Tests will need some refactoring to support this new design!
 
 ## Permit
 
-The Permit class holds a list of all the registered permits in `Permit.permits`. You can get a named permit using `Permit.get(name)`. The `matches` method is used to see if the permit should be used for a given access-request.
+The `matches` method is used to see if the permit should be used for a given access-request.
 
 ```LiveScript
 class Permit
@@ -92,7 +90,7 @@ Example access rule
   obj.author == @user.id
 ```
 
-This `ucan` call is always executed in the context of the `RuleApplier` which contains the `ucan` and `ucannot` methods,
+This `@ucan` call is always executed in the context of the `RuleApplier` which contains the `ucan` and `ucannot` methods,
 which both register the rule in the rule repository (see `RuleRepo`).
 
 ## Ability access
@@ -158,6 +156,7 @@ class RuleRepo
 
   match-rule: (act, access-request) ->
     # matching logic
+
   register-rule: (act, actions, subjects)
     # add rule to can-rules or cannot-rules
 ```
@@ -167,6 +166,7 @@ class RuleRepo
 Used to apply a set of rules and add them to the rule repository.
 A permit would have a set of rules defined on itself (the rules key) and use the rule applier to add all or
 some of these rules to the rule repo.
+
 This can be done either dynamically, just before testing or allow/disallow an access-request, or it can be
 done statically, as the permit is initially created or even using a combination of these approaches.
 
@@ -196,7 +196,8 @@ class PermitMatcher
 
 ## Rule Repository
 
-Each permit also has a Rule Repository `rule-repo`, an instance of RuleRepo class. The rule-repo stores all the access rules that the permit allows or disallows for.
+Each permit also has a Rule Repository `rule-repo`, an instance of RuleRepo class.
+The rule-repo stores all the access rules that the permit allows or disallows for.
 
 ## Using permit-for
 
@@ -234,7 +235,8 @@ The `custom-permit` can be either an Object or a Function.
 
 To facilitate creating generic matchers, a set of `MatchMaker` classes have been defined for each of the keys in the
 access request. These are `UserMatcher`, `ActionMatcher`, `SubjectMatcher`, `ContextMatcher`.
-The can be used either directly by instantiation or via the `matching(access)` convenience methods of `Permit`,
+
+The matchers can be used either directly by instantiation or via the `matching(access)` convenience methods of `Permit`,
 which employs the `AccessMatcher` that in turn contains convenience methods for
 using all the specific access matchers just mentioned!
 
@@ -246,17 +248,12 @@ The `Permit.matching(access)` method returns an `AccessMatcher` instance with co
   * subject-clazz
   * context
 
-Important Fix: For the following methods, they should be made to work without the `has-xxx` hack!
- Just ensure that if match(access) returns an `AccessMatcher` object and not a boolean, it should resolve the
- `AccessMatcher` by calling `result!` on it to get the current boolean result.
-Code and tests need to be fixed for this!
-
 Access `user` method:
 
 ```LiveScript
 sexy-permit = permit-for 'a sexy woman',
   match: (access) ->
-    @matching(access).has-user type: 'sexy' # matches if access intersects with {user: {type: 'sexy'}}
+    @matching(access).user type: 'sexy' # matches if access intersects with {user: {type: 'sexy'}}
 ```
 
 The above is simply short hand for: `@matching(access).role('sexy').result!`
@@ -267,7 +264,7 @@ Access `action` method:
 ```LiveScript
 read-permit = permit-for 'a sexy woman',
   match: (access) ->
-    @matching(access).has-action 'read' # matches if access intersects with {action: 'read'}
+    @matching(access).action 'read' # matches if access intersects with {action: 'read'}
 ```
 
 Access  `subject` method:
@@ -275,7 +272,7 @@ Access  `subject` method:
 ```LiveScript
 read-permit = permit-for 'a sexy woman',
   match: (access) ->
-    @matching(access).has-subject 'Book' # matches if access intersects with {subject: 'Book'}
+    @matching(access).subject 'Book' # matches if access intersects with {subject: 'Book'}
 ```
 
 Access  `context` method:
@@ -284,7 +281,7 @@ Access  `context` method:
 read-permit = permit-for 'a sexy woman',
   match: (access) ->
     # matches if access intersects with {area: 'members'}
-    @matching(access).has-context area: 'members'
+    @matching(access).context area: 'members'
 ```
 
 Access `role` method:
@@ -293,7 +290,7 @@ Access `role` method:
 sexy-permit = permit-for 'a sexy woman',
   match: (access) ->
     # matches if access intersects with {user: {role: 'sexy'}}
-    @matching(access).has-role 'sexy'
+    @matching(access).role 'sexy'
 ```
 
 Access `subject-clazz` method (chaining):
@@ -302,7 +299,7 @@ Access `subject-clazz` method (chaining):
 sexy-permit = permit-for 'a sexy woman',
   match: (access) ->
     # matches if {subject: sexy-woman} and sexy-woman.constructor is a Woman class
-    @matching(access).subject-clazz('Man').has-user(type: 'sexy')
+    @matching(access).subject-clazz('Man').user(type: 'sexy')
 ```
 
 The `match-on` method takes a hash and executes chaining as above:
@@ -328,9 +325,9 @@ Ability wraps the permit execution for a given user.
 
 ## Authorizer
 
-`Authorizer` should be used to wrap an Ability for the current user. It is a middleware component that should be
+`Authorizer` is be used to wrap an Ability for the current user. It is a middleware component that should be
 used with a middleware runner (see *middleware* project). The authorizer should be used to authorize a user to
-access and perfor a given action on a data object of some kind.
+access and perform a given action on a data object of some kind.
 
 ## Normalize
 
