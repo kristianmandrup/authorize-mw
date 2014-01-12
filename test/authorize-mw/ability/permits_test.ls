@@ -18,7 +18,7 @@ Ability         = requires.file 'ability'
 Permit          = requires.file 'permit'
 PermitRegistry  = requires.file 'permit_registry'
 
-permit-filter   = requires.file 'permit-filter'
+PermitFilter   = requires.file 'permit-filter'
 
 describe 'Ability' ->
   var abook
@@ -42,20 +42,24 @@ describe 'Ability' ->
         action: 'read'
         subject: abook
 
+    describe 'permit-filter' ->
+      specify 'all permits filtered out on empty request' ->
+        PermitFilter.filter(requests.empty).should.eql []
+
+      specify 'only user and guest permit if guest request' ->
+        PermitFilter.filter(requests.guest).should.eql [permits.user, permits.guest]
+
     context 'kris-ability' ->
-      describe 'permit-filter' ->
-        specify 'user permit never filtered out' ->
-          permit-filter.filter(requests.empty).should.eql [permits.user]
+      # change to match all?
+      specify 'empty request matches no permits' ->
+        ability.kris.permits(requests.empty).should.eql []
 
-      xspecify 'user permit always present, since ability always has non-empty user' ->
-        ability.kris.permits(requests.empty).should.eql [permits.user]
-
-      xspecify 'find 1 extra permit matching admin user access' ->
+      specify 'admin user request matchies user and admin permits' ->
         ability.kris.permits(requests.admin).should.eql [permits.user, permits.admin]
 
-      xspecify 'find 1 extra permit matching guest user access' ->
+      specify 'guest user request matchies user and guest permits' ->
         ability.kris.permits(requests.guest).should.eql [permits.user, permits.guest]
 
     context 'guest-ability' ->
-      xspecify 'no permits allow read book' ->
+      specify 'no permits allow read book' ->
         ability.guest.permits(requests.read-book).should.eql []

@@ -18,48 +18,41 @@ permit-for      = requires.file 'permit_for'
 PermitFilter    = requires.file 'permit_filter'
 
 describe 'permit-filter' ->
-  permits = {}
-  users   = {}
+  permits   = {}
+  users     = {}
+  requests  = {}
 
   describe 'user filter' ->
-    var access-request
-    
     before ->
-      users.javier  := create-user.javier
-      access-request :=
-        user: user
+      users.javier  := create-user.javier!
+      requests.user :=
+        user: users.javier
 
       PermitRegistry.clear-all!
       permits.user := create-permit.matching.user!
 
     specify 'return only permits that apply for a user' ->
-      PermitFilter.filter(access-request).should.eql [user-permit]
+      PermitFilter.filter(requests.user).should.eql [permits.user]
 
   describe 'guest user filter' ->
-    var access-request
     before ->
-      users.guest  := create-user.guest
-      access-request :=
-        user: guest-user
-
       PermitRegistry.clear-all!
-      permits.guest := create-permit.matching.guest!
-      permits.admin := create-permit.matching.admin!
+      users.guest  := create-user.guest!
+      requests.guest :=
+        user: users.guest
+
+      permits.guest := create-permit.matching.role.guest!
 
     specify 'return only permits that apply for a guest user' ->
-      PermitFilter.filter(access-request).should.eql [guest-permit]
+      PermitFilter.filter(requests.guest).should.eql [permits.guest]
       
-  xdescribe 'admin user filter' ->
-    var admin-user, guest-permit, admin-permit, access-request
+  describe 'admin user filter' ->
     before ->
-      users.admin  := create-user.admin
-      access-request :=
+      users.admin  := create-user.admin!
+      requests.admin :=
         user: users.admin
 
-      PermitRegistry.clear-all!
-
-      permits.guest := create-permit.matching.guest!
-      permits.admin := create-permit.matching.admin!
+      permits.admin := create-permit.matching.role.admin!
 
     specify 'return only permits that apply for an admin user' ->
-      PermitFilter.filter(access-request).should.eql [admin-permit]
+      PermitFilter.filter(requests.admin).should.eql [permits.admin]

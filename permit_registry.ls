@@ -23,6 +23,9 @@ module.exports = class PermitRegistry implements Debugger
       throw Error "Name of permit must be a String, was: #{name}"
     name
 
+  @get = (name) ->
+    @@permits[name] || throw Error("No permit '#{name}' is registered")
+
   @register-permit = (permit) ->
     permit.name = @calc-name permit.name
     name = permit.name

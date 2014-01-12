@@ -141,36 +141,21 @@ class AccessMatcher
     @update @user-matcher!.match(user)
     @
 
-  has-user: (user) ->
-    @user(user).result!
-
   role: (role) ->
     @user role: role
     @
-
-  has-role: (role) ->
-    @role(role).result!
 
   subject: (subject) ->
     @update @subject-matcher!.match(subject)
     @
 
-  has-subject: (subject) ->
-    @subject(subject).result!
-
   subject-clazz: (clazz) ->
     @update @subject-matcher!.match-clazz(clazz)
     @
 
-  has-subject-clazz: (clazz) ->
-    @subject-clazz(clazz).result!
-
   action: (action) ->
     @update @action-matcher!.match(action)
     @
-
-  has-action: (action) ->
-    @action(action).result!
 
   context: (ctx) ->
     @update @context-matcher!.match(ctx)
@@ -178,16 +163,6 @@ class AccessMatcher
 
   ctx: (ctx) ->
     @context ctx
-
-  has-context: (context) ->
-    @context(context).result!
-
-  has-ctx: (context) ->
-    @ctx(context).result!
-
-
-  has: (name, value) ->
-    @[name](value).result!
 
 lo.extend AccessMatcher, Debugger
 

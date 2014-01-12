@@ -22,7 +22,7 @@ AccessMatcher = require('./matchers').AccessMatcher
 Debugger = require './debugger'
 
 module.exports = class PermitMatcher implements Debugger
-  (@permit, @access-request) ->
+  (@permit, @access-request, @debugging) ->
     @intersect = Intersect()
     @validate!
 
@@ -40,7 +40,7 @@ module.exports = class PermitMatcher implements Debugger
     if _.is-type 'Function' @permit.ex-match
       res = @permit.ex-match @access-request
       if res.constructor is AccessMatcher
-        throw Error "Wrong use of AccessMatcher in permit.match for permit #{@permit.name}, use .result! or has-xxx method to fix it"
+        return res.result!
 
       return res
     else
@@ -50,8 +50,9 @@ module.exports = class PermitMatcher implements Debugger
   custom-match: ->
     if _.is-type 'Function' @permit.match
       res = @permit.match @access-request
+      @debug 'custom-match', @permit.match, res
       if res.constructor is AccessMatcher
-        throw Error "Wrong use of AccessMatcher in permit.match for permit #{@permit.name}, use .result! or has-xxx method to fix it"
+        return res.result!
 
       return res
     else

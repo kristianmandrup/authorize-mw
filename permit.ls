@@ -32,7 +32,7 @@ module.exports = class Permit implements Debugger
 
   # get a named permit
   @get = (name) ->
-    PermitRegistry.permits[name] || throw Error("No permit '#{name}' is registered")
+    PermitRegistry.get(name)
 
   init: ->
     @apply-rules!
@@ -73,10 +73,11 @@ module.exports = class Permit implements Debugger
     new AccessMatcher access
 
   matcher: (access-request) ->
-    new @permit-matcher-class @, access-request
+    new @permit-matcher-class @, access-request, @debugging
 
   # See if this permit should apply (be used) for the given access request
   matches: (access-request) ->
+    @debug 'matches', access-request
     @matcher(access-request).match!
 
   # Rule Application

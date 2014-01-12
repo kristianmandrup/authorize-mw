@@ -34,7 +34,7 @@ describe 'PermitMatcher' ->
 
     permits.user  := setup.user-permit!
 
-    permit-matcher := new PermitMatcher permits.user, access.user
+    permit-matcher := new PermitMatcher permits.user, requests.user
 
   describe 'match access' ->
     matching = {}
@@ -46,10 +46,8 @@ describe 'PermitMatcher' ->
       requests.ctx :=
         ctx: ''
 
-      permits.user := setup.matching.user-permit!
-
       matching.permit-matcher       := new PermitMatcher permits.user, requests.user
-      none-matching.permit-matcher  := new PermitMatcher permit.user, requests.ctx
+      none-matching.permit-matcher  := new PermitMatcher permits.user, requests.ctx
 
     specify 'does not match access without user' ->
       none-matching.permit-matcher.match!.should.be.false
@@ -58,7 +56,7 @@ describe 'PermitMatcher' ->
       matching.permit-matcher.match!.should.be.true
 
   describe 'match access - complex' ->
-    before-each ->
+    before ->
       book := new Book title: 'hello'
       requests.valid :=
         user: {type: 'person', role: 'admin'}
@@ -70,7 +68,7 @@ describe 'PermitMatcher' ->
 
       requests.alt := {}
 
-      Permit.clean-all!
+      PermitRegistry.clean-all!
 
       permits.user := setup.complex-user!
 

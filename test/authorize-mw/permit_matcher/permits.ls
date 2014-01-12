@@ -8,7 +8,7 @@ module.exports =
     user-permit: ->
       permit-for 'User',
         match: (access) ->
-          @matching(access).has-user!
+          @matching(access).user!
 
         rules: ->
 
@@ -25,7 +25,7 @@ module.exports =
     guest-permit: ->
       permit-for 'Guest',
         match: (access) ->
-          @matching(access).has-role 'guest'
+          @matching(access).role 'guest'
 
         rules: ->
           @ucan 'read', 'Book'
@@ -33,7 +33,7 @@ module.exports =
     admin-permit: ->
       permit-for 'Admin',
         match: (access) ->
-          @matching(access).has-role 'guest'
+          @matching(access).role 'guest'
 
         rules:
           admin: ->
@@ -42,7 +42,7 @@ module.exports =
     book-permit: ->
       permit-for 'Book',
         match: (access) ->
-          @matching(access).has-subject-clazz 'Book'
+          @matching(access).subject-clazz 'Book'
 
         rules: ->
           @ucan 'read', 'Book'
@@ -51,7 +51,7 @@ module.exports =
       permit-for 'ex User',
         ex-match: (access) ->
           console.log 'access', access
-          @matching(access).has-role 'admin'
+          @matching(access).role 'admin'
 
         rules: ->
           @ucan 'read', 'Book'
@@ -59,7 +59,7 @@ module.exports =
     complex-user: ->
       permit-for 'complex User',
         match: (access) ->
-          @matching(access).user(type: 'person').role('admin').subject-clazz('Book').result!
+          @matching(access).user(type: 'person').role('admin').subject-clazz('Book')
 
         rules: ->
           @ucan 'read', 'Book'

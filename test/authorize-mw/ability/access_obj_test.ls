@@ -9,7 +9,6 @@ Book            = requires.fix 'book'
 create-request  = requires.fac 'create-request'
 create-user     = requires.fac 'create-user'
 
-permits         = require './permits'
 access          = require './access'
 ability         = require './abilities'
 

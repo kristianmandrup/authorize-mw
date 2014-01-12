@@ -3,73 +3,72 @@ requires = rek 'requires'
 
 requires.test 'test_setup'
 
-_             = require 'prelude-ls'
+_               = require 'prelude-ls'
 
-User          = requires.fix 'user'
-Book          = requires.fix 'book'
+User            = requires.fix 'user'
+Book            = requires.fix 'book'
 
-Allower       = requires.file 'allower'
-Permit        = requires.file 'permit'
-permit-for    = requires.file 'permit_for'
+create-user     = requires.fac 'create-user'
+create-permit   = requires.fac 'create-permit'
+create-request  = requires.fac 'create-request'
+
+Allower         = requires.file 'allower'
+Permit          = requires.file 'permit'
+PermitRegistry  = requires.file 'permit_registry'
+permit-for      = requires.file 'permit_for'
 
 describe 'Allower', ->
-  var user, guest-user, admin-user, editor-user
-  var allower, book, book-access
-  var read-book-allower
+  var book
 
+  allowers  = {}
+  users     = {}
+  requests  = {}
+  permits   = {}
+
+  book-access = (action, user) ->
+    {user: user, action: action, subject: book}
 
   before ->
-    user        := new User name: 'kris'
-    guest-user  := new User name: 'kris', role: 'guest'
-    admin-user  := new User name: 'kris', role: 'admin'
-    editor-user := new User name: 'kris', role: 'editor'
+    users.kris      := create-user.kris!
+    users.guest     := create-user.guest!
+    users.admin     := create-user.admin!
+    users.editor    := create-user.role 'editor'
 
-    book        := new Book title: 'to the moon and back'
-    book-access := (action, user) ->
-      {user: user, action: action, subject: book}
+    book            := new Book title: 'to the moon and back'
 
   describe 'read-book-allower' ->
-    var read-book-access
-    
     before ->
       # init local vars
-      read-book-access    := book-access 'read', guest-user
-      read-book-allower   := new Allower read-book-access
+      requests.read-book    := book-access 'read', users.guest
+      allowers.read-book    := new Allower requests.read-book
 
     specify 'return Allower instance' ->
-      read-book-allower.constructor.should.eql Allower
+      allowers.read-book.constructor.should.eql Allower
 
     specify 'Allower sets own access obj' ->
-      read-book-allower.access-request.should.eql read-book-access
+      allowers.read-book.access-request.should.eql requests.read-book
   
   describe 'allows and disallows' ->
-    var user-permit, guest-permit, editor-permit
-    var read-book-access, write-book-access, non-write-book-access
-    var read-book-allower, write-book-allower, non-write-book-allower
-
     before ->
-      Permit.clear-permits!
+      PermitRegistry.clear-all!
 
       # setup permits here !!
-      user-permit := permit-for 'User',
+      permits.user := permit-for 'User',
         match: (access) ->
-          user = if access? then access.user else void
-          _.is-type 'Object', user
+          @matching(access).user!
         rules: ->
           @ucan 'view', 'book'
 
-      guest-permit := permit-for 'Guest',
+      permits.guest := permit-for 'Guest',
         match: (access) ->
-          user = if access? then access.user else void
-          _.is-type('Object', user) and user.role is 'guest'
+          @matching(access).role 'guest'
         rules: ->
           @ucan 'read', 'book'
           @ucannot 'write', 'book'
 
-      editor-permit := permit-for 'Editor',
+      permits.editor := permit-for 'Editor',
         match: (access) ->
-          user = if access? then access.user else void
-          _.is-type('Object', user) and user.role is 'editor'
+          @matching(access).role 'editor'
         rules: ->
           @ucan ['read', 'write'], 'book'
 
@@ -77,36 +76,34 @@ describe 'Allower', ->
       # a guest user can also read a book
       # an editor user can also read and write a book
 
-      read-book-access        := book-access 'read', guest-user
-      write-book-access       := book-access 'write', editor-user
-      non-write-book-access   := book-access 'write', guest-user
+      requests.read-book        := book-access 'read', users.guest
+      requests.write-book       := book-access 'write', users.editor
+      requests.not-write-book   := book-access 'write', users.guest
 
-      read-book-allower       := new Allower read-book-access
-      write-book-allower      := new Allower write-book-access
-      non-write-book-allower  := new Allower non-write-book-access
+      allowers.read-book        := new Allower requests.read-book
+      allowers.write-book       := new Allower requests.write-book
+      allowers.not-write-book   := new Allower requests.not-write-book
 
     describe 'allows!' ->
       before-each ->
-        # local config/setup
-        Permit.clean-permits!
+        PermitRegistry.clean-permits!
 
       specify 'read a book access should be allowed' ->
-        read-book-allower.allows!.should.be.true
+        allowers.read-book.allows!.should.be.true
 
       specify 'write a book access should be allowed' ->
-        write-book-allower.allows!.should.be.true
+        allowers.write-book.allows!.should.be.true
 
       specify 'write a book should NOT be allowed for ' ->
-        non-write-book-allower.allows!.should.be.false
+        allowers.not-write-book-allower.allows!.should.be.false
 
     describe 'disallows!' ->
       before-each ->
-        # local config/setup
-        Permit.clean-permits!
+        PermitRegistry.clean-permits!
 
       specify 'read a book access should NOT be disallowed' ->
-        read-book-allower.disallows!.should.be.false
+        allowers.read-book.disallows!.should.be.false
 
       # since explit: @ucannot 'write', 'book' on gues-permit
       specify 'write a book should be disallowed' ->
-        non-write-book-allower.disallows!.should.be.true
+        allowers.write-book.disallows!.should.be.true

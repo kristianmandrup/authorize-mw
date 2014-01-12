@@ -42,7 +42,8 @@ module.exports =
     user: ->
       permit-for 'User',
         match: (access) ->
-          @matching(access).has-user!
+          @debug access
+          @matching(access).user!
         rules: ->
           @ucan ['read', 'edit'], 'book'
 
@@ -59,7 +60,8 @@ module.exports =
       guest: ->
         permit-for 'Guest',
           match: (access) ->
-            @matching(access).has-role 'guest'
+            @debug access
+            @matching(access).role 'guest'
 
           rules: ->
             @ucan 'read', 'book'
@@ -67,7 +69,8 @@ module.exports =
       admin: ->
         permit-for 'admin',
           match: (access) ->
-            @matching(access).has-role 'admin'
+            @debug access
+            @matching(access).role 'admin'
 
           rules: ->
             @ucan 'write', 'book'
