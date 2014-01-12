@@ -77,7 +77,7 @@ describe 'Ability' ->
 
   describe 'allowed-for' ->
     before ->
-    
+
     context 'guest ability' ->
       specify 'read a book access should be allowed for guest user' ->
         ability.guest.allowed-for(action: 'read', subject: book).should.be.true

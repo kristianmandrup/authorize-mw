@@ -1,5 +1,7 @@
 AccessRequest = require './access_request'
 
+Ability = require './ability'
+
 module.exports = class Authorizer
   (@user) ->
 

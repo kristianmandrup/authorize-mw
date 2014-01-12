@@ -4,7 +4,8 @@ _           = require 'prelude-ls'
 Middleware  = require 'middleware'
 Ability     = require '../ability'
 
-authorization = class Authorization extends Middleware 
+# Should extend model middleware?
+module.exports = class Authorization extends Middleware
   (context) ->
     @context = context
     @current-user = @context.current-user
@@ -12,9 +13,9 @@ authorization = class Authorization extends Middleware
 
   run: (args) ->
     # fx create(args)
-    @name = args['name']
+    @name       = args['name']
     @collection = args['collection']
-    @ctx = args['ctx']
+    @ctx        = args['ctx']
     set-model!
 
     @[name]

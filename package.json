@@ -8,7 +8,8 @@
     "sugar":        "*",
     "rubyjs":       "*",
     "deep-extend":  "*",
-    "rekuire":      "*"
+    "rekuire":      "*",
+    "middleware":   "git://github.com/kristianmandrup/middleware.git"
   },
   "scripts": {
     "test":     "make test",
