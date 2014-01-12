@@ -2,6 +2,15 @@
   "name": "authorize-mw",
   "version": "0.0.1",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url":  "https://github.com/kristianmandrup/authorize-mw.git"
+  },
+  "keywords": [
+    "validator",
+    "validation",
+    "middleware"
+  ],
   "dependencies": {
     "lodash":       "*",
     "prelude-ls":   "*",
