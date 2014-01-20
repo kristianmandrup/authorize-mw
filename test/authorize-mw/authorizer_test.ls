@@ -24,18 +24,18 @@ describe 'Authorizer' ->
   requests      = {}
   permits       = {}
   authorizers   = {}
+  books         = {}
+
+  book = (title) ->
+    new Book title: title
 
   authorizer = (user) ->
     new Authorizer user
 
   before ->
-    book              = new Book title: 'hello'
+    books.hello       = book 'hello'
     users.guest       = create-user.guest!
     permits.guest     = create-permit.matching.role.guest! # check rules!
-
-    requests.read-book =
-      name:       'read'
-      collection: 'books'
 
     ctx :=
       current-user: users.guest
@@ -46,9 +46,33 @@ describe 'Authorizer' ->
     specify 'should set user' ->
       authorizers.basic.user.should.eql users.guest
 
-  xdescribe 'run' ->
-    context 'read book request by guest user' ->
+  describe 'run' ->
+    context 'read book (collection name) request by guest user' ->
       before ->
+        requests.read-book-collection =
+          name:       'read'
+          collection: 'books'
+
+      specify 'user is authorized to perform action' ->
+        authorizers.basic.run(requests.read-book-collectionst).should.be.true
+
+
+  describe 'run' ->
+    context 'read actual book instance request by guest user' ->
+      before ->
+        requests.read-book =
+          name: 'read'
+          data: book
 
       specify 'user is authorized to perform action' ->
         authorizers.basic.run(requests.read-book).should.be.true
+
+  describe 'run' ->
+    context 'read actual book model request by guest user' ->
+      before ->
+        requests.read-book-model =
+          name: 'read'
+          model: book
+
+      specify 'user is authorized to perform action' ->
+        authorizers.basic.run(requests.read-book-model).should.be.true

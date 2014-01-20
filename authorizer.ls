@@ -1,6 +1,8 @@
-AccessRequest = require './access_request'
+rek      = require 'rekuire'
+requires = rek 'requires'
 
-Ability = require './ability'
+AccessRequest = requires.file './access_request'
+Ability       = requires.file './ability'
 
 module.exports = class Authorizer
   (@user) ->

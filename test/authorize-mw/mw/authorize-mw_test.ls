@@ -13,11 +13,11 @@ create-request  = requires.fac 'create-request'
 create-user     = requires.fac 'create-user'
 create-permit   = requires.fac 'create-permit'
 
-Authorizer      = requires.file 'mw/authorization'
+Authorizer      = requires.file 'mw/authorize-mw'
 
 Ability         = requires.file 'ability'
 
-describe 'Authorization' ->
+describe 'AuthorizeMw' ->
   var ctx
 
   users           = {}

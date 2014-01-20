@@ -1,8 +1,5 @@
-/**
- * User: kmandrup
- * Date: 20/12/13
- * Time: 13:48
- */
+rek      = require 'rekuire'
+requires = rek 'requires'
 
 Intersect = require './intersect'
 
@@ -10,7 +7,7 @@ _   = require 'prelude-ls'
 lo  = require 'lodash'
 require 'sugar'
 
-Debugger = require './debugger'
+Debugger = requires.file 'debugger'
 
 class BaseMatcher implements Debugger
   (access-request) ->

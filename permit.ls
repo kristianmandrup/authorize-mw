@@ -1,15 +1,18 @@
+rek      = require 'rekuire'
+requires = rek 'requires'
+
 _   = require 'prelude-ls'
 lo  = require 'lodash'
 require 'sugar'
 
-PermitRegistry  = require './permit_registry'
+PermitRegistry  = requires.file 'permit_registry'
 
-PermitMatcher   = require './permit_matcher'
-PermitAllower   = require './permit_allower'
-RuleApplier     = require './rule_applier'
-RuleRepo        = require './rule_repo'
+PermitMatcher   = requires.file 'permit_matcher'
+PermitAllower   = requires.file 'permit_allower'
+RuleApplier     = requires.file 'rule_applier'
+RuleRepo        = requires.file 'rule_repo'
 
-matchers        = require './matchers'
+matchers        = requires.file 'matchers'
 
 UserMatcher     = matchers.UserMatcher
 SubjectMatcher  = matchers.SubjectMatcher
@@ -17,9 +20,9 @@ ActionMatcher   = matchers.ActionMatcher
 ContextMatcher  = matchers.ContextMatcher
 AccessMatcher   = matchers.AccessMatcher
 
-Util            = require './util'
+Util            = requires.file 'util'
 
-Debugger        = require './debugger'
+Debugger        = requires.file 'debugger'
 
 module.exports = class Permit implements Debugger
   (@name, @description = '') ->

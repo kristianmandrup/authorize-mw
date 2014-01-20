@@ -1,11 +1,14 @@
+rek      = require 'rekuire'
+requires = rek 'requires'
+
 _   = require 'prelude-ls'
 lo  = require 'lodash'
 require 'sugar'
 
-Permit        = require './permit'
-PermitFilter  = require './permit_filter'
+Permit        = requires.file 'permit'
+PermitFilter  = requires.file 'permit_filter'
 
-Debugger      = require './debugger'
+Debugger      = requires.file 'debugger'
 
 module.exports = class Allower implements Debugger
   # access rule

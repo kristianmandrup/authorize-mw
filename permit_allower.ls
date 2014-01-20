@@ -1,7 +1,10 @@
+rek      = require 'rekuire'
+requires = rek 'requires'
+
 _   = require 'prelude-ls'
 lo  = require 'lodash'
 
-Debugger  = require './debugger'
+Debugger  = requires.file 'debugger'
 
 module.exports = class PermitAllower implements Debugger
   (@rule-repo, @debugging) ->

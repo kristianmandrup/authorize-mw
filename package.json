@@ -7,8 +7,13 @@
     "url":  "https://github.com/kristianmandrup/authorize-mw.git"
   },
   "keywords": [
-    "validator",
-    "validation",
+    "authorize",
+    "authorizer",
+    "authorization",
+    "approve",
+    "permit",
+    "allow",
+    "ability",
     "middleware"
   ],
   "dependencies": {
@@ -18,7 +23,8 @@
     "rubyjs":       "*",
     "deep-extend":  "*",
     "rekuire":      "*",
-    "middleware":   "git://github.com/kristianmandrup/middleware.git"
+    "middleware":   "git://github.com/kristianmandrup/middleware.git",
+    "model-mw":     "git://github.com/kristianmandrup/model-mw.git"
   },
   "scripts": {
     "test":     "make test",

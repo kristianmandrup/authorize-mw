@@ -1,7 +1,7 @@
 # _ = require 'prelude-ls'
 # require 'sugar'
 
-normalize = require './normalize'
+normalize = requires.file 'normalize'
 
 module.exports = class AccessRequest
   # factory method

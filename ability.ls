@@ -1,13 +1,16 @@
+rek      = require 'rekuire'
+requires = rek 'requires'
+
 _   = require 'prelude-ls'
 lo  = require 'lodash'
 
 deep-extend   = require 'deep-extend'
 
-permit-filter = require './permit_filter'
-Allower       = require './allower'
-AccessRequest = require './access_request'
+permit-filter = requires.file 'permit_filter'
+Allower       = requires.file 'allower'
+AccessRequest = requires.file 'access_request'
 
-Debugger = require './debugger'
+Debugger = requires.file 'debugger'
 
 # Always one Ability per User
 module.exports = class Ability implements Debugger

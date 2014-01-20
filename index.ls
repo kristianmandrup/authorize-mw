@@ -1,7 +1,6 @@
-/**
- * User: kmandrup
- * Date: 12/01/14
- * Time: 16:37
- */
+rek      = require 'rekuire'
+requires = rek 'requires'
 
-module.exports = require 'authorizer'
+module.exports =
+  authorize-mw: requires.file 'mw/authorize-mw'
+  authorizer:   requires.file 'authorizer'

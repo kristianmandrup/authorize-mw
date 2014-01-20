@@ -1,7 +1,10 @@
+rek      = require 'rekuire'
+requires = rek 'requires'
+
 _         = require 'prelude-ls'
 lo        = require 'lodash'
 
-Permit    = require './permit'
+Permit    = requires.file 'permit'
 
 # makes an instance of a Permit class, adds specific functionality (such as rules) and registers the permit globally
 

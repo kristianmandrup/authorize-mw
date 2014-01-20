@@ -1,10 +1,13 @@
+rek      = require 'rekuire'
+requires = rek 'requires'
 require 'sugar'
 
 _         = require 'prelude-ls'
 lo        = require 'lodash'
-Util      = require './util'
-Intersect = require './intersect'
-AccessMatcher = require('./matchers').AccessMatcher
+
+Util          = requires.file 'util'
+Intersect     = requires.file 'intersect'
+AccessMatcher = requires.file('matchers').AccessMatcher
 
 # The matcher is used to determine if the Permit should apply at all in the given access context
 # Given an access-request, it should check the permit via:
