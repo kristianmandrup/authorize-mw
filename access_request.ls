@@ -1,5 +1,5 @@
-# _ = require 'prelude-ls'
-# require 'sugar'
+rek      = require 'rekuire'
+requires = rek 'requires'
 
 normalize = requires.file 'normalize'
 

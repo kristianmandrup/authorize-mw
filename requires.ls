@@ -34,6 +34,9 @@ module.exports =
   file: (path) ->
     require ['.', path.underscore!].join '/'
 
+  afile: (path) ->
+    require ['.', path].join '/'
+
   # m - alias for module
   m: (path) ->
     @file path

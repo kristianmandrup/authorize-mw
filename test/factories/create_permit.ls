@@ -74,4 +74,5 @@ module.exports =
 
           rules: ->
             @ucan 'write', 'book'
-            @ucan 'manage', '*'
+            @ucan 'edit', 'user'
+            # @ucan 'manage', '*'

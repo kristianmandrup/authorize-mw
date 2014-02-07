@@ -34,8 +34,10 @@ module.exports = class Ability implements Debugger
 
   # alias for: allowed-for
   can: (access-request) ->
-    allowed-for access-request
+    @debug 'can', access-request
+    @allowed-for access-request
 
   # alias for: not-allowed-for
   cannot: (access) ->
-    not-allowed-for access-request
+    @debug 'cannot', access-request
+    @not-allowed-for access-request

@@ -13,9 +13,8 @@ create-request  = requires.fac 'create-request'
 create-user     = requires.fac 'create-user'
 create-permit   = requires.fac 'create-permit'
 
-Authorizer      = requires.file 'mw/authorize-mw'
-
-Ability         = requires.file 'ability'
+AuthorizeMw     = requires.afile 'mw/authorize-mw'
+Authorizer      = requires.file 'authorizer'
 
 describe 'AuthorizeMw' ->
   var ctx
@@ -23,42 +22,84 @@ describe 'AuthorizeMw' ->
   users           = {}
   requests        = {}
   permits         = {}
-  authorizations  = {}
+  authorize-mws   = {}
 
-  authorization = (context) ->
-    new Authorization context
+  authorize-mw = (context) ->
+    new AuthorizeMw context
 
   before ->
     book              = new Book title: 'hello'
     users.guest       = create-user.guest!
     permits.guest     = create-permit.matching.role.guest! # check rules!
 
-    requests.read-book =
-      name:       'read'
-      collection: 'books'
-
     ctx :=
       current-user: users.guest
 
-    authorizations.basic = authorization context
+    authorize-mws.basic = authorize-mw ctx
 
   describe 'create' ->
     specify 'should set context' ->
-      authorizations.basic.context.should.eql ctx
+      authorize-mws.basic.context.should.eql ctx
 
     specify 'should set current-user' ->
-      authorizations.basic.current-user.should.eql ctx.current-user
+      authorize-mws.basic.current-user.should.eql ctx.current-user
 
-    describe 'ability' ->
-      specify 'should set ability' ->
-        authorizations.basic.ability!.constructor.should.eql Ability
+  describe 'authorizer' ->
+    specify 'should set authorizer' ->
+      authorize-mws.basic.authorizer!.constructor.should.eql Authorizer
 
-      specify 'should set ability user to current user' ->
-        authorizations.basic.ability!.user.constructor.should.eql ctx.current-user
+    specify 'should set authorizer user to current user' ->
+      authorize-mws.basic.authorizer!.user.should.eql ctx.current-user
 
-  xdescribe 'run' ->
+  describe 'run' ->
     context 'read book request by guest user' ->
       before ->
+        requests.read-book =
+          action      :   'read'
+          collection  :   'books'
 
-      specify 'user is authorized to perform action' ->
-        authorizations.basic.run(requests.read-book).should.be.true
+        authorize-mws.basic.clear!
+        # authorize-mws.basic.debug-on!
+
+      specify 'user is authorized to read book' ->
+        authorize-mws.basic.run-alone(requests.read-book).should.be.true
+
+  describe 'run' ->
+    context 'read book request by guest user' ->
+      before ->
+        requests.create-book =
+          action      :   'create'
+          collection  :   'books'
+
+        authorize-mws.basic.clear!
+        # authorize-mws.basic.debug-on!
+
+      specify 'user is NOT authorized to create a new book' ->
+        authorize-mws.basic.run-alone(requests.create-book).should.be.false
+
+
+  describe 'run' ->
+    context 'edit user request by guest user' ->
+      before ->
+        requests.edit-user =
+          action  :       'edit'
+          data    :       users.guest
+
+        requests.create-user =
+          action  :       'create'
+          data    :       users.guest
+
+        permits.admin     = create-permit.matching.role.admin! # check rules!
+
+        users.admin       = create-user.admin!
+
+        ctx :=
+          current-user: users.admin
+
+        authorize-mws.user = authorize-mw ctx
+
+      specify 'admin user is authorized to edit another user' ->
+        authorize-mws.user.run-alone(requests.edit-user).should.be.true
+
+      specify 'admin user is NOT authorized to create another user' ->
+        authorize-mws.user.run-alone(requests.create-user).should.be.false

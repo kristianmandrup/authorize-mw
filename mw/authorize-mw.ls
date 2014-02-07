@@ -7,6 +7,7 @@ ModelMw     = require('model-mw').mw
 ModelRunner = require('model-mw').runner
 
 Ability     = requires.file 'ability'
+Authorizer  = requires.file 'authorizer'
 Debugger    = requires.file 'debugger'
 
 # Should extend model middleware?
@@ -14,42 +15,39 @@ module.exports = class AuthorizeMw extends ModelMw implements Debugger
   # Note: context should have a runner, then data is set via model of runner! Duh!
   (context) ->
     super ...
+
+    unless _.is-type 'Object', @context
+      throw Error "AuthorizeMw construction requires Object, was: #{@context}"
+
+    unless @context.current-user
+      throw Error "AuthorizeMw construction requires Object with a current-user, was: #{@context}"
+
     @current-user = @context.current-user
 
     unless @current-user
-      throw Error "Context must have a currentUser that is being authorized, was: #{@context}"
+      throw Error "No currentUser to be authorized"
 
-    @ability = new Ability @current-user
-
-  # TODO: Fix! See ModelMw
+  # let ModelMw take care of setting args
+  # Must have action: 'read' or similar to signify action being attempted
   run: (args) ->
-    # fx create(args)
-    @name       = args['name'] if args['name']
-    @collection = args['collection'] if args['collection']
-    @ctx        = args['ctx'] if args['ctx']
+    @debug 'run', args
+    super ...
+    @authorizer!.run args.action, @subject!, @ctx
 
-    set-model! # WTF!? maybe we should have such a method in model-mw or model-runner!?
+  run-alone: (ctx) ->
+    @debug 'run-alone', ctx
+    super ...
 
-    @[name] # calls get() if name == 'get' - Duh!
+  clear: ->
+    @my-authorizer = void
 
-  # TODO: Fix! See ModelMw
-  can: (action) ->
-    if @ability.can(action, @collection, @ctx) then @next() else false
+  authorizer: ->
+    @my-authorizer ||= @create-authorizer!
 
-  # TODO: Fix this shit!
-  get: ->
-    can 'get one'
-  create: ->
-    can 'create one'
-  update: ->
-    can 'update one'
-  delete: ->
-    can 'delete one'
+  create-authorizer: ->
+    a = new Authorizer @current-user
+    a.debug-on! if @debugging
+    a
 
-  getAll: ->
-    can 'get many'
-  updateAll: ->
-    can 'update one'
-  deleteAll: ->
-    can 'delete one'
-
+  subject: ->
+    @data || @model
