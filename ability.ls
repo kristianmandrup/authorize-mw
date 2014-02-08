@@ -24,7 +24,9 @@ module.exports = class Ability implements Debugger
     permit-filter.filter access-request
 
   allower: (access-request) ->
-    new Allower(@access-obj access-request)
+    a = new Allower(@access-obj access-request)
+    a.debug-on! if @debugging
+    a
 
   allowed-for: (access-request) ->
     @allower(access-request).allows!
@@ -35,7 +37,9 @@ module.exports = class Ability implements Debugger
   # alias for: allowed-for
   can: (access-request) ->
     @debug 'can', access-request
-    @allowed-for access-request
+    c = @allowed-for access-request
+    @debug 'can-res', c
+    c
 
   # alias for: not-allowed-for
   cannot: (access) ->

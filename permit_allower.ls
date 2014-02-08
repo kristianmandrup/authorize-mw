@@ -14,7 +14,9 @@ module.exports = class PermitAllower implements Debugger
   test-access: (act, access-request) ->
     @debug 'test-access', act, access-request
     # try to find matching action/subject combi for canRule in rule-repo
+    @rule-repo.debug-on! if @debugging
     subj = @rule-repo.match-rule act, access-request
+    @debug 'subj', subj
     subj is true
 
   # if permit disallows, then it doesn't matter if there is also a rule that allows

@@ -329,6 +329,16 @@ Ability wraps the permit execution for a given user.
 used with a middleware runner (see *middleware* project). The authorizer should be used to authorize a user to
 access and perform a given action on a data object of some kind.
 
+## Authorize-Mw
+
+The AuthorizeMw is the middleware component that can be used with a runner and middleware (see my *middleware* project).
+It is a subclass of ModelMw (se *model-mw* project).
+
+The `middleware_test.js` shows how to use it. See the other projects for more documentation on how to use this middleware.
+
+You can create your own runner implementations to run multiple Mw-components asynchronously
+fx via `async` or using promises (fx via `Q` or `RSVP`).
+
 ## Normalize
 
 The `normalize` module, contains a function that is used to normalize such things as rule actions and rule subjects.
@@ -387,3 +397,9 @@ open coverage/lcov-report/index.html
  `$ instanbul cover _mocha test/authorize-mw/permit_test.js`
 
 Enjoy!
+
+## Licence
+
+MIT License
+
+Copyright 2014-2015 Kristian Mandrup

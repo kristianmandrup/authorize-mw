@@ -79,6 +79,7 @@ module.exports = class RuleRepo implements Debugger
     @match-subject-clazz action-subjects, subj-clazz
 
   match-subject-clazz: (action-subjects, subj-clazz) ->
+    @debug 'match-subject-clazz', action-subjects, subj-clazz
     return false unless _.is-type 'Array', action-subjects
     @find-matching-subject action-subjects, subj-clazz
 

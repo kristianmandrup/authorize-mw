@@ -34,9 +34,11 @@ module.exports = class Allower implements Debugger
   test: (allow-type) ->
     for permit in @permits
       @debug 'test permit', allow-type, permit
+      @debug 'with rules', permit.rules
+      permit.debug-on! if @debugging
 
       # apply dynamic rules
-      permit.apply-rules @access-request
+      permit.apply-rules @access-request #, true
 
       @debug 'permit rules'
       return true if permit[allow-type] @access-request
