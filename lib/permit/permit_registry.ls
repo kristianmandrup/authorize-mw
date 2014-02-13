@@ -1,11 +1,9 @@
-rek      = require 'rekuire'
-requires = rek 'requires'
-
-_   = require 'prelude-ls'
-lo  = require 'lodash'
+requires  = require '../../requires'
+_         = require 'prelude-ls'
+lo        = require 'lodash'
 require 'sugar'
 
-Debugger  = requires.file 'debugger'
+Debugger  = requires.lib 'debugger'
 
 todo = "allow creation of multiple registries and select one to use per environment"
 

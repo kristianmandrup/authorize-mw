@@ -1,14 +1,14 @@
-requires = require('rekuire') 'requires'
+requires  = require '../../../requires'
 
 requires.test 'test_setup'
 
 _             = require 'prelude-ls'
 
-User      = requires.fix 'user'
-Book      = requires.fix 'book'
+User          = requires.fix 'user'
+Book          = requires.fix 'book'
 
-RuleApplier   = requires.file 'rule_applier'
-RuleRepo      = requires.file 'rule_repo'
+RuleApplier   = requires.rule 'rule_applier'
+RuleRepo      = requires.rule 'rule_repo'
 
 # Note: Use rule-repo.display! for debugging internals of RuleRepo instances after rule application
 

@@ -3,14 +3,13 @@
 # The permit can be setup to either apply all rules, (iterating through the rules object)
 # or just apply a subset depending on the context (fx the action of the incoming access-request)
 
-rek      = require 'rekuire'
-requires = rek 'requires'
+requires  = require '../../requires'
 
-_   = require 'prelude-ls'
-lo  = require 'lodash'
+_         = require 'prelude-ls'
+lo        = require 'lodash'
 require 'sugar'
 
-Debugger = requires.file 'debugger'
+Debugger  = requires.lib 'debugger'
 
 recurse = (key, val, ctx) ->
   switch typeof! val

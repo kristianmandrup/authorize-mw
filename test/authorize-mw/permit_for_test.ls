@@ -1,5 +1,4 @@
-rek      = require 'rekuire'
-requires = rek 'requires'
+requires  = require '../../../requires'
 
 requires.test 'test_setup'
 
@@ -8,9 +7,9 @@ _         = require 'prelude-ls'
 User      = requires.fix 'user'
 Book      = requires.fix 'book'
 
-Permit          = requires.file 'permit'
-PermitRegistry  = requires.file 'permit_registry'
-permit-for      = requires.file 'permit_for'
+Permit          = requires.lib 'permit'
+PermitRegistry  = requires.permit 'permit_registry'
+permit-for      = requires.permit 'permit_for'
 
 class AdminPermit extends Permit
   type: 'admin'

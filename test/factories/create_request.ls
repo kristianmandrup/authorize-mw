@@ -1,7 +1,5 @@
-rek      = require 'rekuire'
-requires = rek 'requires'
-
-User = requires.fix 'user'
+requires  = require '../../requires'
+User      = requires.fix 'user'
 
 module.exports =
   empty: ->

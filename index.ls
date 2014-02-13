@@ -1,6 +1,5 @@
-rek      = require 'rekuire'
-requires = rek 'requires'
+requires  = require './requires'
 
 module.exports =
-  authorize-mw: requires.file 'mw/authorize-mw'
-  authorizer:   requires.file 'authorizer'
+  authorize-mw: requires.mw 'authorize-mw'
+  authorizer:   requires.lib 'authorizer'

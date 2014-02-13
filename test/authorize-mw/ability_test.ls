@@ -1,10 +1,10 @@
-rek      = require 'rekuire'
-requires = rek 'requires'
+requires  = require '../../../requires'
 
 requires.test 'test_setup'
 
 _               = require 'prelude-ls'
 lo              = require 'lodash'
+
 User            = requires.fix 'user'
 Book            = requires.fix 'book'
 
@@ -14,11 +14,12 @@ create-permit   = requires.fac 'create-permit'
 
 ability         = require './ability/abilities'
 
-Allower         = requires.file 'allower'
-Ability         = requires.file 'ability'
-Permit          = requires.file 'permit'
-permit-for      = requires.file 'permit_for'
-PermitMatcher   = requires.file 'permit_matcher'
+Allower         = requires.lib 'allower'
+Ability         = requires.lib 'ability'
+Permit          = requires.lib 'permit'
+
+permit-for      = requires.permit 'permit_for'
+PermitMatcher   = requires.permit 'permit_matcher'
 
 describe 'Ability' ->
   var book

@@ -1,13 +1,12 @@
-rek      = require 'rekuire'
-requires = rek 'requires'
+requires = require '../requires'
 
-Intersect = require './intersect'
+Intersect = requires.util 'intersect'
 
 _   = require 'prelude-ls'
 lo  = require 'lodash'
 require 'sugar'
 
-Debugger = requires.file 'debugger'
+Debugger = requires.lib 'debugger'
 
 class BaseMatcher implements Debugger
   (access-request) ->

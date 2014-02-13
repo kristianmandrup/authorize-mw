@@ -1,12 +1,11 @@
-rek      = require 'rekuire'
-requires = rek 'requires'
+requires  = require '../../../requires'
 
 requires.test 'test_setup'
 
 _         = require 'prelude-ls'
 
 User      = requires.fix  'user'
-normalize = requires.file 'normalize'
+normalize = requires.util 'normalize'
 
 describe 'normalize' ->
   var fun, str, list, fun-list, nested-fun

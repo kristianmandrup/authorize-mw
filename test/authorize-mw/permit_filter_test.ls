@@ -1,5 +1,4 @@
-rek      = require 'rekuire'
-requires = rek 'requires'
+requires  = require '../../../requires'
 
 requires.test 'test_setup'
 
@@ -12,10 +11,10 @@ create-user     = requires.fac 'create-user'
 create-request  = requires.fac 'create-request'
 create-permit   = requires.fac 'create-permit'
 
-PermitRegistry  = requires.file 'permit_registry'
-Permit          = requires.file 'permit'
-permit-for      = requires.file 'permit_for'
-PermitFilter    = requires.file 'permit_filter'
+Permit          = requires.lib 'permit'
+PermitRegistry  = requires.permit 'permit_registry'
+permit-for      = requires.permit 'permit_for'
+PermitFilter    = requires.permit 'permit_filter'
 
 describe 'permit-filter' ->
   permits   = {}

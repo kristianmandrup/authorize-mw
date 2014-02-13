@@ -1,7 +1,6 @@
-rek      = require 'rekuire'
-requires = rek 'requires'
+requires = require '../requires'
 
-normalize = requires.file 'normalize'
+normalize = requires.lib 'normalize'
 
 module.exports = class AccessRequest
   # factory method

@@ -1,5 +1,4 @@
-rek      = require 'rekuire'
-requires = rek 'requires'
+requires  = require '../../../requires'
 
 requires.test 'test_setup'
 
@@ -8,9 +7,10 @@ _             = require 'prelude-ls'
 Book          = requires.fix 'book'
 User          = requires.fix 'user'
 
-permit-for    = requires.file 'permit_for'
-PermitMatcher = requires.file 'permit_matcher'
-Permit        = requires.file 'permit'
+permit-for    = requires.permit 'permit_for'
+PermitMatcher = requires.permit 'permit_matcher'
+Permit        = requires.lib 'permit'
+
 setup         = require('./permit_matcher/permits').setup
 
 create-user     = requires.fac 'create-user'

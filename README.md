@@ -398,6 +398,10 @@ open coverage/lcov-report/index.html
 
 Enjoy!
 
+## Status
+
+Undergoing some refactoring...
+
 ## Licence
 
 MIT License

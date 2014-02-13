@@ -1,5 +1,4 @@
-# TODO
-requires = require('rekuire') 'requires'
+requires  = require '../../../requires'
 
 requires.test 'test_setup'
 

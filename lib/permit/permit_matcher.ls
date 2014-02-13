@@ -1,13 +1,11 @@
-rek      = require 'rekuire'
-requires = rek 'requires'
-require 'sugar'
-
+requires  = require '../../requires'
 _         = require 'prelude-ls'
 lo        = require 'lodash'
+require 'sugar'
 
-Util          = requires.file 'util'
-Intersect     = requires.file 'intersect'
-AccessMatcher = requires.file('matchers').AccessMatcher
+Util          = requires.lib 'util'
+Intersect     = requires.util 'intersect'
+AccessMatcher = requires.lib('matchers').AccessMatcher
 
 # The matcher is used to determine if the Permit should apply at all in the given access context
 # Given an access-request, it should check the permit via:
@@ -22,7 +20,7 @@ AccessMatcher = requires.file('matchers').AccessMatcher
 # To enable debugging, simply do:
 #   PermitMatcher.debug-on!
 
-Debugger = require './debugger'
+Debugger = requires.lib 'debugger'
 
 module.exports = class PermitMatcher implements Debugger
   (@permit, @access-request, @debugging) ->

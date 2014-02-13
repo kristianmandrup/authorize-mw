@@ -1,7 +1,6 @@
-rek      = require 'rekuire'
-requires = rek 'requires'
+requires  = require '../../requires'
 
-Permit        = requires.file 'permit'
+Permit    = requires.lib 'permit'
 
 module.exports =
   AdminPermit : class AdminPermit extends Permit

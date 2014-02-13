@@ -1,5 +1,4 @@
-rek      = require 'rekuire'
-requires = rek 'requires'
+requires  = require '../../../requires'
 
 requires.test 'test_setup'
 
@@ -8,8 +7,8 @@ _          = require 'prelude-ls'
 User      = requires.fix 'user'
 Book      = requires.fix 'book'
 
-RuleRepo      = requires.file 'rule_repo'
-PermitAllower = requires.file 'permit_allower'
+RuleRepo      = requires.rule 'rule_repo'
+PermitAllower = requires.permit 'permit_allower'
 
 describe 'PermitAllower' ->
   var rule-repo, permit-allower

@@ -1,4 +1,3 @@
-rek = require 'rekuire'
 require 'sugar'
 _ = require 'prelude-ls'
 
@@ -8,12 +7,29 @@ underscore = (items) ->
     String(item)
   _.map (.underscore!), strings
 
+file-path = (...paths) ->
+  upaths = underscore(...paths)
+  ['.', upaths].flatten!.join '/'
 
 test-path = (...paths) ->
-  upaths = underscore(...paths)
-  ['.', 'test', upaths].flatten!.join '/'
+  @file-path 'test', ...paths
+
+lib-path = (...paths) ->
+  @file-path 'lib', ...paths
 
 module.exports =
+  util: (path) ->
+    @lib 'util', path
+
+  mw: (path) ->
+    @lib 'mw', path
+
+  rule: (path) ->
+    @lib 'rule', path
+
+  permit: (path) ->
+    @lib 'permit', path
+
   test: (...paths) ->
     require test-path(paths)
 
@@ -31,8 +47,11 @@ module.exports =
   fac: (path) ->
     @factory path
 
-  file: (path) ->
-    require ['.', path.underscore!].join '/'
+  file: (...paths) ->
+    require file-path(...paths)
+
+  lib: (...paths) ->
+    require lib-path(...paths)
 
   afile: (path) ->
     require ['.', path].join '/'
@@ -42,13 +61,16 @@ module.exports =
     @file path
 
   files: (...paths) ->
+    self = @
     paths.map (path) ->
-      @file(path)
+      self.file(path)
 
   fixtures: (...paths) ->
+    self = @
     paths.map (path) ->
-      @fixture(path)
+      self.fixture(path)
 
   tests: (...paths) ->
+    self = @
     paths.map (path) ->
-      @test(path)
+      self.test(path)

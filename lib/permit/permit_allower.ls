@@ -1,5 +1,4 @@
-rek      = require 'rekuire'
-requires = rek 'requires'
+requires = require '../../requires'
 
 _   = require 'prelude-ls'
 lo  = require 'lodash'

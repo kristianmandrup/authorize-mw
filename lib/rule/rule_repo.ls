@@ -4,16 +4,14 @@
 # Then you can match an access-request (action, subject)
 # Simple!
 
-rek      = require 'rekuire'
-requires = rek 'requires'
+requires  = require '../../requires'
 
-_   = require 'prelude-ls'
-lo  = require 'lodash'
+_         = require 'prelude-ls'
+lo        = require 'lodash'
 require 'sugar'
 
-normalize = requires.file 'normalize'
-
-Debugger = requires.file 'debugger'
+normalize = requires.util 'normalize'
+Debugger  = requires.lib 'debugger'
 
 module.exports = class RuleRepo implements Debugger
   (@name) ->

@@ -14,6 +14,8 @@
     "permit",
     "allow",
     "ability",
+    "rules",
+    "access",
     "middleware"
   ],
   "dependencies": {
@@ -22,7 +24,6 @@
     "sugar":        "*",
     "rubyjs":       "*",
     "deep-extend":  "*",
-    "rekuire":      "*",
     "middleware":   "git://github.com/kristianmandrup/middleware.git",
     "model-mw":     "git://github.com/kristianmandrup/model-mw.git"
   },

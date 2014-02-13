@@ -1,10 +1,12 @@
+requires = require '../../requires'
+
 _       = require 'prelude-ls'
 lo      = require 'lodash'
 
-Permit          = require './permit'
-PermitRegistry  = require './permit_registry'
+Permit          = requires.permit 'permit'
+PermitRegistry  = requires.permit 'permit_registry'
 
-Debugger  = require './debugger'
+Debugger  = requires.lib 'debugger'
 
 module.exports = class PermitFilter implements Debugger
   # go through all permits

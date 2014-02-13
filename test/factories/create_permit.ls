@@ -1,9 +1,9 @@
-rek      = require 'rekuire'
-requires = rek 'requires'
+requires  = require '../../requires'
 
-Permit        = requires.file 'permit'
+Permit        = requires.lib 'permit'
+permit-for    = requires.permit 'permit-for'
+
 permit-class  = requires.fix  'permit-class'
-permit-for    = requires.file 'permit-for'
 
 GuestPermit = permit-class.GuestPermit
 

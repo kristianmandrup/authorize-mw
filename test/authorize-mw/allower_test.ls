@@ -1,5 +1,4 @@
-rek      = require 'rekuire'
-requires = rek 'requires'
+requires  = require '../../../requires'
 
 requires.test 'test_setup'
 
@@ -12,10 +11,10 @@ create-user     = requires.fac 'create-user'
 create-permit   = requires.fac 'create-permit'
 create-request  = requires.fac 'create-request'
 
-Allower         = requires.file 'allower'
-Permit          = requires.file 'permit'
-PermitRegistry  = requires.file 'permit_registry'
-permit-for      = requires.file 'permit_for'
+Allower         = requires.lib 'allower'
+Permit          = requires.lib 'permit'
+PermitRegistry  = requires.permit 'permit_registry'
+permit-for      = requires.permit 'permit_for'
 
 describe 'Allower', ->
   var book

@@ -1,10 +1,9 @@
-rek      = require 'rekuire'
-requires = rek 'requires'
+requires  = require '../../../requires'
 
 requires.test 'test_setup'
 
-PermitRegistry  = requires.file 'permit_registry'
-RuleRepo        = requires.file 'rule_repo'
+PermitRegistry  = requires.permit 'permit_registry'
+RuleRepo        = requires.rule 'rule_repo'
 
 create-permit   = requires.fac  'create-permit'
 
