@@ -366,6 +366,37 @@ Matches a permit on either user, action or context:
 * ActionMatcher
 * ContextMatcher
 
+## Loading rules from JSON
+
+Use the `PermitRulesLoader` (under development).
+
+```LiveScript
+  rules-loader = new PermitRulesLoader 'book-rules.json'
+  rules-loader.load-rules!
+  # ...
+  publications-permit = permit-for 'publications', ->
+    #...
+  
+  rules-loader.create-rules-at publications-permit, 'book'
+```
+
+Rules file:
+
+```
+# book-rules.json
+reader:
+  can:
+    read: 'book'
+editor:
+  can:
+    write: 'book'
+  cannot:
+    delete: 'book'
+publisher:
+  can:
+    manage: 'book'
+```   
+
 ## Testing
 
 Run `mocha` on all files in test folder
