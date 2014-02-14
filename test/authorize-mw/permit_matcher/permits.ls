@@ -1,7 +1,6 @@
-rek      = require 'rekuire'
-requires = rek 'requires'
+requires        = require '../../../requires'
 
-permit-for = requires.file 'permit_for'
+permit-for = requires.permit 'permit_for'
 
 module.exports =
   setup:

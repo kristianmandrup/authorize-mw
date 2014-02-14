@@ -1,9 +1,8 @@
-rek      = require 'rekuire'
-requires = rek 'requires'
+requires        = require '../../../requires'
 
 requires.test 'test_setup'
-
-matchers      = requires.file 'matchers'
+ability       = require './abilities'
+matchers      = requires.lib 'matchers'
 BaseMatcher   = matchers.BaseMatcher
 
 describe 'BaseMatcher' ->

@@ -1,10 +1,9 @@
-rek      = require 'rekuire'
-requires = rek 'requires'
+requires        = require '../../../requires'
 
 requires.test 'test_setup'
 
 User            = requires.fix 'user'
-matchers        = requires.file 'matchers'
+matchers        = requires.lib 'matchers'
 
 UserMatcher   = matchers.UserMatcher
 

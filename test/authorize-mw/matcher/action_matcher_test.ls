@@ -1,10 +1,9 @@
-rek      = require 'rekuire'
-requires = rek 'requires'
+requires        = require '../../../requires'
 
 requires.test 'test_setup'
-
-matchers      = requires.file 'matchers'
-ActionMatcher = matchers.ActionMatcher
+ability         = require './abilities'
+matchers        = requires.lib 'matchers'
+ActionMatcher   = matchers.ActionMatcher
 
 describe 'ActionMatcher' ->
   var action-matcher

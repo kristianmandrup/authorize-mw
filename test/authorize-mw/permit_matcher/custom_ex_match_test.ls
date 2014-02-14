@@ -1,10 +1,16 @@
-requires = require('rekuire') 'requires'
+requires        = require '../../../requires'
+
 requires.test 'test_setup'
 
-[Book, User] = requires.fixtures 'book', 'user'
-[permit-for, PermitMatcher, Permit, PermitRegistry] = require.files 'permit-for', 'permit_matcher', 'permit', 'permit-registry'
-
 setup           = require('./permits').setup
+
+Book            = requires.fix 'user'
+User            = requires.fix 'book'
+
+Permit          = require.lib    'permit'
+permit-for      = require.permit 'permit-for'
+PermitMatcher   = require.permit 'permit_matcher'
+PermitRegistry  = require.permit 'permit-registry'
 
 create-user     = requires.fac 'create-user'
 create-request  = requires.fac 'create-request'

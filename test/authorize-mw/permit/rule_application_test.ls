@@ -1,10 +1,9 @@
-rek      = require 'rekuire'
-requires = rek 'requires'
+requires        = require '../../../requires'
 
 requires.test 'test_setup'
 
-Permit          = requires.file 'permit'
-PermitRegistry  = requires.file 'permit-registry'
+Permit          = requires.lib 'permit'
+PermitRegistry  = requires.permit 'permit-registry'
 
 Book            = requires.fix 'book'
 permit-clazz    = requires.fix 'permit-class'

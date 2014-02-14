@@ -1,9 +1,7 @@
-rek      = require 'rekuire'
-requires = rek 'requires'
+requires = require '../../../requires'
 
-Ability  = requires.file 'ability'
-
-create-user    = requires.fac 'create-user'
+Ability       = requires.lib 'ability'
+create-user   = requires.fac 'create-user'
 
 ability = (user) ->
   new Ability user

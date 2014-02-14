@@ -1,5 +1,5 @@
-rek      = require 'rekuire'
-requires = rek 'requires'
+requires        = require '../../../requires'
+ability         = require './abilities'
 
 requires.test 'test_setup'
 
@@ -12,13 +12,11 @@ create-user     = requires.fac 'create-user'
 create-permit   = requires.fac 'create-permit'
 create-request  = requires.fac 'create-request'
 
-ability         = require './abilities'
+Ability         = requires.lib 'ability'
+Permit          = requires.lib 'permit'
 
-Ability         = requires.file 'ability'
-Permit          = requires.file 'permit'
-PermitRegistry  = requires.file 'permit_registry'
-
-PermitFilter   = requires.file 'permit-filter'
+PermitRegistry  = requires.permit 'permit_registry'
+PermitFilter    = requires.permit 'permit-filter'
 
 describe 'Ability' ->
   var abook

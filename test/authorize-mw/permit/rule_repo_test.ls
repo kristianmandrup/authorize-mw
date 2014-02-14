@@ -1,11 +1,10 @@
-rek      = require 'rekuire'
-requires = rek 'requires'
+requires        = require '../../../requires'
 
 requires.test 'test_setup'
 
-Permit            = requires.file 'permit'
-PermitRegistry    = requires.file 'permit-registry'
-RuleRepo          = requires.file 'rule_repo'
+Permit            = requires.lib 'permit'
+PermitRegistry    = requires.permit 'permit-registry'
+RuleRepo          = requires.rule 'rule_repo'
 
 describe 'Permit' ->
   permits = {}

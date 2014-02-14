@@ -2,6 +2,8 @@ requires  = require '../../../requires'
 
 requires.test 'test_setup'
 
+ability         = require './ability/abilities'
+
 _               = require 'prelude-ls'
 lo              = require 'lodash'
 
@@ -12,12 +14,10 @@ create-request  = requires.fac 'create-request'
 create-user     = requires.fac 'create-user'
 create-permit   = requires.fac 'create-permit'
 
-ability         = require './ability/abilities'
-
 Allower         = requires.lib 'allower'
 Ability         = requires.lib 'ability'
-Permit          = requires.lib 'permit'
 
+Permit          = requires.lib 'permit'
 permit-for      = requires.permit 'permit_for'
 PermitMatcher   = requires.permit 'permit_matcher'
 

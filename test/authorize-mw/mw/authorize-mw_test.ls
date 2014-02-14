@@ -1,5 +1,4 @@
-rek      = require 'rekuire'
-requires = rek 'requires'
+requires        = require '../../../requires'
 
 requires.test 'test_setup'
 
@@ -13,8 +12,8 @@ create-request  = requires.fac 'create-request'
 create-user     = requires.fac 'create-user'
 create-permit   = requires.fac 'create-permit'
 
-AuthorizeMw     = requires.afile 'mw/authorize-mw'
-Authorizer      = requires.file 'authorizer'
+AuthorizeMw     = requires.mw 'authorize-mw'
+Authorizer      = requires.lib 'authorizer'
 
 describe 'AuthorizeMw' ->
   var ctx

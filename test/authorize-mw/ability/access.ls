@@ -1,10 +1,8 @@
-rek      = require 'rekuire'
-requires = rek 'requires'
+requires = require '../../../requires'
 
 deep-extend = require 'deep-extend'
 
-create-user = requires.fac 'create-permit'
-
+create-user     = requires.fac 'create-permit'
 create-request  = requires.fac 'create-request'
 
 module.exports =
