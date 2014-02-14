@@ -5,6 +5,53 @@ Authorization middleware for Node.js and the Javascript platform in general
 See [wiki](https://github.com/kristianmandrup/authorize-mw/wiki) for more on design and architecture.
 
 
+## Usage
+
+The following is a complete example, using LiveScript syntax for a clearer picture.
+
+```LiveScript
+GuestUser = class User
+  (obj) ->
+    # ...
+
+  role: 'guest'
+
+book         = new Book title: title
+guest-user   = new GuestUser name: 'unknown'
+
+GuestPermit = class GuestPermit extends Permit
+  (name, desc) ->
+    super ...
+
+  match: (access) ->
+    @matches(access).user role: 'guest'
+
+guest-permit = permit-for(GuestPermit, 'guest books',
+      rules:
+        ctx:
+          area:
+            visitor: ->
+              @ucan 'publish', 'Paper'
+        read: ->
+          @ucan 'read' 'Book'
+        write: ->
+          @ucan 'write' 'Book'
+        default: ->
+          @ucan 'read' 'any'
+)
+
+basic-authorize-mws = new AuthorizeMw current-user: guest-user
+
+auth-middlewares    = new Middleware 'model' data: books.hello
+auth-middlewares.use authorize: basic-authorize-mws
+
+read-book-request =
+  action      :   'read'
+  collection  :   'books'
+
+allowed = middlewares.auth.run read-book-request
+```
+
 ## Testing
 
 Run `mocha` on all files in test folder
