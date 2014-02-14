@@ -10,13 +10,18 @@ See [wiki](https://github.com/kristianmandrup/authorize-mw/wiki) for more on des
 The following is a complete example, using LiveScript syntax for a clearer picture.
 
 ```LiveScript
-GuestUser = class User
+class Book extends Base
   (obj) ->
-    # ...
+    super ...
+
+book         = new Book title: title
+
+class GuestUser extends User
+  (obj) ->
+    super ...
 
   role: 'guest'
 
-book         = new Book title: title
 guest-user   = new GuestUser name: 'unknown'
 
 GuestPermit = class GuestPermit extends Permit
@@ -30,8 +35,11 @@ guest-permit = permit-for(GuestPermit, 'guest books',
       rules:
         ctx:
           area:
-            visitor: ->
+            guest: ->
               @ucan 'publish', 'Paper'
+            admin: ->
+              @ucannot 'publish', 'Paper'
+
         read: ->
           @ucan 'read' 'Book'
         write: ->
