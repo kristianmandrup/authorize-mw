@@ -50,14 +50,34 @@ guest-permit = permit-for(GuestPermit, 'guest books',
 
 basic-authorize-mws = new AuthorizeMw current-user: guest-user
 
-auth-middlewares    = new Middleware 'model' data: books.hello
-auth-middlewares.use authorize: basic-authorize-mws
+auth-middleware = new Middleware 'model' data: books.hello
+auth-middleware.use authorize: basic-authorize-mws
 
-read-book-request =
+read-books-request =
   action      :   'read'
   collection  :   'books'
 
-allowed = middlewares.auth.run read-book-request
+allowed = auth-middleware.run read-books-request
+```
+
+You can also run with the user as part of the run context
+
+```LiveScript
+publish-book-request =
+  user     :   guest-user
+  action   :   'publish'
+  data     :   book
+
+allowed = auth-middleware.run read-book-request
+```
+
+or you can use `model` instead of collection
+
+```LiveScript
+publish-book-request =
+  user     :   guest-user
+  action   :   'publish'
+  model    :   `book`
 ```
 
 ## Testing
