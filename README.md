@@ -2,6 +2,8 @@
 
 Authorization middleware for Node.js and the Javascript platform in general
 
+See [wiki](https://github.com/kristianmandrup/authorize-mw/wiki) for more on design and architecture.
+
 
 ## Testing
 
