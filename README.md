@@ -14,7 +14,7 @@ class Book extends Base
   (obj) ->
     super ...
 
-book         = new Book title: title
+book = new Book title: title
 
 class GuestUser extends User
   (obj) ->
