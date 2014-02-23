@@ -1,7 +1,7 @@
 {
   "name": "authorize-mw",
   "version": "0.0.1",
-  "main": "index.js",
+  "main": "index",
   "repository": {
     "type": "git",
     "url":  "https://github.com/kristianmandrup/authorize-mw.git"
