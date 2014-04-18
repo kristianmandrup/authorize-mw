@@ -71,6 +71,85 @@ read-books-request =
 allowed = auth-middleware.run read-books-request
 ```
 
+Same in Javascript:
+
+```javascript
+
+var authorize, Middleware, AuthorizeMw, Permit,
+    permitFor, Book, book, GuestUser, guestUser,
+    GuestPermit, guestPermit, basicAuthorizeMws,
+    authMiddleware, readBooksRequest, allowed;
+
+authorize = require('authorize-mw');
+
+Middleware = require('middleware').Middleware;
+AuthorizeMw = authorize.AuthorizeMw;
+Permit = authorize.Permit;
+
+permitFor = authorize.permitFor;
+
+Book = require 'models/book'
+book = new Book({
+  title: title
+});
+
+GuestUser = require 'models/users/guest'
+guestUser = new GuestUser({
+  name: 'unknown'
+});
+
+GuestPermit = lo.extend(Permit, {
+  prototype: {
+    match: function(access){
+      return this.matches(access).user({role: 'guest'});
+    }
+  }
+});
+
+guestPermit = permitFor(GuestPermit, 'guest books', {
+  rules: {
+    ctx: {
+      area: {
+        guest: function(){
+          return this.ucan('publish', 'Paper');
+        },
+        admin: function(){
+          return this.ucannot('publish', 'Paper');
+        }
+      }
+    },
+    read: function(){
+      return this.ucan('read', 'Book');
+    },
+    write: function(){
+      return this.ucan('write', 'Book');
+    },
+    'default': function(){
+      return this.ucan('read', 'any');
+    }
+  }
+});
+
+basicAuthorizeMws = new AuthorizeMw({
+  currentUser: guestUser
+});
+
+authMiddleware = new Middleware('model', {
+  data: books.hello
+});
+
+authMiddleware.use({
+  authorize: basicAuthorizeMws
+});
+
+readBooksRequest = {
+  action: 'read',
+  collection: 'books'
+};
+
+allowed = authMiddleware.run(readBooksRequest);
+```
+
 You can also run with the user as part of the run context
 
 ```LiveScript
@@ -79,7 +158,7 @@ publish-book-request =
   action   :   'publish'
   data     :   book
 
-allowed = auth-middleware.run read-book-request
+allowed = auth-middleware.run publish-book-request
 ```
 
 or you can use `model` instead of collection
@@ -115,7 +194,40 @@ current-user = user 'kris'
 if ability(current-user).allowed-for action: 'read', subject: a-book
   # do the read book action
   ...
-```  
+```
+
+Same in Javascript:
+
+```javascript
+
+var authorize, Ability, user, book, ability, aBook, currentUser;
+
+authorize = require('authorize-mw');
+Ability = authorize.Ability;
+
+user = function(name){
+  return new User(name);
+};
+
+book = function(title){
+  return new Book(title);
+};
+
+ability = function(user){
+  return new Ability(user);
+};
+
+aBook = book('some book');
+
+currentUser = user('kris');
+
+if (ability(currentUser).allowedFor({
+  action: 'read',
+  subject: aBook`
+})) {
+  // do the action
+}
+```
 
 ## Testing
 
