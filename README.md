@@ -14,6 +14,13 @@ Most importantly:
 The following is a complete example, using LiveScript syntax for a clearer picture.
 
 ```LiveScript
+authorize = require 'authorize-mw'
+
+Middleware  = require 'middleware' .Middleware
+AuthorizeMw = authorize.AuthorizeMw
+Permit      = authorize.Permit
+permit-for  = authorize.permit-for
+
 class Book extends Base
   (obj) ->
     super ...

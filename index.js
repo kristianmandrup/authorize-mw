@@ -3,7 +3,11 @@
   var requires;
   requires = require('./requires');
   module.exports = {
-    authorizeMw: requires.mw('authorize-mw'),
-    authorizer: requires.lib('authorizer')
+    AuthorizeMw: requires.mw('authorize-mw'),
+    Authorizer: requires.lib('authorizer'),
+    Ability: requires.lib('ability'),
+    Allower: requires.lib('allower'),
+    Permit: requires.lib('permit'),
+    permitFor: requires.permit('permit-for')
   };
 }).call(this);
