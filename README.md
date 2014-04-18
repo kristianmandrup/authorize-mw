@@ -91,6 +91,32 @@ publish-book-request =
   model    :   `book`
 ```
 
+## Without middleware
+
+Simple example using a user Ability directly, without the middleware layer...
+
+```LiveScript
+authorize = require 'authorize-mw'
+
+Ability     = authorize.Ability
+
+user = (name) ->
+  new User name
+
+book = (title) ->
+  new Book title
+
+ability = (user) ->
+  new Ability user
+
+a-book = book 'some book'
+current-user = user 'kris'
+
+if ability(current-user).allowed-for action: 'read', subject: a-book
+  # do the read book action
+  ...
+```  
+
 ## Testing
 
 Run `mocha` on all files in test folder
