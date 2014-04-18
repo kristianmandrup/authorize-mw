@@ -3,7 +3,7 @@ requires = require '../../requires'
 _       = require 'prelude-ls'
 lo      = require 'lodash'
 
-Permit          = requires.permit 'permit'
+Permit          = requires.lib 'permit'
 PermitRegistry  = requires.permit 'permit_registry'
 
 Debugger  = requires.lib 'debugger'

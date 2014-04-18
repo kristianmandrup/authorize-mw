@@ -151,10 +151,6 @@ open coverage/lcov-report/index.html
 
 Please help improve this project, suggest improvements, add better tests etc. ;)
 
-## Status
-
-Undergoing some refactoring...
-
 ## Licence
 
 MIT License

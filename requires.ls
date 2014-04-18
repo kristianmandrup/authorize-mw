@@ -1,21 +1,21 @@
 require 'sugar'
 _ = require 'prelude-ls'
 
-underscore = (items) ->
+underscore = (...items) ->
   items = items.flatten!
   strings = items.map (item) ->
     String(item)
   _.map (.underscore!), strings
 
 file-path = (...paths) ->
-  upaths = underscore(...paths)
+  upaths = underscore(paths)
   ['.', upaths].flatten!.join '/'
 
 test-path = (...paths) ->
-  @file-path 'test', ...paths
+  file-path 'test', ...paths
 
 lib-path = (...paths) ->
-  @file-path 'lib', ...paths
+  file-path 'lib', ...paths
 
 module.exports =
   util: (path) ->
@@ -48,10 +48,10 @@ module.exports =
     @factory path
 
   file: (...paths) ->
-    require file-path(...paths)
+    require file-path(paths)
 
   lib: (...paths) ->
-    require lib-path(...paths)
+    require lib-path(paths)
 
   afile: (path) ->
     require ['.', path].join '/'

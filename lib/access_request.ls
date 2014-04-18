@@ -1,6 +1,6 @@
 requires = require '../requires'
 
-normalize = requires.lib 'normalize'
+normalize = requires.util 'normalize'
 
 module.exports = class AccessRequest
   # factory method

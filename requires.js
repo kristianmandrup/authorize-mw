@@ -3,8 +3,9 @@
   var _, underscore, filePath, testPath, libPath, slice$ = [].slice;
   require('sugar');
   _ = require('prelude-ls');
-  underscore = function(items){
-    var strings;
+  underscore = function(){
+    var items, strings;
+    items = slice$.call(arguments);
     items = items.flatten();
     strings = items.map(function(item){
       return String(item);
@@ -16,18 +17,18 @@
   filePath = function(){
     var paths, upaths;
     paths = slice$.call(arguments);
-    upaths = underscore.apply(null, paths);
+    upaths = underscore(paths);
     return ['.', upaths].flatten().join('/');
   };
   testPath = function(){
     var paths;
     paths = slice$.call(arguments);
-    return this.filePath.apply(this, ['test'].concat(slice$.call(paths)));
+    return filePath.apply(null, ['test'].concat(slice$.call(paths)));
   };
   libPath = function(){
     var paths;
     paths = slice$.call(arguments);
-    return this.filePath.apply(this, ['lib'].concat(slice$.call(paths)));
+    return filePath.apply(null, ['lib'].concat(slice$.call(paths)));
   };
   module.exports = {
     util: function(path){
@@ -62,12 +63,12 @@
     file: function(){
       var paths;
       paths = slice$.call(arguments);
-      return require(filePath.apply(null, paths));
+      return require(filePath(paths));
     },
     lib: function(){
       var paths;
       paths = slice$.call(arguments);
-      return require(libPath.apply(null, paths));
+      return require(libPath(paths));
     },
     afile: function(path){
       return require(['.', path].join('/'));

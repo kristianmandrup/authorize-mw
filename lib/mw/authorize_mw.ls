@@ -6,9 +6,9 @@ _           = require 'prelude-ls'
 ModelMw     = require('model-mw').mw
 ModelRunner = require('model-mw').runner
 
-Ability     = requires.file 'ability'
-Authorizer  = requires.file 'authorizer'
-Debugger    = requires.file 'debugger'
+Ability     = requires.lib 'ability'
+Authorizer  = requires.lib 'authorizer'
+Debugger    = requires.lib 'debugger'
 
 # Should extend model middleware?
 module.exports = class AuthorizeMw extends ModelMw implements Debugger

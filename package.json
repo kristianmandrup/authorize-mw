@@ -22,7 +22,6 @@
     "lodash":       "*",
     "prelude-ls":   "*",
     "sugar":        "*",
-    "rubyjs":       "*",
     "deep-extend":  "*",
     "middleware":   "git://github.com/kristianmandrup/middleware.git",
     "model-mw":     "git://github.com/kristianmandrup/model-mw.git"
@@ -34,6 +33,7 @@
   "devDependencies": {
     "LiveScript":               "*",
     "mocha":                    "*",
+    "expect":                   "*",
     "istanbul":                 "*",
     "should":                   "*",
     "grunt":                    "~0.4.2",
