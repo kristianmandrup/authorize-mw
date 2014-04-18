@@ -9,6 +9,38 @@ Most importantly:
 * [Permits](https://github.com/kristianmandrup/authorize-mw/wiki/Permits)
 * [Rules](https://github.com/kristianmandrup/authorize-mw/wiki/Rules)
 
+## Installation
+
+The index.js file exposes the following:
+
+```
+  AuthorizeMw :  requires.mw 'authorize-mw'
+  Authorizer :   requires.lib 'authorizer'
+  Ability :      requires.lib 'ability'
+  Allower :      requires.lib 'allower'
+  Permit :       requires.lib 'permit'
+  permit-for:    requires.permit 'permit-for'
+```
+
+So you can simply do:
+
+```javascript
+authorize = require('authorize-mw');
+```
+
+Then require the parts you need as demonstrated in the usage examples below.
+
+```javascript
+Permit      = authorize.Permit;
+permit-for  = authorize.permit-for;
+```
+
+## Browser usage
+
+Try [browserify](http://browserify.org)
+
+`browserify index.js -o authorize-mw.js`
+
 ## Usage
 
 The following is a complete example, using LiveScript syntax for a clearer picture.
@@ -43,20 +75,20 @@ GuestPermit = class GuestPermit extends Permit
     @matches(access).user role: 'guest'
 
 guest-permit = permit-for(GuestPermit, 'guest books',
-      rules:
-        ctx:
-          area:
-            guest: ->
-              @ucan 'publish', 'Paper'
-            admin: ->
-              @ucannot 'publish', 'Paper'
+  rules:
+    ctx:
+      area:
+        guest: ->
+          @ucan 'publish', 'Paper'
+        admin: ->
+          @ucannot 'publish', 'Paper'
 
-        read: ->
-          @ucan 'read' 'Book'
-        write: ->
-          @ucan 'write' 'Book'
-        default: ->
-          @ucan 'read' 'any'
+    read: ->
+      @ucan 'read' 'Book'
+    write: ->
+      @ucan 'write' 'Book'
+    default: ->
+      @ucan 'read' 'any'
 )
 
 basic-authorize-mws = new AuthorizeMw current-user: guest-user

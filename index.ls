@@ -6,4 +6,4 @@ module.exports =
   Ability :      requires.lib 'ability'
   Allower :      requires.lib 'allower'
   Permit :       requires.lib 'permit'
-  permit-for:   requires.permit 'permit-for'
+  permit-for:    requires.permit 'permit-for'
