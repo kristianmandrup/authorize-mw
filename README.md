@@ -4,7 +4,7 @@ Authorization middleware for Node.js and the Javascript platform in general
 
 See [wiki](https://github.com/kristianmandrup/authorize-mw/wiki) for a guide on design and architecture.
 
-Most importantly:
+Most important sections:
 
 * [Permits](https://github.com/kristianmandrup/authorize-mw/wiki/Permits)
 * [Rules](https://github.com/kristianmandrup/authorize-mw/wiki/Rules)
