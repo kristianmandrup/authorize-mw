@@ -7,10 +7,10 @@ setup           = require('./permits').setup
 Book            = requires.fix 'user'
 User            = requires.fix 'book'
 
-Permit          = require.lib    'permit'
-permit-for      = require.permit 'permit-for'
-PermitMatcher   = require.permit 'permit_matcher'
-PermitRegistry  = require.permit 'permit-registry'
+Permit          = requires.lib    'permit'
+permit-for      = requires.permit 'permit-for'
+PermitMatcher   = requires.permit 'permit_matcher'
+PermitRegistry  = requires.permit 'permit-registry'
 
 create-user     = requires.fac 'create-user'
 create-request  = requires.fac 'create-request'

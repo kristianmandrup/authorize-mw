@@ -1,9 +1,9 @@
-requires  = require '../../../requires'
+requires  = require '../../requires'
 
 requires.test 'test_setup'
 
 Book          = requires.fix 'book'
-matchers      = requires.file 'matchers'
+matchers      = requires.lib 'matchers'
 
 AccessMatcher = matchers.AccessMatcher
 
@@ -33,7 +33,7 @@ describe 'AccessMatcher' ->
 
   describe 'create' ->
     specify 'must have complex access request' ->
-      access-matcher.access-request.should.eql requests.complex
+      access-matchers.complex.access-request.should.eql requests.complex
 
   describe 'chaining' ->
     before-each ->
@@ -42,19 +42,20 @@ describe 'AccessMatcher' ->
     specify 'should match chaining: role(admin).action(read)' ->
       access-matchers.complex.role('admin').action('read').result!.should.be.true
 
-    describe 'has-action calls result!' ->
+    # has-xxxx methods have been deprecated
+    xdescribe 'has-action calls result!' ->
       specify 'should match chaining: role(admin).action(read)' ->
         access-matchers.complex.role('admin').has-action('read').should.be.true
 
-    describe 'has-user calls result!' ->
-      specify 'should match chaining: role(admin).action(read).has-user()' ->
+    xdescribe 'has-user calls result!' ->
+      specify 'should match chaining: role(admin).action(read).hasUser()' ->
         access-matchers.complex.role('admin').action('read').has-user!.should.be.true
 
-      specify 'should match chaining: role(admin).action(read).has-user()' ->
+      specify 'should match chaining: role(admin).action(read).hasUser()' ->
         access-matchers.userless.role('admin').action('read').has-user!.should.be.false
 
-    describe 'has-subject calls result!' ->
-      specify 'should match chaining: role(admin).action(read).user().has-subject()' ->
+    xdescribe 'has-subject calls result!' ->
+      specify 'should match chaining: role(admin).action(read).user().hasSubject()' ->
         access-matchers.complex.role('admin').action('read').user!.has-subject!.should.be.true
 
   describe 'match-on' ->

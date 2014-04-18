@@ -9,7 +9,7 @@
   createUser = requires.fac('create-user');
   access = require('./access');
   ability = require('./abilities');
-  Ability = requires.file('ability');
+  Ability = requires.lib('ability');
   describe('Ability', function(){
     var abook, book, requests, users, res, bookRequest;
     book = function(title){

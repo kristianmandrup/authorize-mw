@@ -1,4 +1,4 @@
-requires  = require '../../../requires'
+requires  = require '../../requires'
 
 requires.test 'test_setup'
 
@@ -77,7 +77,7 @@ describe 'Permit' ->
       publish-book-request  := make-request 'publish'
 
       permits.hello.match = (access) ->
-        @matching(access).has-action 'read'
+        @matching(access).match-on action: 'read'
 
     specify 'will match request to read a book' ->
       permits.hello.matches(read-book-request).should.be.true

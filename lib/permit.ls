@@ -28,6 +28,7 @@ module.exports = class Permit implements Debugger
     PermitRegistry.register-permit @
     @rule-repo = new RuleRepo @name
     @applied-rules = false
+    @
 
   permit-matcher-class: PermitMatcher
   rule-applier-class: RuleApplier
@@ -41,7 +42,6 @@ module.exports = class Permit implements Debugger
     @
 
   clean: ->
-    @debug 'clean'
     @rule-repo.clean!
     @applied-rules = false
 
@@ -62,12 +62,17 @@ module.exports = class Permit implements Debugger
     new PermitAllower @rule-repo, @debugging
 
   allows: (access-request) ->
-    @debug 'permit allows?', @rules, access-request
-    @permit-allower!.allows access-request
+    @debug 'permit allows?', @name, @description
+    res = @permit-allower!.allows access-request
+    @debug "#{@name} Permit allows:", @rules, access-request, res
+    res
 
   disallows: (access-request) ->
-    @debug 'permit disallows?', @rules, access-request
-    @permit-allower!.disallows access-request
+    @debug 'permit disallows?', @name, @description
+    res = @permit-allower!.disallows access-request
+    @debug "#{@name} Permit disallows:", @rules, access-request, res
+    res
+
 
   # Permit matching
   # ----------------

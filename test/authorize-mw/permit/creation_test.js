@@ -65,9 +65,9 @@
           return permits.hello.ruleApplierClass.should.eql(RuleApplier);
         });
       });
-      describe('allower', function(){
+      describe('permit-allower', function(){
         return specify('has an allower', function(){
-          return permits.hello.allower().constructor.should.eql(PermitAllower);
+          return permits.hello.permitAllower().constructor.should.eql(PermitAllower);
         });
       });
       return describe('permit-matcher-class', function(){

@@ -68,9 +68,9 @@ describe 'Permit' ->
       specify 'by default has rule-applier-class = RuleApplier' ->
         permits.hello.rule-applier-class.should.eql RuleApplier
 
-    describe 'allower' ->
+    describe 'permit-allower' ->
       specify 'has an allower' ->
-        permits.hello.allower!.constructor.should.eql PermitAllower
+        permits.hello.permit-allower!.constructor.should.eql PermitAllower
 
     describe 'permit-matcher-class' ->
       specify 'permit by default has permit-matcher-class = PermitMatcher' ->

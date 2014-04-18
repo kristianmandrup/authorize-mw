@@ -1,4 +1,4 @@
-requires  = require '../../../requires'
+requires  = require '../../requires'
 
 requires.test 'test_setup'
 
@@ -40,38 +40,22 @@ describe 'Authorizer' ->
       current-user: users.guest
 
     authorizers.basic = authorizer users.guest
+    authorizers.basic.debug-on!
 
   describe 'create' ->
     specify 'should set user' ->
       authorizers.basic.user.should.eql users.guest
 
   describe 'run' ->
-    context 'read book (collection name) request by guest user' ->
+    xcontext 'read any book (collection name) request by guest user' ->
       before ->
         requests.read-book-collection =
-          name:       'read'
-          collection: 'books'
+          action:   'read'
+          subject:  'book'
 
-      specify 'user is authorized to perform action' ->
-        authorizers.basic.run(requests.read-book-collectionst).should.be.true
+      specify.only 'user is authorized to read book collection' ->
+        authorizers.basic.run(requests.read-book-collection).should.be.true
 
-
-  describe 'run' ->
     context 'read actual book instance request by guest user' ->
-      before ->
-        requests.read-book =
-          name: 'read'
-          data: book
-
-      specify 'user is authorized to perform action' ->
-        authorizers.basic.run(requests.read-book).should.be.true
-
-  describe 'run' ->
-    context 'read actual book model request by guest user' ->
-      before ->
-        requests.read-book-model =
-          name: 'read'
-          model: book
-
-      specify 'user is authorized to perform action' ->
-        authorizers.basic.run(requests.read-book-model).should.be.true
+      specify 'user is authorized to read book' ->
+        authorizers.basic.run(action: 'read', subject: book!).should.be.true

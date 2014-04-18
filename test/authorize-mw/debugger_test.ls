@@ -1,11 +1,11 @@
-requires  = require '../../../requires'
+requires  = require '../../requires'
 
 requires.test 'test_setup'
 
 _             = require 'prelude-ls'
 lo            = require 'lodash'
 
-Debugger      = requires.file 'debugger'
+Debugger      = requires.lib 'debugger'
 
 class TestDebug implements Debugger
   ->

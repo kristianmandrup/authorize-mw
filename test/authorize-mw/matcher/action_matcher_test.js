@@ -3,7 +3,7 @@
   var requires, ability, matchers, ActionMatcher;
   requires = require('../../../requires');
   requires.test('test_setup');
-  ability = require('./abilities');
+  ability = require('../ability/abilities');
   matchers = requires.lib('matchers');
   ActionMatcher = matchers.ActionMatcher;
   describe('ActionMatcher', function(){

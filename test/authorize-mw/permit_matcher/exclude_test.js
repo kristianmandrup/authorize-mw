@@ -21,8 +21,8 @@
     matching = {};
     noneMatching = {};
     before(function(){
-      users.kris = createUser.kris;
-      users.emily = createUser.emily;
+      users.kris = createUser.kris();
+      users.emily = createUser.emily();
       requests.user = {
         user: users.kris
       };

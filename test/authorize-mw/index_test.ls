@@ -1,6 +1,6 @@
 requires  = require '../../requires'
 
-expect = require 'expect'
+expect = require 'expect.js'
 requires.test 'test_setup'
 
 authorize = require '../../index'
@@ -29,4 +29,4 @@ current-user = user 'kris'
 
 describe 'Ability' ->
   specify 'is an Ability class' ->
-    expect(new Ability.constructor).to.eq Ability
+    expect(ability!.constructor).to.equal Ability

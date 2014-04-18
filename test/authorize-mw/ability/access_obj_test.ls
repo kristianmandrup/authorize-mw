@@ -11,7 +11,7 @@ create-user     = requires.fac 'create-user'
 access          = require './access'
 ability         = require './abilities'
 
-Ability       = requires.file 'ability'
+Ability       = requires.lib 'ability'
 
 describe 'Ability' ->
   var abook

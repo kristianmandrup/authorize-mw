@@ -27,8 +27,8 @@ describe 'PermitMatcher' ->
   none-matching = {}
 
   before ->
-    users.kris    := create-user.kris
-    users.emily   := create-user.emily
+    users.kris    := create-user.kris!
+    users.emily   := create-user.emily!
     requests.user :=
       user: users.kris
 

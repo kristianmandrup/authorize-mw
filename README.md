@@ -261,6 +261,44 @@ if (ability(currentUser).allowedFor({
 }
 ```
 
+## Current status
+
+All tests are passing :)
+
+Note to self: *rule-applier* needs more tests...
+
+To facilitate testing, each class implements `Debugger` which allows using `debug-on!` on the class or instance level to track
+ what goes on inside.
+
+Use `xdescribe`, `describe.skip` and `describe.only` to select which tests to execute.
+
+### Caching via fingerprinting
+
+A caching strategy should be implemented, so rules are not evaluated
+each time for the same *action request* (action, subject, object, context) `AccReq`, instead a cached previous result for that
+AccReq should be retrieved.
+
+If any of these is an object, a `.hash` function should be attempted called on that object to get the "fingerprint"
+If no `hash` function on object, fingerprinting is done via JSON stringify.
+
+Then each of these fingerprints should be concatenated into one *access request fingerprint*.
+If the same AccReq fingerprint comes in again, the cached permit rules should be used for better performance!
+
+Please feel free to contribute a solution to this major performance enhancement.
+
+## Design
+
+*Why LiveScript?*
+
+Since it is faster/easier to develop the basic functionality. We can always later refactor the code to use something else.
+
+*Why classes and not prototypical inheritance?*
+
+See reasoning for Livescript ;) Just easier to implement using classes. I started off using basic Javascript constructor functions
+but since abandoned this approach because it was slowing me down. Just provides a nice encapsulation/abstraction layer.
+
+Feel free to fork this project and provide a version without classes if that is a MUST for you...
+
 ## Testing
 
 Run `mocha` on all files in test folder

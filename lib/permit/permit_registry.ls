@@ -25,7 +25,7 @@ module.exports = class PermitRegistry implements Debugger
     name
 
   @get = (name) ->
-    @@permits[name] || throw Error("No permit '#{name}' is registered")
+    @@permits[name] or throw Error("No permit '#{name}' is registered")
 
   @register-permit = (permit) ->
     permit.name = @calc-name permit.name
@@ -37,7 +37,7 @@ module.exports = class PermitRegistry implements Debugger
     if @@permits[name]
       throw Error "A Permit named: #{name} is already registered, please use a different name!"
 
-    # register permit in Permit.permit
+    # register permit
     @@permits[name] = permit
     @@permit-counter = @@permit-counter+1
 
@@ -48,8 +48,11 @@ module.exports = class PermitRegistry implements Debugger
   @clear-all = ->
     @@clear-permits!
 
+  @permit-list = ->
+    _.values @@permits
+
   @clean-permits = ->
-    for permit in @@permits
+    for permit in @@permit-list!
       permit.clean!
 
   @clean-all = ->

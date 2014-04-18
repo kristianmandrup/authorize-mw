@@ -2,7 +2,7 @@
 (function(){
   var requires, expect, authorize, Ability, User, Book, user, book, ability, aBook, currentUser;
   requires = require('../../requires');
-  expect = require('expect');
+  expect = require('expect.js');
   requires.test('test_setup');
   authorize = require('../../index');
   Ability = authorize.Ability;
@@ -35,7 +35,7 @@
   currentUser = user('kris');
   describe('Ability', function(){
     return specify('is an Ability class', function(){
-      return expect(new Ability.constructor).to.eq(Ability);
+      return expect(ability().constructor).to.equal(Ability);
     });
   });
 }).call(this);

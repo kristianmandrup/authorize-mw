@@ -1,4 +1,4 @@
-requires  = require '../../../requires'
+requires  = require '../../requires'
 
 requires.test 'test_setup'
 
@@ -83,10 +83,12 @@ describe 'PermitRegistry' ->
             permits.old   := PermitRegistry.permits
             repos.old     := permits.guest.rule-repo
 
+            permits.guest.debug-on!
+
             PermitRegistry.clean-all!
 
           specify 'old repo is a RuleRepo' ->
-            old-repo.constructor.should.eql RuleRepo
+            repos.old.constructor.should.eql RuleRepo
 
           describe 'permit-counter' ->
             specify 'should not change' ->

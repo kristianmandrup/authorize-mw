@@ -9,6 +9,7 @@ requires  = require '../../requires'
 _         = require 'prelude-ls'
 lo        = require 'lodash'
 require 'sugar'
+util = require 'util'
 
 normalize = requires.util 'normalize'
 Debugger  = requires.lib 'debugger'
@@ -36,6 +37,7 @@ module.exports = class RuleRepo implements Debugger
     unless act is 'can' or act is 'cannot'
       throw Error "Repo can only clear 'can' or 'cannot' rules, was: #{act}"
 
+    @debug 'clean', act
     @["#{act}Rules"] = {}
     @
 
@@ -56,14 +58,21 @@ module.exports = class RuleRepo implements Debugger
     return true if ['*', 'any'].any (wildcard) ->
       subjects.index-of(wildcard) != -1
 
+    if typeof! subject is 'Array'
+      self = @
+      return subject.find (subj) ->
+        self.find-matching-subject subjects, subj
+
     unless _.is-type 'String' subject
-      throw Error "find-matching-subject: Subject must be a String to be matched, was #{subject}"
+      throw Error "find-matching-subject: Subject must be a String to be matched, was #{util.inspect subject}"
 
     camelized = subject?.camelize true
     subjects.index-of(camelized) != -1
 
   # TODO: simplify, extract methods and one or more classes!!!
   match-rule: (act, access-request) ->
+    @debug 'match-rule', act, access-request
+
     act = act.camelize(true)
     action = access-request.action
     subject = access-request.subject
@@ -73,7 +82,10 @@ module.exports = class RuleRepo implements Debugger
 
     @match-manage-rule(rule-container, subj-clazz) if action is 'manage'
 
+    @debug 'subj-clazz', subj-clazz
+    return unless subj-clazz
     action-subjects = rule-container[action]
+    return unless action-subjects
     @match-subject-clazz action-subjects, subj-clazz
 
   match-subject-clazz: (action-subjects, subj-clazz) ->

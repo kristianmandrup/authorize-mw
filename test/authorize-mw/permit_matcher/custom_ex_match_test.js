@@ -6,10 +6,10 @@
   setup = require('./permits').setup;
   Book = requires.fix('user');
   User = requires.fix('book');
-  Permit = require.lib('permit');
-  permitFor = require.permit('permit-for');
-  PermitMatcher = require.permit('permit_matcher');
-  PermitRegistry = require.permit('permit-registry');
+  Permit = requires.lib('permit');
+  permitFor = requires.permit('permit-for');
+  PermitMatcher = requires.permit('permit_matcher');
+  PermitRegistry = requires.permit('permit-registry');
   createUser = requires.fac('create-user');
   createRequest = requires.fac('create-request');
   createPermit = requires.fac('create-permit');
