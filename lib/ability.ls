@@ -3,8 +3,6 @@ requires = require '../requires'
 _   = require 'prelude-ls'
 lo  = require 'lodash'
 
-deep-extend   = require 'deep-extend'
-
 permit-filter = requires.permit 'permit_filter'
 Allower       = requires.lib 'allower'
 AccessRequest = requires.lib 'access_request'
@@ -16,7 +14,7 @@ module.exports = class Ability implements Debugger
 
   # adds the user of the ability to the access-request object
   access-obj: (access-request) ->
-    deep-extend access-request, {user : @user}
+    lo.merge access-request, {user : @user}
 
   permits: (access-request) ->
     permit-filter.filter access-request

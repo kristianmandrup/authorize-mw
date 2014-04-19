@@ -23,7 +23,6 @@
     "prelude-ls":   "*",
     "sugar":        "*",
     "util":         "*",
-    "deep-extend":  "*",
     "middleware":   "git://github.com/kristianmandrup/middleware.git",
     "model-mw":     "git://github.com/kristianmandrup/model-mw.git"
   },
@@ -32,14 +31,14 @@
     "coverage": "./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- --ui bdd -R test -t 5000"
   },
   "devDependencies": {
-    "LiveScript":               "*",
-    "mocha":                    "*",
-    "expect.js":                "*",
-    "istanbul":                 "*",
-    "should":                   "*",
-    "grunt":                    "~0.4.2",
-    "grunt-mocha-test":         "~0.8.1",
-    "grunt-istanbul":           "*",
-    "grunt-istanbul-coverage":  "0.0.2"
+    "LiveScript":               "x",
+    "mocha":                    "x",
+    "expect.js":                "x",
+    "istanbul":                 "x",
+    "should":                   "x",
+    "grunt":                    "x",
+    "grunt-mocha-test":         "x",
+    "grunt-istanbul":           "x",
+    "grunt-istanbul-coverage":  "x"
   }
 }
