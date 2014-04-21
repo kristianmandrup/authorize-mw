@@ -1,8 +1,3 @@
-rek      = require 'rekuire'
-requires = rek 'requires'
-
-_           = require 'prelude-ls'
-
 ModelMw     = require('model-mw').mw
 ModelRunner = require('model-mw').runner
 
@@ -11,10 +6,10 @@ authorize   = require 'permit-authorize'
 Ability     = authorize.Ability
 Authorizer  = authorize.Authorizer
 
-# Debugger    = requires.lib 'debugger'
+Debugger    = require './debugger'
 
 # Should extend model middleware?
-module.exports = class AuthorizeMw extends ModelMw # implements Debugger
+module.exports = class AuthorizeMw extends ModelMw implements Debugger
   # Note: context should have a runner, then data is set via model of runner! Duh!
   (context) ->
     super ...
@@ -48,7 +43,7 @@ module.exports = class AuthorizeMw extends ModelMw # implements Debugger
     @my-authorizer ||= @create-authorizer!
 
   create-authorizer: ->
-    a = new Authorizer @current-user
+    new Authorizer @current-user
     a.debug-on! if @debugging
     a
 

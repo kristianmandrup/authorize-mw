@@ -3,11 +3,11 @@ require '../test_setup'
 User            = require '../fixtures/user'
 Book            = require '../fixtures/book'
 
-create-request  = require '../factories/create-request'
-create-user     = require '../factories/create-user'
-create-permit   = require '../factories/create-permit'
+create-request  = require '../factories/create_request'
+create-user     = require '../factories/create_user'
+create-permit   = require '../factories/create_permit'
 
-AuthorizeMw     = require '../../lib/authorize-mw'
+AuthorizeMw     = require '../../lib/authorize_mw'
 
 describe 'AuthorizeMw' ->
   var ctx

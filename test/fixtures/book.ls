@@ -1,8 +1,5 @@
-_ = require 'prelude-ls'
-
-
 module.exports = class Book
   (@obj) ->
-    if _.is-type 'Object', @obj
-      for key in _.keys(@obj)
+    if typeof! @obj is 'Object'
+      for key of @obj
         @[key] = @obj[key]

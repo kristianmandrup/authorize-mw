@@ -19,7 +19,7 @@
     "middleware"
   ],
   "dependencies": {
-    "permit-authorize": "x",
+    "permit-authorize": "0.1.0",
     "middleware":   "git://github.com/kristianmandrup/middleware.git",
     "model-mw":     "git://github.com/kristianmandrup/model-mw.git"
   },

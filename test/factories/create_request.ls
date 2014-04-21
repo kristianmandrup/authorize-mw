@@ -1,5 +1,4 @@
-requires  = require '../../requires'
-User      = requires.fix 'user'
+User      = require '../fixtures/user'
 
 module.exports =
   empty: ->

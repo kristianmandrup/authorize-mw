@@ -6,12 +6,11 @@ expect = require('chai').expect
 User            = require '../fixtures/user'
 Book            = require '../fixtures/book'
 
-create-request  = require '../factories/create-request'
-create-user     = require '../factories/create-user'
-create-permit   = require '../factories/create-permit'
+create-request  = require '../factories/create_request'
+create-user     = require '../factories/create_user'
+create-permit   = require '../factories/create_permit'
 
-
-AuthorizeMw     = requires.mw  'authorize-mw'
+AuthorizeMw     = require '../../lib/authorize_mw'
 
 middleware      = require 'middleware'
 Middleware      = middleware.Middleware

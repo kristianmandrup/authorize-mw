@@ -1,11 +1,8 @@
-requires  = require '../../requires'
-
-Permit        = requires.lib 'permit'
-permit-for    = requires.permit 'permit-for'
-
-permit-class  = requires.fix  'permit-class'
-
-GuestPermit = permit-class.GuestPermit
+authorize     = require 'permit-authorize'
+Permit        = authorize.Permit
+permit-for    = authorize.permit-for
+permit-class  = require '../fixtures/permit-class'
+GuestPermit   = permit-class.GuestPermit
 
 module.exports =
   guest: (debug) ->
