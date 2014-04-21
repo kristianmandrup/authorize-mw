@@ -1,19 +1,13 @@
-requires        = require '../../../requires'
+require '../test_setup'
 
-requires.test 'test_setup'
+User            = require '../fixtures/user'
+Book            = require '../fixtures/book'
 
-_               = require 'prelude-ls'
-lo              = require 'lodash'
+create-request  = require '../factories/create-request'
+create-user     = require '../factories/create-user'
+create-permit   = require '../factories/create-permit'
 
-User            = requires.fix 'user'
-Book            = requires.fix 'book'
-
-create-request  = requires.fac 'create-request'
-create-user     = requires.fac 'create-user'
-create-permit   = requires.fac 'create-permit'
-
-AuthorizeMw     = requires.mw 'authorize-mw'
-Authorizer      = requires.lib 'authorizer'
+AuthorizeMw     = require '../../lib/authorize-mw'
 
 describe 'AuthorizeMw' ->
   var ctx
@@ -45,7 +39,7 @@ describe 'AuthorizeMw' ->
 
   describe 'authorizer' ->
     specify 'should set authorizer' ->
-      authorize-mws.basic.authorizer!.constructor.should.eql Authorizer
+      authorize-mws.basic.authorizer!.should.not.eql void
 
     specify 'should set authorizer user to current user' ->
       authorize-mws.basic.authorizer!.user.should.eql ctx.current-user

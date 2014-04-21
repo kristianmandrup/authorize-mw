@@ -1,22 +1,17 @@
-requires        = require '../../../requires'
-
-requires.test 'test_setup'
-
-_               = require 'prelude-ls'
-lo              = require 'lodash'
+require '../test_setup'
 
 assert = require('chai').assert
 expect = require('chai').expect
 
-User            = requires.fix 'user'
-Book            = requires.fix 'book'
+User            = require '../fixtures/user'
+Book            = require '../fixtures/book'
 
-create-request  = requires.fac 'create-request'
-create-user     = requires.fac 'create-user'
-create-permit   = requires.fac 'create-permit'
+create-request  = require '../factories/create-request'
+create-user     = require '../factories/create-user'
+create-permit   = require '../factories/create-permit'
+
 
 AuthorizeMw     = requires.mw  'authorize-mw'
-Authorizer      = requires.lib 'authorizer'
 
 middleware      = require 'middleware'
 Middleware      = middleware.Middleware

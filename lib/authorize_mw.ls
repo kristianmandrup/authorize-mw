@@ -6,17 +6,20 @@ _           = require 'prelude-ls'
 ModelMw     = require('model-mw').mw
 ModelRunner = require('model-mw').runner
 
-Ability     = requires.lib 'ability'
-Authorizer  = requires.lib 'authorizer'
-Debugger    = requires.lib 'debugger'
+authorize   = require 'permit-authorize'
+
+Ability     = authorize.Ability
+Authorizer  = authorize.Authorizer
+
+# Debugger    = requires.lib 'debugger'
 
 # Should extend model middleware?
-module.exports = class AuthorizeMw extends ModelMw implements Debugger
+module.exports = class AuthorizeMw extends ModelMw # implements Debugger
   # Note: context should have a runner, then data is set via model of runner! Duh!
   (context) ->
     super ...
 
-    unless _.is-type 'Object', @context
+    unless typeof! @context is 'Object'
       throw Error "AuthorizeMw construction requires Object, was: #{@context}"
 
     unless @context.current-user
