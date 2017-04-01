@@ -1,5 +1,7 @@
 # Authorize middleware
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/kristianmandrup/authorize-mw.svg)](https://greenkeeper.io/)
+
 Authorization middleware for Node.js and the Javascript platform in general
 
 It leverages the authorization library [permit-authorize](https://github.com/kristianmandrup/permit-authorize)
